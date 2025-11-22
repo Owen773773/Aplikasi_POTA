@@ -1,43 +1,28 @@
 @import url('https://fonts.googleapis.com/css?family=Quicksand&display=swap');
-/*
- * ==========================================================
- * 1. DEFINISI VARIABEL WARNA & FONT
- * ==========================================================
- */
+
 :root {
-    /* Warna Utama */
     --primary-color: #054A91;
-    --secondary-color: #FFFFFF; /* White */
+    --secondary-color: #FFFFFF;
     
-    /* Warna Status */
     --status-error: #FF0004;
     --status-success: #22E61F;
     --status-pending: #D5C729;
     --status-confirmed: #18A22C;
     --status-rejected: #E91438;
     
-    /* Warna Status Jadwal */
     --status-pending-jadwal: #FEB21A;
     --status-unavailable: #ED3F27;
     --status-scheduled: #134686;
 
-    /* Warna Netral */
     --color-black: #000000;
     --color-white: #FFFFFF;
     --color-greyed: #ABADAB;
     
-    /* Background */
     --background-body: #F2F0EF;
     
-    /* Font (Memanfaatkan link dari HTML) */
     --font-quicksand: 'Quicksand', sans-serif;
 }
 
-/*
- * ==========================================================
- * 2. RESET DAN BODY GLOBAL
- * ==========================================================
- */
 body {
     margin: 0;
     padding: 0;
@@ -46,11 +31,6 @@ body {
     color: var(--color-black);
 }
 
-/*
- * ==========================================================
- * 3. KLAS FONT DAN UKURAN (QUICKSAND)
- * ==========================================================
- */
 .font-quicksand {
     font-family: var(--font-quicksand);
 }
@@ -63,19 +43,13 @@ body {
     font-weight: normal;
 }
 
-/* Ukuran Font Khusus (Contoh: untuk Navbar) */
 .text-navbar {
     font-family: var(--font-quicksand);
     font-size: 24px;
-    font-weight: bold; /* Dibuat bold secara default untuk navbar */
-    color: var(--primary-color); /* TEKS NAVABAR SEKARANG PRIMARY */
+    font-weight: bold; 
+    color: var(--primary-color); 
 }
 
-/*
- * ==========================================================
- * 4. KLAS WARNA TULISAN
- * ==========================================================
- */
 .color-primary {
     color: var(--primary-color);
 }
@@ -92,14 +66,10 @@ body {
     color: var(--status-confirmed); 
 }
 
-/*
- * ==========================================================
- * 5. KLAS KOMPONEN DAN ICON (REVISI NAVBAR)
- * ==========================================================
- */
+
 .navbar {
-    background-color: var(--color-white); /* BACKGROUND NAVABAR SEKARANG PUTIH */
-    color: var(--primary-color); /* Teks default di navbar primary */
+    background-color: var(--color-white); 
+    color: var(--primary-color); 
     padding: 10px 20px;
     height: 50px; 
 }
@@ -108,14 +78,8 @@ body {
     width: 32px;
     height: 32px;
     vertical-align: middle; 
-    /* Catatan: Warna icon (misalnya, SVG) harus diatur secara terpisah */
 }
 
-/*
- * ==========================================================
- * 6. KLAS STATUS KHUSUS UNTUK TAMPILAN JADWAL/KARTU
- * ==========================================================
- */
 .status-pending-jadwal {
     background-color: var(--status-pending-jadwal);
     color: var(--color-black); 
@@ -129,4 +93,153 @@ body {
 .status-scheduled {
     background-color: var(--status-scheduled);
     color: var(--color-white); 
+}
+
+.main {
+    display: flex;
+    height: 100vh;
+    width: 100%;
+}
+
+/* Sidebar Styles */
+.sidebar {
+    width: 250px;
+    background-color: var(--secondary-color);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 20px 0;
+    flex-shrink: 0;
+}
+
+/* Logo Area */
+.logo-container {
+    display: flex;
+    align-items: center;
+    padding: 0 30px;
+    margin-bottom: 40px;
+    gap: 10px;
+}
+
+/* Slot kosong untuk Logo */
+.logo-icon-slot {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Navigation Menu */
+.nav-menu {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    gap: 10px;
+}
+
+.nav-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 30px;
+    text-decoration: none;
+    color: var(--primary-color);
+    font-size: 18px;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.icon-slot {
+    width: 30px;  /* Lebar tetap agar teks sejajar vertikal */
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 10px;
+}
+
+/* Pastikan gambar di dalam slot mengikuti ukuran slot */
+.icon-slot img, .logo-icon-slot img {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.nav-item:hover {
+    background-color: rgba(5, 74, 145, 0.05);
+}
+
+.nav-item.active {
+    font-weight: bold;
+}
+
+.nav-item.active .active-indicator {
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 30px;
+    width: 6px;
+    background-color: var(--primary-color);
+    border-top-right-radius: 6px;
+    border-bottom-right-radius: 6px;
+}
+
+/* Logout Section */
+.logout-section {
+    padding: 0 30px;
+    margin-bottom: 20px;
+    border-top: 1px solid #eee;
+    padding-top: 20px;
+}
+
+.btn-logout {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    background: transparent;
+    border: 2px solid #D1D9E2;
+    color: var(--primary-color);
+    padding: 10px 20px;
+    border-radius: 12px;
+    font-family: var(--font-quicksand);
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+    width: fit-content;
+    transition: 0.2s;
+}
+
+.icon-slot-small {
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-logout:hover {
+    border-color: var(--primary-color);
+    background-color: var(--primary-color);
+    color: var(--color-white);
+}
+
+/* Main Content */
+.main-content {
+    flex-grow: 1;
+    background-color: var(--background-body);
+    padding: 30px 40px;
+}
+
+.page-title {
+    font-family: var(--font-quicksand);
+    color: var(--primary-color);
+    font-size: 28px;
+    font-weight: bold;
+    margin-top: 0;
+    margin-bottom: 20px;
+}
+
+.content-body {
+    height: 80%;
 }

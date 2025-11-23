@@ -1,142 +1,337 @@
 <!DOCTYPE html>
-<html lang="id">
-  <head>
+<html lang="id" xmlns:th="http://www.thymeleaf.org">
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>POTA - Akun</title>
-    <link rel="stylesheet" href="../static/css/style.css" />
-  </head>
-  <body>
-    <div class="main">
-      <!-- Sidebar -->
-      <aside class="sidebar">
+<!--    <link rel="stylesheet" th:href="@{/css/style.css}" />-->
+    <link rel="stylesheet" href="../static/css/style.css">
+</head>
+<body>
+<div class="main">
+    <!-- Sidebar -->
+    <aside class="sidebar">
         <div class="logo-container">
-          <img src="/assets/icons/logo.svg" alt="Logo POTA" class="logo-icon" />
-          <span class="logo-text">POTA</span>
+            <img th:src="@{/assets/icons/logo.svg}" alt="Logo POTA" class="logo-icon" />
+            <span class="logo-text">POTA</span>
         </div>
 
         <nav class="nav-menu">
-          <a href="./Admin_Akun.html" class="nav-item active">
-            <img src="/assets/icons/ManajemenAkun.svg" alt="" class="nav-icon" />
-            <span>Akun</span>
-          </a>
+            <a th:href="@{/admin/akun}" class="nav-item active">
+                <img th:src="@{/assets/icons/ManajemenAkun.svg}" alt="" class="nav-icon" />
+                <span>Akun</span>
+            </a>
 
-          <a href="./Admin_Booking.html" class="nav-item">
-            <img src="/assets/icons/Jadwal.svg" alt="" class="nav-icon" />
-            <span>Booking</span>
-          </a>
+            <a th:href="@{/admin/ruangan}" class="nav-item">
+                <img th:src="@{/assets/icons/Jadwal.svg}" alt="" class="nav-icon" />
+                <span>Ruangan</span>
+            </a>
 
-          <a href="./Admin_Setting.html" class="nav-item">
-            <img src="/assets/icons/Setting.svg" alt="" class="nav-icon" />
-            <span>Pengaturan</span>
-          </a>
+            <a th:href="@{/admin/setting}" class="nav-item">
+                <img th:src="@{/assets/icons/Setting.svg}" alt="" class="nav-icon" />
+                <span>Pengaturan</span>
+            </a>
         </nav>
 
         <div class="logout-section">
-          <button class="btn-logout">
-            <img src="/assets/icons/LogOut.svg" alt="" />
-            Log Out
-          </button>
+            <form th:action="@{/logout}" method="post" style="margin: 0;">
+                <button type="submit" class="btn-logout">
+                    <img th:src="@{/assets/icons/LogOut.svg}" alt="" />
+                    Log Out
+                </button>
+            </form>
         </div>
-      </aside>
+    </aside>
 
-      <!-- Main Content -->
-      <main class="main-content">
+    <!-- Main Content -->
+    <main class="main-content">
         <header>
-          <h1 class="page-title">Akun</h1>
+            <h1 class="page-title">Akun</h1>
         </header>
 
         <div class="content-body">
-          <!-- Toolbar -->
-          <div class="toolbar">
-            <div class="search-bar">
-              <img src="/assets/icons/Search.svg" alt="" class="search-icon" />
-              <input type="text" placeholder="Masukkan nama pengguna" />
+            <!-- Toolbar -->
+            <div class="toolbar">
+                <div class="search-bar">
+                    <img th:src="@{/assets/icons/Search.svg}" alt="" class="search-icon" />
+                    <input type="text" placeholder="Masukkan nama pengguna" />
+                </div>
+
+                <div class="toolbar-actions">
+                    <button type="button" class="btn-toolbar add" title="Tambah Akun" onclick="showPopup('popup-upload-excel')">
+                        <img th:src="@{/assets/icons/plus.svg}" alt="Tambah" />
+                    </button>
+                    <button type="button" class="btn-toolbar filter" title="Filter">
+                        <img th:src="@{/assets/icons/filter.svg}" alt="Filter" />
+                    </button>
+                </div>
             </div>
 
-            <div class="toolbar-actions">
-              <button class="btn-toolbar add" title="Tambah Akun">
-                <img src="/assets/icons/plus.svg" alt="Tambah" />
-              </button>
-              <button class="btn-toolbar filter" title="Filter">
-                <img src="/assets/icons/filter.svg" alt="Filter" />
-              </button>
+            <!-- Table -->
+            <div class="table-container">
+                <table class="data-table">
+                    <thead>
+                    <tr>
+                        <th style="width: 50px" class="text-center">No</th>
+                        <th>Nama</th>
+                        <th class="text-center">Tipe Akun</th>
+                        <th class="text-center">Terakhir Masuk</th>
+                        <th style="width: 150px">Aksi</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    <tr th:each="user, iterStat : ${listUser}">
+                        <td class="text-center" th:text="${iterStat.count}">1</td>
+
+                        <td class="text-bold color-primary" th:text="${user.nama}">
+                            Nama Pengguna
+                        </td>
+
+                        <td class="text-center text-bold color-primary" th:text="${user.tipeAkun}">
+                            Mahasiswa
+                        </td>
+
+                        <td class="text-center text-bold color-primary"
+                            th:text="${user.lastLogin != null ? #temporals.format(user.lastLogin, 'dd/M/yyyy HH:mm') : '-'}">
+                            -
+                        </td>
+
+                        <td class="table-actions">
+                            <!-- Toggle Status Button -->
+                            <a th:href="@{/user/toggleStatus/{id}(id=${user.idPengguna})}"
+                               th:class="'btn-action ' + (${user.statusAktif} ? 'green' : 'grey')"
+                               th:title="${user.statusAktif} ? 'Nonaktifkan Akun' : 'Aktifkan Akun'"
+                               onclick="return confirm('Apakah Anda yakin ingin mengubah status pengguna ini?')">
+                                <img th:if="${user.statusAktif}"
+                                     th:src="@{/assets/icons/enable.svg}"
+                                     alt="Aktif" />
+                                <img th:unless="${user.statusAktif}"
+                                     th:src="@{/assets/icons/disable.svg}"
+                                     alt="Nonaktif" />
+                            </a>
+
+                            <!-- Delete Button -->
+                            <a th:href="@{/user/delete/{id}(id=${user.idPengguna})}"
+                               class="btn-action red"
+                               title="Hapus"
+                               onclick="return confirm('Yakin ingin menghapus?')">
+                                <img th:src="@{/assets/icons/delete.svg}" alt="Hapus" />
+                            </a>
+
+                            <!-- Edit Button -->
+                            <button type="button"
+                                    class="btn-action green"
+                                    title="Edit"
+                                    th:data-user-id="${user.idPengguna}"
+                                    onclick="showDetailPopup(this.getAttribute('data-user-id'))">
+                                <img th:src="@{/assets/icons/edit.svg}" alt="Edit" />
+                            </button>
+                        </td>
+                    </tr>
+
+                    <!-- Empty State -->
+                    <tr th:if="${#lists.isEmpty(listUser)}">
+                        <td colspan="5" class="empty-state">
+                            Tidak ada data pengguna ditemukan.
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
             </div>
-          </div>
-
-          <!-- Table -->
-          <div class="table-container">
-            <table class="data-table">
-              <thead>
-                <tr>
-                  <th style="width: 50px" class="text-center">No</th>
-                  <th>Nama</th>
-                  <th class="text-center">Tipe Akun</th>
-                  <th class="text-center">Terakhir Masuk</th>
-                  <th style="width: 150px">Aksi</th>
-                </tr>
-              </thead>
-
-              <tbody>
-                <tr th:each="user, iterStat : ${listUser}">
-                  <td class="text-center" th:text="${iterStat.count}">1</td>
-
-                  <td class="text-bold color-primary" th:text="${user.nama}">
-                    Nama Pengguna
-                  </td>
-
-                  <td class="text-center text-bold color-primary" th:text="${user.tipeAkun}">
-                    Mahasiswa
-                  </td>
-
-                  <td class="text-center text-bold color-primary" 
-                      th:text="${#temporals.format(user.terakhirMasuk, 'dd/M/yyyy HH:mm')}">
-                    10/7/2025 10:00
-                  </td>
-
-                  <td class="table-actions">
-                    <!-- Toggle Status Button -->
-                    <a th:href="@{/user/toggleStatus/{id}(id=${user.id})}"
-                       th:classappend="${user.aktif} ? 'green' : 'grey'"
-                       th:title="${user.aktif} ? 'Nonaktifkan Akun' : 'Aktifkan Akun'"
-                       onclick="return confirm('Apakah Anda yakin ingin mengubah status pengguna ini?')"
-                       class="btn-action">
-                      <img th:if="${user.aktif}" 
-                           th:src="@{/assets/icons/enable.svg}" 
-                           alt="Aktif" />
-                      <img th:unless="${user.aktif}" 
-                           th:src="@{/assets/icons/disable.svg}" 
-                           alt="Nonaktif" />
-                    </a>
-
-                    <!-- Delete Button -->
-                    <a th:href="@{/user/delete/{id}(id=${user.id})}"
-                       class="btn-action red"
-                       title="Hapus"
-                       onclick="return confirm('Yakin ingin menghapus?')">
-                      <img src="/assets/icons/delete.svg" alt="Hapus" />
-                    </a>
-
-                    <!-- Edit Button -->
-                    <a th:href="@{/user/edit/{id}(id=${user.id})}"
-                       class="btn-action green"
-                       title="Edit">
-                      <img src="/assets/icons/edit.svg" alt="Edit" />
-                    </a>
-                  </td>
-                </tr>
-
-                <!-- Empty State -->
-                <tr th:if="${#lists.isEmpty(listUser)}">
-                  <td colspan="5" class="empty-state">
-                    Tidak ada data pengguna ditemukan.
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
         </div>
-      </main>
-    </div>
-  </body>
+
+        <!-- Popup Upload Excel -->
+        <div id="popup-upload-excel" class="popup-overlay hidden">
+            <div class="popup-content">
+                <div class="popup-header">
+                    <h3 class="popup-title">Upload File Excel</h3>
+                    <button type="button" class="btn-close" onclick="hidePopup('popup-upload-excel')" title="Tutup">
+                        <img th:src="@{/assets/icons/x.svg}" alt="Tutup" />
+                    </button>
+                </div>
+
+                <div class="popup-body">
+                    <form th:action="@{/user/upload-excel}" method="post" enctype="multipart/form-data" class="popup-form">
+                        <p class="form-text">
+                            Unduh template Excel untuk memastikan format data yang benar.
+                        </p>
+
+                        <a th:href="@{/assets/template/user_template.xlsx}" class="btn-download" download>
+                            Unduh Template
+                        </a>
+
+                        <hr class="form-divider" />
+
+                        <div class="form-group">
+                            <label for="file" class="form-label">Pilih File Excel (.xlsx):</label>
+                            <input type="file" id="file" name="file" class="form-input" accept=".xlsx" required />
+                        </div>
+
+                        <button type="submit" class="btn-submit primary">Upload dan Proses</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Popup Detail/Edit Akun -->
+        <div id="popup-detail-akun" class="popup-overlay hidden">
+            <div class="popup-content popup-wide">
+                <div class="popup-header">
+                    <h3 class="popup-title">Detail Akun</h3>
+                    <button type="button" class="btn-back" onclick="hidePopup('popup-detail-akun')">
+                        <img th:src="@{/assets/icons/back.svg}" alt="Kembali"/>
+                        Kembali
+                    </button>
+                </div>
+
+                <div class="popup-body">
+                    <form th:action="@{/user/update}" th:object="${user}" method="post">
+                        <input type="hidden" th:field="*{idPengguna}" />
+
+                        <div class="form-grid">
+                            <label for="nama">Nama</label>
+                            <input type="text" id="nama" th:field="*{nama}" class="form-input" required />
+
+                            <label for="tipeAkun">Tipe Akun</label>
+                            <select id="tipeAkun" th:field="*{tipeAkun}" class="form-input">
+                                <option value="Mahasiswa">Mahasiswa</option>
+                                <option value="Dosen">Dosen</option>
+                                <option value="Admin">Admin</option>
+                            </select>
+
+                            <label for="username">Username</label>
+                            <input type="text" id="username" th:field="*{username}" class="form-input" required />
+
+                            <label for="password">Password</label>
+                            <input type="password" id="password" name="password" placeholder="Kosongkan jika tidak ingin mengubah" class="form-input" />
+                        </div>
+
+                        <button type="submit" class="btn-submit">Simpan</button>
+                    </form>
+
+                    <!-- TA Section (hanya untuk Mahasiswa) -->
+                    <div class="ta-section" th:if="${user != null && user.tipeAkun == 'Mahasiswa'}">
+                        <div class="tab-buttons">
+                            <button type="button" class="tab-btn active" onclick="switchTaTab('ta1', this)">TA1</button>
+                            <button type="button" class="tab-btn" onclick="switchTaTab('ta2', this)">TA2</button>
+                        </div>
+
+                        <form th:action="@{/user/update-ta}" th:object="${thesis}" method="post">
+                            <input type="hidden" th:field="*{idPengguna}" />
+
+                            <div id="ta1" class="tab-pane active">
+                                <div class="form-grid">
+                                    <label for="topikTa1">Topik TA1</label>
+                                    <input type="text" id="topikTa1" th:field="*{topikTa1}" class="form-input" />
+
+                                    <label for="jumlahBimbinganTa1">Jumlah Bimbingan</label>
+                                    <input type="number" id="jumlahBimbinganTa1" th:field="*{jumlahBimbinganTa1}" class="form-input" readonly />
+
+                                    <label for="pembimbing1Ta1">Pembimbing 1</label>
+                                    <input type="text" id="pembimbing1Ta1" th:field="*{pembimbing1Ta1}" class="form-input" placeholder="Nama Dosen" />
+
+                                    <label for="pembimbing2Ta1">Pembimbing 2</label>
+                                    <input type="text" id="pembimbing2Ta1" th:field="*{pembimbing2Ta1}" class="form-input" placeholder="Nama Dosen" />
+                                </div>
+                            </div>
+
+                            <div id="ta2" class="tab-pane hidden">
+                                <div class="form-grid">
+                                    <label for="topikTa2">Topik TA2</label>
+                                    <input type="text" id="topikTa2" th:field="*{topikTa2}" class="form-input" />
+
+                                    <label for="jumlahBimbinganTa2">Jumlah Bimbingan</label>
+                                    <input type="number" id="jumlahBimbinganTa2" th:field="*{jumlahBimbinganTa2}" class="form-input" readonly />
+
+                                    <label for="pembimbing1Ta2">Pembimbing 1</label>
+                                    <input type="text" id="pembimbing1Ta2" th:field="*{pembimbing1Ta2}" class="form-input" placeholder="Nama Dosen" />
+
+                                    <label for="pembimbing2Ta2">Pembimbing 2</label>
+                                    <input type="text" id="pembimbing2Ta2" th:field="*{pembimbing2Ta2}" class="form-input" placeholder="Nama Dosen" />
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn-submit">Simpan TA</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script>
+    // Generic Popup Controls
+    function showPopup(popupId) {
+        const popup = document.getElementById(popupId);
+        if (popup) {
+            popup.classList.remove('hidden');
+        }
+    }
+
+    function hidePopup(popupId) {
+        const popup = document.getElementById(popupId);
+        if (popup) {
+            popup.classList.add('hidden');
+        }
+    }
+
+    // Show Detail Popup
+    function showDetailPopup(userId) {
+        console.log('Opening detail popup for user:', userId);
+        // TODO: Fetch Pengguna data via AJAX and populate form
+        // fetch('/Pengguna/get/' + userId)
+        //     .then(response => response.json())
+        //     .then(data => {
+        //         // Populate form fields
+        //     });
+        showPopup('popup-detail-akun');
+    }
+
+    // Switch TA Tab
+    function switchTaTab(tabId, buttonElement) {
+        // Hide all tab panes
+        document.querySelectorAll('.ta-section .tab-pane').forEach(pane => {
+            pane.classList.add('hidden');
+            pane.classList.remove('active');
+        });
+
+        // Show selected tab
+        const selectedTab = document.getElementById(tabId);
+        if (selectedTab) {
+            selectedTab.classList.remove('hidden');
+            selectedTab.classList.add('active');
+        }
+
+        // Update button active state
+        document.querySelectorAll('.ta-section .tab-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+        if (buttonElement) {
+            buttonElement.classList.add('active');
+        }
+    }
+
+    // Close popup when clicking outside
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.popup-overlay').forEach(popup => {
+            popup.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    hidePopup(this.id);
+                }
+            });
+        });
+
+        // Close popup on ESC key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                document.querySelectorAll('.popup-overlay:not(.hidden)').forEach(popup => {
+                    hidePopup(popup.id);
+                });
+            }
+        });
+    });
+</script>
+</body>
 </html>

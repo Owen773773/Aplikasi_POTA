@@ -1,4 +1,4 @@
-package com.application.pota.auth;
+package com.application.pota.akademik;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -9,6 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Controller
-public class AuthController {
+public class AkademikController {
 
 }

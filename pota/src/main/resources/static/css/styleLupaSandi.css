@@ -125,3 +125,10 @@ form {
     flex-direction: column;
     align-items: center;
 }
+
+.containerCard .backbtn {
+    position: absolute;
+    left:27%;
+    top:16%;
+    cursor: pointer;
+}

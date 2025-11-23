@@ -9,18 +9,18 @@ CREATE TABLE Pengguna (
 );
 
 CREATE TABLE Mahasiswa (
-    IdPengguna INT PRIMARY KEY,
+    IdPengguna VARCHAR(50) PRIMARY KEY,
     TahapTA INT,
     FOREIGN KEY (IdPengguna) REFERENCES Pengguna(IdPengguna)
 );
 
 CREATE TABLE Dosen (
-    IdPengguna INT PRIMARY KEY,
+    IdPengguna VARCHAR(50) PRIMARY KEY,
     FOREIGN KEY (IdPengguna) REFERENCES Pengguna(IdPengguna)
 );
 
 CREATE TABLE Admin (
-    IdPengguna INT PRIMARY KEY,
+    IdPengguna VARCHAR(50) PRIMARY KEY,
     FOREIGN KEY (IdPengguna) REFERENCES Pengguna(IdPengguna)
 );
 
@@ -171,4 +171,3 @@ CREATE TABLE BimbinganNotifikasi (
     FOREIGN KEY (IdNotifikasi) REFERENCES Notifikasi(idNotifikasi),
     FOREIGN KEY (IdBim) REFERENCES Bimbingan(IdBim)
 );
-

@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>POTA - Akun</title>
+    <link rel="stylesheet" href="../static/css/style.css" />
+  </head>
+  <body>
+    <div class="main">
+      <!-- Sidebar -->
+      <aside class="sidebar">
+        <div class="logo-container">
+          <img src="/assets/icons/logo.svg" alt="Logo POTA" class="logo-icon" />
+          <span class="logo-text">POTA</span>
+        </div>
+
+        <nav class="nav-menu">
+          <a href="./Admin_Akun.html" class="nav-item active">
+            <img src="/assets/icons/ManajemenAkun.svg" alt="" class="nav-icon" />
+            <span>Akun</span>
+          </a>
+
+          <a href="./Admin_Booking.html" class="nav-item">
+            <img src="/assets/icons/Jadwal.svg" alt="" class="nav-icon" />
+            <span>Booking</span>
+          </a>
+
+          <a href="./Admin_Setting.html" class="nav-item">
+            <img src="/assets/icons/Setting.svg" alt="" class="nav-icon" />
+            <span>Pengaturan</span>
+          </a>
+        </nav>
+
+        <div class="logout-section">
+          <button class="btn-logout">
+            <img src="/assets/icons/LogOut.svg" alt="" />
+            Log Out
+          </button>
+        </div>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="main-content">
+        <header>
+          <h1 class="page-title">Akun</h1>
+        </header>
+
+        <div class="content-body">
+          <!-- Toolbar -->
+          <div class="toolbar">
+            <div class="search-bar">
+              <img src="/assets/icons/Search.svg" alt="" class="search-icon" />
+              <input type="text" placeholder="Masukkan nama pengguna" />
+            </div>
+
+            <div class="toolbar-actions">
+              <button class="btn-toolbar add" title="Tambah Akun">
+                <img src="/assets/icons/plus.svg" alt="Tambah" />
+              </button>
+              <button class="btn-toolbar filter" title="Filter">
+                <img src="/assets/icons/filter.svg" alt="Filter" />
+              </button>
+            </div>
+          </div>
+
+          <!-- Table -->
+          <div class="table-container">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th style="width: 50px" class="text-center">No</th>
+                  <th>Nama</th>
+                  <th class="text-center">Tipe Akun</th>
+                  <th class="text-center">Terakhir Masuk</th>
+                  <th style="width: 150px">Aksi</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                <tr th:each="user, iterStat : ${listUser}">
+                  <td class="text-center" th:text="${iterStat.count}">1</td>
+
+                  <td class="text-bold color-primary" th:text="${user.nama}">
+                    Nama Pengguna
+                  </td>
+
+                  <td class="text-center text-bold color-primary" th:text="${user.tipeAkun}">
+                    Mahasiswa
+                  </td>
+
+                  <td class="text-center text-bold color-primary" 
+                      th:text="${#temporals.format(user.terakhirMasuk, 'dd/M/yyyy HH:mm')}">
+                    10/7/2025 10:00
+                  </td>
+
+                  <td class="table-actions">
+                    <!-- Toggle Status Button -->
+                    <a th:href="@{/user/toggleStatus/{id}(id=${user.id})}"
+                       th:classappend="${user.aktif} ? 'green' : 'grey'"
+                       th:title="${user.aktif} ? 'Nonaktifkan Akun' : 'Aktifkan Akun'"
+                       onclick="return confirm('Apakah Anda yakin ingin mengubah status pengguna ini?')"
+                       class="btn-action">
+                      <img th:if="${user.aktif}" 
+                           th:src="@{/assets/icons/enable.svg}" 
+                           alt="Aktif" />
+                      <img th:unless="${user.aktif}" 
+                           th:src="@{/assets/icons/disable.svg}" 
+                           alt="Nonaktif" />
+                    </a>
+
+                    <!-- Delete Button -->
+                    <a th:href="@{/user/delete/{id}(id=${user.id})}"
+                       class="btn-action red"
+                       title="Hapus"
+                       onclick="return confirm('Yakin ingin menghapus?')">
+                      <img src="/assets/icons/delete.svg" alt="Hapus" />
+                    </a>
+
+                    <!-- Edit Button -->
+                    <a th:href="@{/user/edit/{id}(id=${user.id})}"
+                       class="btn-action green"
+                       title="Edit">
+                      <img src="/assets/icons/edit.svg" alt="Edit" />
+                    </a>
+                  </td>
+                </tr>
+
+                <!-- Empty State -->
+                <tr th:if="${#lists.isEmpty(listUser)}">
+                  <td colspan="5" class="empty-state">
+                    Tidak ada data pengguna ditemukan.
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </main>
+    </div>
+  </body>
+</html>

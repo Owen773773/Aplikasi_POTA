@@ -1,0 +1,46 @@
+body{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    min-height: 100%;
+    background-color: gray;
+}
+
+.containerLupaSandi{
+    display: flex;
+    background-color: white;
+    width: 573px;
+    height: 518px;
+    justify-content: center;
+    align-items: center;
+    border-radius: 48px;
+}
+
+#unggah{
+    border-radius: 10px;
+    background-color: #2F71E4;
+    height: 63px;
+    width: 178px;
+}
+
+#kirim{
+    border-radius: 10px;
+    background-color: #2F71E4;
+    height: 52px;
+    width: 124px;
+}
+
+#kartuPengenal{
+    width: 355px;
+    height: 233px;
+    border: 1px solid black;
+    display: flex;
+
+}
+
+#bawah p{
+    color: red;
+}

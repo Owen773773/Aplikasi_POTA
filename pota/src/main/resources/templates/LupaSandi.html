@@ -1,33 +1,58 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>POTA Lupa Sandi</title>
+    <title>Document</title>
     <link rel="stylesheet" href="../static/css/styleLupaSandi.css">
 </head>
-<body>
-    <div class="containerUtama">
-        <div class="overlayKiri">
-            <div id="logo"></div>
-            <p>Selamat Datang di POTA</p>
-        </div>
-        <div class="overlayKanan">
-            <div id="in">
-                <p>Masuk</p>
-            </div>
 
+<body>
+    <div class="containerCard">
+        <div class="Icon"></div>
+        <h1>POTA</h1>
+        <h3>Ubah Kata Sandi</h3>
+
+        <form action="" method="POST">
             <div class="containerGrid">
-                <img src="Asset/mdi_account-outline.png" alt="" id="icon1">
-                <input type="text" name="akunHolder" id="akun" placeholder="Masukan Akun Anda">
-                <img src="Asset/mdi_password-outline.png" alt="" id="icon2">
-                <input type="text" name="passHolder" id="pass" placeholder="Masukan Password Anda">
+                <div class="containerSection">
+                    <div class="IconGrid"></div>
+                    <input style="height: 25px; border-width: 2px 2px 2px 2px;" type="text"
+                        placeholder="Tuliskan Email Anda">
+                </div>
+                <div class="containerSection">
+                    <button class="upload-btn" onclick="document.getElementById('fileInput').click()">Unggah</button>
+                    <div class="file-display" id="fileDisplay">
+                        <p>Kartu Pengenal</p>
+                    </div>
+                    <input type="file" id="fileInput" style="display:none" onchange="previewFile()">
+                </div>
             </div>
-            <button type="button">Masuk</button>
-            <a href="">Lupa Kata Sandi?</a>
-        </div>
+            <p style="color: red; font-size: 15px; margin-top: 25px;">*Password akan direset dengan maksimal 2 hari
+                kerja</p>
+            <button type="button" class="sendbtn">Kirim</button>
+        </form>
     </div>
 
+    <script>
+        function previewFile() {
+            var file = document.getElementById('fileInput').files[0];
+            var fileDisplay = document.getElementById('fileDisplay');
+            var reader = new FileReader();
 
+            if (file) {
+                if (file.type.startsWith('image/')) {
+                    reader.onload = function (e) {
+                        fileDisplay.innerHTML = '<img src="' + e.target.result + '" alt="Preview">';
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    fileDisplay.innerHTML = '<p>' + file.name + '</p>';
+                }
+            }
+        }
+    </script>
 </body>
+
 </html>

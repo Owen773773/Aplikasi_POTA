@@ -4,23 +4,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>POTA Lupa Sandi</title>
-    <link rel="stylesheet" href="/css/styleLupaSandi.css">
+    <link rel="stylesheet" href="../static/css/styleLupaSandi.css">
 </head>
 <body>
-    <div class="containerLupaSandi">
-        <div id="atas">
-            <p>POTA</p>
-            <p>Ubah Kata Sandi</p>
-            <div id="icon">Icon</div>
-            <input type="text" name="akunHolder" id="lupaAkun" placeholder="Tuliskan e-mail anda">
+    <div class="containerUtama">
+        <div class="overlayKiri">
+            <div id="logo"></div>
+            <p>Selamat Datang di POTA</p>
         </div>
+        <div class="overlayKanan">
+            <div id="in">
+                <p>Masuk</p>
+            </div>
 
-        <div id="bawah">
-            <button type="button" id="unggah">Unggah</button>
-            <div id="kartuPengenal">Kartu Pengenal</div>
-            <p>*Password akan direset dengan maksimal 2 hari kerja</p>
-            <button type="button" id="kirim">Kirim</button>
+            <div class="containerGrid">
+                <img src="Asset/mdi_account-outline.png" alt="" id="icon1">
+                <input type="text" name="akunHolder" id="akun" placeholder="Masukan Akun Anda">
+                <img src="Asset/mdi_password-outline.png" alt="" id="icon2">
+                <input type="text" name="passHolder" id="pass" placeholder="Masukan Password Anda">
+            </div>
+            <button type="button">Masuk</button>
+            <a href="">Lupa Kata Sandi?</a>
         </div>
     </div>
+
+
 </body>
 </html>

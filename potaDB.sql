@@ -1,10 +1,10 @@
 CREATE TABLE Pengguna (
     IdPengguna VARCHAR(50) PRIMARY KEY,
-    username VARCHAR(50) NOT NULL,
-    password VARCHAR(30) NOT NULL,
+    username VARCHAR(50) NOT NULL UNIQUE, -- Ditambahkan UNIQUE
+    password VARCHAR(255) NOT NULL, -- Diperpanjang untuk keamanan (disarankan)
     nama VARCHAR(70) NOT NULL,
     statusAktif BOOLEAN DEFAULT TRUE,
-    tipeAkun VARCHAR(10),
+    tipeAkun VARCHAR(10) CHECK (tipeAkun IN ('Mahasiswa', 'Dosen', 'Admin')), -- Ditambahkan CHECK
     lastLogin TIMESTAMP
 );
 
@@ -40,7 +40,7 @@ CREATE TABLE TugasAkhir (
     TopikTA VARCHAR(150),
     TanggalUTS DATE,
     TanggalUas DATE,
-    IdMahasiswa INT,
+    IdMahasiswa VARCHAR(50) NOT NULL, -- Diperbaiki: VARCHAR(50)
     FOREIGN KEY (IdMahasiswa) REFERENCES Mahasiswa(IdPengguna)
 );
 
@@ -53,7 +53,7 @@ CREATE TABLE TAtermasukAkademik (
 );
 
 CREATE TABLE Dosen_Pembimbing (
-    IdDosen INT,
+    IdDosen VARCHAR(50), -- Diperbaiki: VARCHAR(50)
     idTA INT,
     PRIMARY KEY (IdDosen, idTA),
     FOREIGN KEY (IdDosen) REFERENCES Dosen(IdPengguna),
@@ -80,7 +80,7 @@ CREATE TABLE TopikBimbingan (
 );
 
 CREATE TABLE MahasiswaProsesBimbingan (
-    IdMahasiswa INT,
+    IdMahasiswa VARCHAR(50), -- Diperbaiki: VARCHAR(50)
     IdBimbingan INT,
     tipe VARCHAR(50),
     PRIMARY KEY (IdMahasiswa, IdBimbingan),
@@ -89,7 +89,7 @@ CREATE TABLE MahasiswaProsesBimbingan (
 );
 
 CREATE TABLE DosenProsesBimbingan (
-    IdDosen INT,
+    IdDosen VARCHAR(50), -- Diperbaiki: VARCHAR(50)
     IdBimbingan INT,
     tipe VARCHAR(50),
     PRIMARY KEY (IdDosen, IdBimbingan),
@@ -106,8 +106,9 @@ CREATE TABLE Jadwal (
 );
 
 CREATE TABLE Jadwal_Pribadi (
-    IdJadwal INT PRIMARY KEY,
-    IdPengguna INT,
+    IdJadwal INT, -- Tidak perlu PK tunggal, PK komposit lebih baik
+    IdPengguna VARCHAR(50), -- Diperbaiki: VARCHAR(50)
+    PRIMARY KEY (IdJadwal, IdPengguna), -- Disarankan PK komposit
     FOREIGN KEY (IdJadwal) REFERENCES Jadwal(IdJadwal),
     FOREIGN KEY (IdPengguna) REFERENCES Pengguna(IdPengguna)
 );
@@ -115,6 +116,7 @@ CREATE TABLE Jadwal_Pribadi (
 CREATE TABLE Jadwal_Ruangan (
     IdJadwal INT PRIMARY KEY,
     FOREIGN KEY (IdJadwal) REFERENCES Jadwal(IdJadwal)
+    -- Catatan: Tabel ini kurang informatif. Harusnya ada kolom idRuangan.
 );
 
 CREATE TABLE Jadwal_Bimbingan (
@@ -132,7 +134,7 @@ CREATE TABLE PenjadwalanBimbingan (
 
 CREATE TABLE PemblokiranRuangan (
     IdRuangan INT,
-    idAdmin INT,
+    idAdmin VARCHAR(50), -- Diperbaiki: VARCHAR(50)
     IdJadwal INT,
     Waktu TIMESTAMP,
     Alasan TEXT,
@@ -149,7 +151,7 @@ CREATE TABLE Notifikasi (
 );
 
 CREATE TABLE MahasiswaNotifikasi (
-    IdPengguna INT,
+    IdPengguna VARCHAR(50), -- Diperbaiki: VARCHAR(50)
     IdNotifikasi INT,
     PRIMARY KEY (IdPengguna, IdNotifikasi),
     FOREIGN KEY (IdPengguna) REFERENCES Mahasiswa(IdPengguna),
@@ -157,7 +159,7 @@ CREATE TABLE MahasiswaNotifikasi (
 );
 
 CREATE TABLE DosenNotifikasi (
-    IdPengguna INT,
+    IdPengguna VARCHAR(50), -- Diperbaiki: VARCHAR(50)
     IdNotifikasi INT,
     PRIMARY KEY (IdPengguna, IdNotifikasi),
     FOREIGN KEY (IdPengguna) REFERENCES Dosen(IdPengguna),

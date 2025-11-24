@@ -22,6 +22,7 @@ public class AdminController {
     public String berandaAdmin(Model model) {
         return akunPage(model);
     }
+    
     @GetMapping("/akun")
     public String akunPage(Model model) {
         List<Pengguna> listUser = penggunaService.getAllPengguna();
@@ -36,5 +37,10 @@ public class AdminController {
         model.addAttribute("thesis", new Object());
 
         return "Admin_Akun";
+    }
+
+    @GetMapping("/ruangan")
+    public String halamanRuangan() {
+        return "Admin_Booking";
     }
 }

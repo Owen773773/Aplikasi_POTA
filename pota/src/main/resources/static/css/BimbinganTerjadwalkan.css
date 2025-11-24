@@ -1,0 +1,259 @@
+@import url("https://fonts.googleapis.com/css?family=Quicksand");
+
+:root {
+  --primary: #054a91;
+  --bg-body: #f2f0ef;
+  --bg-white: #ffffff;
+  --text-primary: #000000;
+  --text-muted: #888888;
+  --border: #dddddd;
+  --border-light: #eeeeee;
+
+  --btn-add: #66d666;
+  --btn-filter: #7885ff;
+  --btn-green-bg: #eaffea;
+  --btn-green-border: #66d666;
+  --btn-red-bg: #ffeaea;
+  --btn-red-border: #fa7e7e;
+  --btn-grey-bg: #eeeeee;
+  --btn-grey-border: #aaaaaa;
+  --btn-accept: #019D03;
+  --btn-reject: #FF2C2C;
+
+  --font-base: "Quicksand", sans-serif;
+}
+
+body {
+  font-family: var(--font-base);
+  margin: 0;
+  background: var(--bg-body);
+}
+
+.main {
+  display: flex;
+  height: 100vh;
+}
+
+/* SIDEBAR */
+.sidebar {
+  width: 180px;
+  background: var(--bg-white);
+  display: flex;
+  flex-direction: column;
+  padding: 25px;
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 35px;
+}
+
+.text-navbar {
+  font-size: 26px;
+  font-weight: bold;
+  color: var(--primary);
+}
+
+.nav-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  flex-grow: 1;
+}
+
+.nav-item {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  color: var(--primary);
+  font-size: 18px;
+  cursor: pointer;
+  padding: 10px 6px;
+  border-radius: 8px;
+  position: relative;
+}
+
+.nav-item.active {
+  font-weight: bold;
+  color: var(--primary);
+}
+
+.nav-item.active::before {
+  content: '';
+  position: absolute;
+  left: -10%;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 30px;
+  width: 6px;
+  background-color: var(--primary);
+  border-top-right-radius: 6px;
+  border-bottom-right-radius: 6px;
+}
+
+a {
+  text-decoration: none;
+}
+
+.btn-logout {
+  border: none;
+  padding: 12px;
+  font-size: 16px;
+  color: var(--primary);
+  font-weight: bold;
+  border-radius: 10px;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  cursor: pointer;
+}
+
+/* MAIN CONTENT */
+.main-content {
+  flex-grow: 1;
+  padding: 0;
+}
+
+.page-title {
+  padding: 18px;
+  font-size: 28px;
+  font-weight: bold;
+  background: var(--bg-white);
+  color: var(--primary);
+  margin: 0;
+}
+
+.tab-menu {
+  display: flex;
+  gap: 25px;
+  padding: 14px 24px;
+  font-size: 18px;
+}
+
+.tab {
+  border: none;
+  background: none;
+  cursor: pointer;
+  padding-bottom: 6px;
+  font-size: 1.2em;
+}
+
+.tab.active {
+  font-weight: bold;
+  border-bottom: 3px solid var(--primary);
+}
+
+.bimbingan-list {
+  padding: 18px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* CARD */
+.card {
+  background: var(--bg-white);
+  border-radius: 10px;
+  border: 1.5px solid var(--border);
+  overflow: hidden;
+}
+
+.card-header {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr auto;
+  padding: 14px 18px;
+  background-color: #004BA8;
+  color: white;
+  font-weight: 600;
+}
+
+.dropdown-btn {
+  border: none;
+  /* background: none; */
+  width: 1.5em;
+  height: 1.5em;
+  cursor: pointer;
+}
+
+.card-body {
+  display: none;
+  padding: 18px;
+  color: #444;
+  font-size: 16px;
+  line-height: 28px;
+}
+
+p {
+  margin: 0;
+  font-size: 18px;
+  font-style: var(--font-base);
+}
+
+p#itemkiri {
+  font-weight: bold;
+}
+
+.containerutama {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+
+.containerutama .containerGrid {
+  display: grid;
+  grid-template-columns: 0.3fr 0.5fr;
+}
+
+.containerutama .containerGrid2 {
+  display: grid;
+  grid-template-columns: 0.3fr 0.5fr;
+}
+
+.card.open .card-body {
+  display: block;
+}
+
+.containerItem {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+/* BUTTONS */
+.card-actions {
+  margin-top: 16px;
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.btn {
+  border: none;
+  padding: 8px 22px;
+  border-radius: 8px;
+  color: white;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.card-actions .img {
+  background-image: url("/assets/icons/Jam.svg");
+  background-size: cover;
+  width: 16px;
+  height: 16px;
+  display: inline-block;
+  margin-right: 8px;
+}
+
+.btn.reject {
+  background: var(--btn-reject);
+}
+
+.btn.accept {
+  background: var(--btn-grey-border);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

@@ -85,26 +85,30 @@
                     <thead>
                     <tr>
                         <th class="time-column"></th>
-                        <th th:each="day : ${listHari}" class="day-header">
+                        <!-- Perbaikan: gunakan variable 'entry' untuk Map.Entry -->
+                        <th th:each="entry : ${listHari}" class="day-header">
                             <div class="day-header-content">
-                                <div class="day-name" th:text="${day.nama}">Senin</div>
-                                <div class="day-date" th:text="${day.tanggal}">6/10/2025</div>
+                                <div class="day-name"
+                                     th:text="${entry.key.getDisplayName(T(java.time.format.TextStyle).FULL, T(java.util.Locale).forLanguageTag('id'))}">
+                                    Senin
+                                </div>
+                                <div class="day-date" th:text="${entry.value}">6/10/2025</div>
                             </div>
                         </th>
                     </tr>
                     </thead>
                     <tbody>
                     <!-- Loop untuk setiap jam (07.00 - 17.00) -->
-                    <tr th:each="hourSlots, iterStat : ${listScheduleSlots}">
+                    <tr th:each="hourSlots, iterStat : ${timetable}">
                         <td class="time-column">
                             <span th:text="${#numbers.formatInteger(iterStat.index + 7, 2)} + '.00'">07.00</span>
                         </td>
                         <!-- Loop untuk setiap hari dalam satu jam -->
                         <td th:each="slot : ${hourSlots}"
-                            th:class="${'time-slot ' + (slot.status != null ? slot.status : '')}"
+                            th:class="${'time-slot ' + (slot.status != null ? slot.status : 'available')}"
                             th:data-hour="${slot.hour}"
-                            th:data-day="${slot.dayIndex}"
-                            th:data-booking-id="${slot.bookingId}">
+                            th:data-day="${slot.day}"
+                            th:data-booking-id="${slot.bookingId != null ? slot.bookingId : ''}">
                         </td>
                     </tr>
                     </tbody>
@@ -117,43 +121,43 @@
                 <div class="legend-item"><span class="legend-box status-pending"></span> Menunggu Konfirmasi</div>
             </div>
 
-<!--            <h2 class="form-title">Blokir Ruangan</h2>-->
+            <!--            <h2 class="form-title">Blokir Ruangan</h2>-->
 
-<!--            <form th:action="@{/admin/block-room}" method="post" class="block-form">-->
-<!--                <div class="block-form-layout">-->
+            <!--            <form th:action="@{/admin/block-room}" method="post" class="block-form">-->
+            <!--                <div class="block-form-layout">-->
 
-<!--                    <div class="form-group">-->
-<!--                        <label for="lokasi">Lokasi</label>-->
-<!--                        <select id="lokasi" name="lokasi" th:field="*{blockForm.ruanganId}" class="form-input">-->
-<!--                            <option th:each="room : ${listRuangan}" th:value="${room.id}" th:text="${room.nama}">Ruang Tugas Akhir</option>-->
-<!--                        </select>-->
-<!--                    </div>-->
+            <!--                    <div class="form-group">-->
+            <!--                        <label for="lokasi">Lokasi</label>-->
+            <!--                        <select id="lokasi" name="lokasi" th:field="*{blockForm.ruanganId}" class="form-input">-->
+            <!--                            <option th:each="room : ${listRuangan}" th:value="${room.id}" th:text="${room.nama}">Ruang Tugas Akhir</option>-->
+            <!--                        </select>-->
+            <!--                    </div>-->
 
-<!--                    <div class="form-group date-picker-group">-->
-<!--                        <label for="tanggal">Tanggal</label>-->
-<!--                        <div class="input-with-icon">-->
-<!--                            <input type="text" id="tanggal" name="tanggal" th:field="*{blockForm.tanggal}" class="form-input" placeholder="DD/MM/YYYY" readonly />-->
-<!--                            <img th:src="@{/assets/icons/calendar.svg}" alt="Kalender" class="input-icon"/>-->
-<!--                        </div>-->
-<!--                    </div>-->
+            <!--                    <div class="form-group date-picker-group">-->
+            <!--                        <label for="tanggal">Tanggal</label>-->
+            <!--                        <div class="input-with-icon">-->
+            <!--                            <input type="text" id="tanggal" name="tanggal" th:field="*{blockForm.tanggal}" class="form-input" placeholder="DD/MM/YYYY" readonly />-->
+            <!--                            <img th:src="@{/assets/icons/calendar.svg}" alt="Kalender" class="input-icon"/>-->
+            <!--                        </div>-->
+            <!--                    </div>-->
 
-<!--                    <div class="form-group time-range-group">-->
-<!--                        <label for="waktuMulai">Waktu</label>-->
-<!--                        <div class="time-inputs">-->
-<!--                            <input type="text" id="waktuMulai" th:field="*{blockForm.waktuMulai}" class="form-input" placeholder="HH:MM" />-->
-<!--                            <span class="separator">-</span>-->
-<!--                            <input type="text" id="waktuSelesai" th:field="*{blockForm.waktuSelesai}" class="form-input" placeholder="HH:MM" />-->
-<!--                        </div>-->
-<!--                    </div>-->
+            <!--                    <div class="form-group time-range-group">-->
+            <!--                        <label for="waktuMulai">Waktu</label>-->
+            <!--                        <div class="time-inputs">-->
+            <!--                            <input type="text" id="waktuMulai" th:field="*{blockForm.waktuMulai}" class="form-input" placeholder="HH:MM" />-->
+            <!--                            <span class="separator">-</span>-->
+            <!--                            <input type="text" id="waktuSelesai" th:field="*{blockForm.waktuSelesai}" class="form-input" placeholder="HH:MM" />-->
+            <!--                        </div>-->
+            <!--                    </div>-->
 
-<!--                    <div class="form-group alasan-group">-->
-<!--                        <label for="alasan">Alasan</label>-->
-<!--                        <textarea id="alasan" name="alasan" th:field="*{blockForm.alasan}" class="form-input"></textarea>-->
-<!--                    </div>-->
-<!--                </div>-->
+            <!--                    <div class="form-group alasan-group">-->
+            <!--                        <label for="alasan">Alasan</label>-->
+            <!--                        <textarea id="alasan" name="alasan" th:field="*{blockForm.alasan}" class="form-input"></textarea>-->
+            <!--                    </div>-->
+            <!--                </div>-->
 
-<!--                <button type="submit" class="btn-konfirmasi">Konfirmasi</button>-->
-<!--            </form>-->
+            <!--                <button type="submit" class="btn-konfirmasi">Konfirmasi</button>-->
+            <!--            </form>-->
         </div>
 
         <script>

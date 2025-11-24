@@ -746,20 +746,22 @@ body {
     transform: scale(0.98);
 }
 
-/* Status Colors - Sesuai gambar */
-.time-slot.status-unavailable {
-    background-color: var(--status-unavailable);
+.time-slot.blocked {
+    background-color: var(--status-unavailable); /* Merah #ED3F27 */
 }
 
-.time-slot.status-scheduled {
-    background-color: var(--status-scheduled);
+.time-slot.scheduled {
+    background-color: var(--status-scheduled); /* Biru #054A91 */
 }
 
-.time-slot.status-pending {
-    background-color: var(--status-pending);
+.time-slot.pending {
+    background-color: var(--status-pending); /* Kuning #FEB21A */
 }
 
-/* === LEGEND STYLES === */
+.time-slot.available {
+    background-color: var(--bg-white); /* Putih - Tersedia */
+}
+
 .schedule-legend {
     display: flex;
     justify-content: center;
@@ -782,6 +784,18 @@ body {
     width: 22px;
     height: 22px;
     border-radius: 4px;
+}
+
+.legend-box.status-unavailable {
+    background-color: var(--status-unavailable);
+}
+
+.legend-box.status-scheduled {
+    background-color: var(--status-scheduled);
+}
+
+.legend-box.status-pending {
+    background-color: var(--status-pending);
 }
 
 /* === BLOCKING FORM STYLES === */

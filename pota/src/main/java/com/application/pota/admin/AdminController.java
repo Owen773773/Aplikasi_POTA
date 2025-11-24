@@ -1,5 +1,7 @@
 package com.application.pota.admin;
 
+import com.application.pota.jadwal.Jadwal;
+import com.application.pota.jadwal.JadwalService;
 import com.application.pota.pengguna.Pengguna;
 import com.application.pota.pengguna.PenggunaService;
 import com.application.pota.ruangan.Ruangan;
@@ -17,6 +19,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.IsoFields;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/admin")
@@ -26,6 +29,10 @@ public class AdminController {
     private PenggunaService penggunaService;
     @Autowired
     private RuanganService ruanganService;
+    @Autowired
+    private JadwalService jadwalService;
+    @Autowired
+    private AdminService adminService;
 
     @GetMapping({"", "/"})
     public String halamanAdmin(Model model) {
@@ -41,7 +48,6 @@ public class AdminController {
         }
 
         model.addAttribute("listUser", listUser);
-
         model.addAttribute("user", new Pengguna());
         model.addAttribute("thesis", new Object());
 
@@ -56,11 +62,11 @@ public class AdminController {
         List<Ruangan> listRuangan = ruanganService.getAllRuang();
         model.addAttribute("listRuangan", listRuangan);
 
-
         if (ruanganId == null && !listRuangan.isEmpty()) {
             ruanganId = listRuangan.get(0).getIdRuangan();
         }
         model.addAttribute("selectedRuanganId", ruanganId);
+
         if (week == null || week.isEmpty()) {
             LocalDate hariIni = LocalDate.now();
             int weekNum = hariIni.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR);
@@ -79,16 +85,16 @@ public class AdminController {
 
         model.addAttribute("tanggalMulaiMinggu", tanggalMulaiFormatted);
 
-        // TODO: Load schedule data
-        // model.addAttribute("listScheduleSlots", scheduleService.getSchedule(ruanganId, week));
+        // Ambil data jadwal dengan tipe (PEMBLOKIRAN atau BIMBINGAN)
+        JadwalService.WeeklyScheduleData temp = jadwalService.getWeeklySchedule(week, "" + ruanganId, true);
+        Map<DayOfWeek, String> HariTanggal = temp.getHeaderDates();
+        Map<DayOfWeek, List<JadwalService.JadwalWithType>> timetableRuang = temp.getScheduledSlots();
 
-// IMPLEMENTASI: Load schedule data
-//        List<JadwalService.DayHeader> listHari = jadwalService.getDayHeadersForWeek(week);
-//        List<List<JadwalService.ScheduleSlot>> listScheduleSlots =
-//                jadwalService.getScheduleSlotsForWeek(week);
-//
-//        model.addAttribute("listHari", listHari);
-//        model.addAttribute("listScheduleSlots", listScheduleSlots);
+        // Gunakan AdminService untuk build grid dengan status yang benar
+        List<List<TimeSlot>> timetableGrid = adminService.buildTimetableGrid(timetableRuang);
+
+        model.addAttribute("listHari", HariTanggal);
+        model.addAttribute("timetable", timetableGrid);
 
         return "Admin_Ruangan";
     }

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>POTA Login</title>
+    <link rel="stylesheet" href="/css/StyleLogin.css">
+</head>
+
+<body>
+    <div class="containerUtama">
+        <div class="overlayKiri">
+            <p>Selamat Datang di POTA</p>
+        </div>
+        <div class="overlayKanan">
+            <p>Masuk</p>
+            <form th:action="@{/mahasiswa/beranda}" method="post" class="containerGrid">
+                <div id="icon">Icon</div>
+                <input type="text" name="akunHolder" id="akun" placeholder="Masukan Akun Anda">
+                
+                <div id="icon">Icon</div>
+                <input type="text" name="passHolder" id="pass" placeholder="Masukan Password Anda">
+                
+                <button type="submit">Masuk</button>
+            </form>
+            <a th:href="@{/lupasandi}">Lupa Kata Sandi?</a>
+        </div>
+    </div>
+
+    
+</body>
+
+</html>

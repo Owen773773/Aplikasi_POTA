@@ -1,0 +1,80 @@
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    min-height: 100vh;
+    background-color: gray;
+}
+
+body .containerUtama {
+    width: 964px;
+    height: 545px;
+    border-radius: 48px;
+    display: flex;
+    column-gap: 10px;
+    background-color: aqua;
+    justify-content: center;
+    align-items: center;
+    background-image: linear-gradient(#2F71E4 21%,
+            #5089EE 50%,
+            #7DA2E4 80%)
+}
+
+.containerUtama .overlayKanan {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    background-color: #ffffff;
+    width: 488px;
+    height: 545px;
+    border-radius: 48px;
+    row-gap: 25px;
+    padding: 0;
+    margin: 0;
+}
+
+
+.containerUtama .overlayKanan .containerGrid {
+    display: grid;
+    justify-content: center;
+    align-items: center;
+    grid-template-columns: 50px 169px;
+    row-gap: 25px;
+    padding: 0;
+    margin: 0;
+}
+
+.containerGridinput {
+    border-radius: 5px;
+    height: 30px;
+}
+
+.overlayKanan button {
+    background-color: #2F71E4;
+    color: #ffffff;
+    border-radius: 10px;
+    width: 100px;
+    height: 45px;
+}
+
+
+.containerUtama .overlayKiri {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 488px;
+    height: 545px;
+    border-radius: 48px;
+}
+
+.containerUtama .overlayKiri p {
+    text-align: center;
+    font-size: 36px;
+    color: #ffffff;
+    width: 312px;
+    height: 90px;
+}

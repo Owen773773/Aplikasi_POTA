@@ -1,9 +1,27 @@
 DROP SCHEMA public CASCADE;
 CREATE SCHEMA public;
 
-DROP TABLE IF EXISTS MahasiswaProsesBimbingan CASCADE;
-DROP TABLE IF EXISTS DosenProsesBimbingan CASCADE;
+DROP TABLE IF EXISTS BimbinganNotifikasi CASCADE;
+DROP TABLE IF EXISTS DosenNotifikasi CASCADE;
+DROP TABLE IF EXISTS MahasiswaNotifikasi CASCADE;
+DROP TABLE IF EXISTS Notifikasi CASCADE;
+DROP TABLE IF EXISTS PemblokiranRuangan CASCADE;
+DROP TABLE IF EXISTS PenjadwalanBimbingan CASCADE;
+DROP TABLE IF EXISTS Jadwal_Bimbingan CASCADE;
+DROP TABLE IF EXISTS Jadwal_Ruangan CASCADE;
+DROP TABLE IF EXISTS Jadwal_Pribadi CASCADE;
+DROP TABLE IF EXISTS Jadwal CASCADE;
 DROP TABLE IF EXISTS TopikBimbingan CASCADE;
+DROP TABLE IF EXISTS Bimbingan CASCADE;
+DROP TABLE IF EXISTS Dosen_Pembimbing CASCADE;
+DROP TABLE IF EXISTS TAtermasukAkademik CASCADE;
+DROP TABLE IF EXISTS TugasAkhir CASCADE;
+DROP TABLE IF EXISTS Ruangan CASCADE;
+DROP TABLE IF EXISTS Akademik CASCADE;
+DROP TABLE IF EXISTS Admin CASCADE;
+DROP TABLE IF EXISTS Dosen CASCADE;
+DROP TABLE IF EXISTS Mahasiswa CASCADE;
+DROP TABLE IF EXISTS Pengguna CASCADE;
 
 CREATE TABLE Pengguna (
     IdPengguna VARCHAR(50) PRIMARY KEY,
@@ -78,14 +96,6 @@ CREATE TABLE Bimbingan (
     FOREIGN KEY (idRuangan) REFERENCES Ruangan(idRuangan)
 );
 
--- CREATE TABLE TopikBimbingan (
---     IdBim INT,
---     IdTA INT,
---     PRIMARY KEY (IdBim, IdTA),
---     FOREIGN KEY (IdBim) REFERENCES Bimbingan(IdBim),
---     FOREIGN KEY (IdTA) REFERENCES TugasAkhir(IdTa)
--- );
-
 CREATE TABLE TopikBimbingan (
 	IdBim INT,
     IdTA INT,
@@ -117,7 +127,6 @@ CREATE TABLE Jadwal_Pribadi (
 CREATE TABLE Jadwal_Ruangan (
     IdJadwal INT PRIMARY KEY,
     FOREIGN KEY (IdJadwal) REFERENCES Jadwal(IdJadwal)
-    -- Catatan: Tabel ini kurang informatif. Harusnya ada kolom idRuangan.
 );
 
 CREATE TABLE Jadwal_Bimbingan (
@@ -270,18 +279,20 @@ INSERT INTO TopikBimbingan (IdBim, IdTA, StatusMhs, StatusDosen1, StatusDosen2, 
 (5, 105, 'Menerima', 'Menerima', 'Menerima', 'Selesai');    -- Kasus 5: Semua pihak Menerima (Sukses)
 
 INSERT INTO Jadwal VALUES
-(1, '2025-01-01', '08:00', '09:00', 0),
-(2, '2025-01-02', '09:00', '10:00', 0),
-(3, '2025-01-03', '10:00', '11:00', 0),
-(4, '2025-01-04', '11:00', '12:00', 0),
-(5, '2025-01-05', '13:00', '14:00', 0);
+(1, '2025-11-24', '08:00', '10:00', 0), 
+(2, '2025-11-25', '08:00', '10:00', 0), 
+(3, '2025-11-26', '10:00', '12:00', 1), 
+(4, '2025-11-26', '13:00', '15:00', 0), 
+(5, '2025-11-27', '09:00', '11:00', 1), 
+(6, '2025-11-28', '14:00', '16:00', 0);
 
 INSERT INTO Jadwal_Pribadi VALUES
-(1, 'U001'),
-(2, 'U002'),
-(3, 'U003'),
-(4, 'U004'),
-(5, 'U005');
+(1, 'U001'), 
+(2, 'U002'), 
+(3, 'U003'), 
+(4, 'U004'), 
+(5, 'U005'),
+(6, 'U006');
 
 INSERT INTO Jadwal_Ruangan VALUES
 (1),
@@ -340,9 +351,25 @@ INSERT INTO BimbinganNotifikasi VALUES
 (4, 4),
 (5, 5);
 
+
+
 -- SELECT *
 -- FROM Notifikasi
--- JOIN MahasiswaNotifikasi ON MahasiswaNotifikasi.IdNotifikasi = Notifikasi.IdNotifikasi 
--- JOIN Mahasiswa ON MahasiswaNotifikasi.IdPengguna = Mahasiswa.IdPengguna
--- --WHERE Mahasiswa.idPengguna = 'U001'
--- --ditolak, dibatalkan, diterima, menunggu
+-- JOIN MahasiswaNotifikasi ON Notifikasi.idNotifikasi = MahasiswaNotifikasi.IdNotifikasi
+-- JOIN DosenNotifikasi ON Notifikasi.idNotifikasi = DosenNotifikasi.IdNotifikasi
+-- JOIN Pengguna ON (
+-- 	Pengguna.IdPengguna = MahasiswaNotifikasi.IdPengguna
+--     OR 
+--     Pengguna.IdPengguna = DosenNotifikasi.IdPengguna
+-- )
+--         WHERE p.username = 'dsn3'
+	
+-- -- FROM Notifikasi
+-- -- JOIN MahasiswaNotifikasi ON MahasiswaNotifikasi.IdNotifikasi = Notifikasi.IdNotifikasi 
+-- -- JOIN Mahasiswa ON Mahasiswa.idPengguna = MahasiswaNotifikasi.idPengguna
+-- -- WHERE Mahasiswa.idPengguna = 'U001'
+-- -- --ditolak, dibatalkan, diterima, menunggu
+
+-- SELECT *
+-- FROM Notifikasi
+-- WHERE idNotifikasi = '3'

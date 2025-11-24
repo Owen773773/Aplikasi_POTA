@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>POTA - Gagal</title>
+    <link rel="stylesheet" href="../static/css/BimbinganGagal.css">
+</head>
+
+<body>
+
+    <div class="main">
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+            <div class="logo-container">
+                <img src="../static/assets/icons/logo.svg">
+                <span class="text-navbar">POTA</span>
+            </div>
+
+            <nav class="nav-menu">
+                <a href="#" class="nav-item">
+                    <img src="../static/assets/icons/ManajemenAkun.svg">
+                    <span>Beranda</span>
+                </a>
+
+                <a href="#" class="nav-item">
+                    <img src="../static/assets/icons/Jadwal.svg">
+                    <span>Jadwal</span>
+                </a>
+
+                <a href="#" class="nav-item active">
+                    <img src="../static/assets/icons/Bimbingan.svg">
+                    <span>Bimbingan</span>
+                </a>
+
+                <a href="#" class="nav-item">
+                    <img src="../static/assets/icons/Notifikasi.svg">
+                    <span>Notifikasi</span>
+                </a>
+
+                <a href="#" class="nav-item">
+                    <img src="../static/assets/icons/Profil.svg">
+                    <span>Profil</span>
+                </a>
+
+            </nav>
+
+            <button class="btn-logout">
+                <img src="../static/assets/icons/LogOut.svg"> Log Out
+            </button>
+        </aside>
+
+        <main class="main-content">
+            <h1 class="page-title">Bimbingan</h1>
+
+            <div class="tab-menu">
+                <button class="tab" href="MahasiswaBimbinganProses.html">Proses</button>
+                <button class="tab" href="MahasiswaBimbinganTerjadwalkan.html">Terjadwalkan</button>
+                <button class="tab" href="MahasiswaBimbinganSelesai.html">Selesai</button>
+                <button class="tab active">Gagal</button>
+            </div>
+
+            <div class="bimbingan-list">
+
+                <!-- Tempat buat nampilin Data -->
+                <div class="card">
+                    <div class="card-header">
+                        <span>10/10/2025 </span> <!-- Ini masih contoh data -->
+                        <span>10.00 - 11.00</span>
+                        <span>Ruang Tugas Akhir</span>
+                        <img src="../static/assets/icons/Arrow.svg" class="dropdown-btn">
+                    </div>
+
+                    <div class="card-body">
+                        <div class="containerutama">
+                            <p class="item">Progress Bimbingan</p>
+                            <div class="containerItem">
+                                <div class="containerGrid">
+                                    <p id="itemkiri">Tanggal</p>
+                                    <p id="itemkanan">: 10/10/2025</p>
+                                    <p id="itemkiri">Jam</p>
+                                    <p id="itemkanan">: 10.00 - 11.00</p>
+                                    <p id="itemkiri">Durasi</p>
+                                    <p id="itemkanan">: 1 Jam</p>
+                                    <p id="itemkiri">Lokasi</p>
+                                    <p id="itemkanan">: Ruang Tugas Akhir</p>
+                                    <p id="itemkiri">Dosen</p>
+                                    <p id="itemkanan">: Maria Veronica</p>
+                                    <p id="itemkiri">Mahasiswa</p>
+                                    <p id="itemkanan">: -</p>
+                                </div>
+
+                                <div class="containerGrid2">
+                                    <p id="itemkiri" style="grid-area: kiri1;">Topik</p>
+                                    <p id="itemkanan" style="grid-area: kanan1;">: Bimbingan Mingguan</p>
+                                    <p id="itemkiri" style="grid-area: kiri2;">Deskripsi Topik</p>
+                                    <p id="itemkanan" style="grid-area: kanan2;">: -</p>
+                                    <textarea id="catatan" name="catatan" rows="4" cols="50"
+                                        placeholder="Catatan Bimbingan..." disabled style="grid-area: note;">Catatan bimbingan selesai...</textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <script>
+        document.querySelectorAll(".dropdown-btn").forEach(btn => {
+            btn.addEventListener("click", () => {
+                let card = btn.closest(".card");
+                card.classList.toggle("open");
+            });
+        });
+
+
+        document.querySelectorAll(".nav-item").forEach(item => {
+            if (item.textContent.trim() === document.title.replace("POTA - ", "")) {
+                item.classList.add("active");
+            }
+        });
+
+
+
+    </script>
+
+</body>
+
+</html>

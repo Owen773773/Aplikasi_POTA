@@ -8,7 +8,7 @@
   --text-muted: #888888;
   --border: #dddddd;
   --border-light: #eeeeee;
-  
+
   --btn-add: #66d666;
   --btn-filter: #7885ff;
   --btn-green-bg: #eaffea;
@@ -17,7 +17,9 @@
   --btn-red-border: #fa7e7e;
   --btn-grey-bg: #eeeeee;
   --btn-grey-border: #aaaaaa;
-  
+  --btn-accept: #019D03;
+  --btn-reject: #FF2C2C;
+
   --font-base: "Quicksand", sans-serif;
 }
 
@@ -34,9 +36,17 @@ body {
 }
 
 /* === UTILITY CLASSES === */
-.text-center { text-align: center; }
-.text-bold { font-weight: bold; }
-.color-primary { color: var(--primary); }
+.text-center {
+  text-align: center;
+}
+
+.text-bold {
+  font-weight: bold;
+}
+
+.color-primary {
+  color: var(--primary);
+}
 
 /* === LAYOUT === */
 .main {

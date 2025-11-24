@@ -5,28 +5,32 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>POTA Login</title>
-    <link rel="stylesheet" href="/css/StyleLogin.css">
+    <link rel="stylesheet" href="../static/css/StyleLogin.css">
 </head>
 
 <body>
     <div class="containerUtama">
         <div class="overlayKiri">
+            <div id="logo"></div>
             <p>Selamat Datang di POTA</p>
         </div>
         <div class="overlayKanan">
-            <p>Masuk</p>
-            <div class="containerGrid">
-                <div id="icon">Icon</div>
-                <input type="text" name="akunHolder" id="akun" placeholder="Masukan Akun Anda">
-                <div id="icon">Icon</div>
-                <input type="text" name="passHolder" id="pass" placeholder="Masukan Password Anda">
+            <div id="in">
+                <p>Masuk</p>
             </div>
-            <button type="button">Masuk</button>
+
+           <form action="" method="POST">
+                <div class="containerGrid">
+                    <img src="../static/assets/icons/Profil.svg" alt="" id="icon1">
+                    <input type="text" name="akunHolder" id="akun" placeholder="Masukan Akun Anda">
+                    <img src="../static/assets/icons/Notifikasi.svg" alt="" id="icon2">
+                    <input type="text" name="passHolder" id="pass" placeholder="Masukan Password Anda">
+                </div>
+                <button type="submit">Masuk</button>
+            </form>
             <a href="">Lupa Kata Sandi?</a>
         </div>
     </div>
-
-    
 </body>
 
 </html>

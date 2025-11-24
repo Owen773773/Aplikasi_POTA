@@ -6,7 +6,9 @@ body {
     padding: 0;
     width: 100%;
     min-height: 100vh;
-    background-color: gray;
+    background-image: url('../assets/Background/BackgroundUtama.png');
+    background-repeat: no-repeat;
+    background-size: cover;
 }
 
 body .containerUtama {
@@ -48,8 +50,10 @@ body .containerUtama {
     margin: 0;
 }
 
-.containerGridinput {
+.containerGrid input {
     border-radius: 5px;
+    border: 3px solid black;
+    width: 200px;
     height: 30px;
 }
 
@@ -69,6 +73,7 @@ body .containerUtama {
     width: 488px;
     height: 545px;
     border-radius: 48px;
+    flex-direction: column;
 }
 
 .containerUtama .overlayKiri p {
@@ -77,4 +82,46 @@ body .containerUtama {
     color: #ffffff;
     width: 312px;
     height: 90px;
+    padding: 0;
+    margin: 0;
+}
+
+.overlayKiri #logo {
+    background-image: url('../assets/icons/Logo.svg');
+    width: 100px;
+    height: 100px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    padding: 0;
+    margin: 0;
+}
+
+.containerGrid #icon1 {
+    width: 35px;
+    height: 35px;
+}
+
+.containerGrid #icon2 {
+    width: 35px;
+    height: 35px;
+}
+
+.overlayKanan #in {
+    display: flex;
+    justify-content: flex-start;
+    width: 200px;
+}
+
+.overlayKanan p {
+    font-size: 1.5em;
+    color: black;
+    margin: 0;
+    padding: 0;
+}
+
+form {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    row-gap: 20px;
 }

@@ -1,26 +1,33 @@
+DROP SCHEMA public CASCADE;
+CREATE SCHEMA public;
+
+DROP TABLE IF EXISTS MahasiswaProsesBimbingan CASCADE;
+DROP TABLE IF EXISTS DosenProsesBimbingan CASCADE;
+DROP TABLE IF EXISTS TopikBimbingan CASCADE;
+
 CREATE TABLE Pengguna (
     IdPengguna VARCHAR(50) PRIMARY KEY,
-    username VARCHAR(50) NOT NULL,
-    password VARCHAR(30) NOT NULL,
+    username VARCHAR(50) NOT NULL UNIQUE, -- Ditambahkan UNIQUE
+    password VARCHAR(255) NOT NULL, -- Diperpanjang untuk keamanan (disarankan)
     nama VARCHAR(70) NOT NULL,
     statusAktif BOOLEAN DEFAULT TRUE,
-    tipeAkun VARCHAR(10),
+    tipeAkun VARCHAR(10) CHECK (tipeAkun IN ('Mahasiswa', 'Dosen', 'Admin')), -- Ditambahkan CHECK
     lastLogin TIMESTAMP
 );
 
 CREATE TABLE Mahasiswa (
-    IdPengguna INT PRIMARY KEY,
+    IdPengguna VARCHAR(50) PRIMARY KEY,
     TahapTA INT,
     FOREIGN KEY (IdPengguna) REFERENCES Pengguna(IdPengguna)
 );
 
 CREATE TABLE Dosen (
-    IdPengguna INT PRIMARY KEY,
+    IdPengguna VARCHAR(50) PRIMARY KEY,
     FOREIGN KEY (IdPengguna) REFERENCES Pengguna(IdPengguna)
 );
 
 CREATE TABLE Admin (
-    IdPengguna INT PRIMARY KEY,
+    IdPengguna VARCHAR(50) PRIMARY KEY,
     FOREIGN KEY (IdPengguna) REFERENCES Pengguna(IdPengguna)
 );
 
@@ -40,7 +47,7 @@ CREATE TABLE TugasAkhir (
     TopikTA VARCHAR(150),
     TanggalUTS DATE,
     TanggalUas DATE,
-    IdMahasiswa INT,
+    IdMahasiswa VARCHAR(50) NOT NULL, -- Diperbaiki: VARCHAR(50)
     FOREIGN KEY (IdMahasiswa) REFERENCES Mahasiswa(IdPengguna)
 );
 
@@ -53,7 +60,7 @@ CREATE TABLE TAtermasukAkademik (
 );
 
 CREATE TABLE Dosen_Pembimbing (
-    IdDosen INT,
+    IdDosen VARCHAR(50), -- Diperbaiki: VARCHAR(50)
     idTA INT,
     PRIMARY KEY (IdDosen, idTA),
     FOREIGN KEY (IdDosen) REFERENCES Dosen(IdPengguna),
@@ -71,30 +78,24 @@ CREATE TABLE Bimbingan (
     FOREIGN KEY (idRuangan) REFERENCES Ruangan(idRuangan)
 );
 
+-- CREATE TABLE TopikBimbingan (
+--     IdBim INT,
+--     IdTA INT,
+--     PRIMARY KEY (IdBim, IdTA),
+--     FOREIGN KEY (IdBim) REFERENCES Bimbingan(IdBim),
+--     FOREIGN KEY (IdTA) REFERENCES TugasAkhir(IdTa)
+-- );
+
 CREATE TABLE TopikBimbingan (
-    IdBim INT,
+	IdBim INT,
     IdTA INT,
+    StatusMhs VARCHAR(20),      -- Tambahan: Status Mahasiswa (Misal: Mengajukan)
+    StatusDosen1 VARCHAR(20),   -- Tambahan: Status Dosen Pembimbing 1
+    StatusDosen2 VARCHAR(20),   -- Tambahan: Status Dosen Pembimbing 2
+	StatusBimbingan VARCHAR (20),
     PRIMARY KEY (IdBim, IdTA),
     FOREIGN KEY (IdBim) REFERENCES Bimbingan(IdBim),
     FOREIGN KEY (IdTA) REFERENCES TugasAkhir(IdTa)
-);
-
-CREATE TABLE MahasiswaProsesBimbingan (
-    IdMahasiswa INT,
-    IdBimbingan INT,
-    tipe VARCHAR(50),
-    PRIMARY KEY (IdMahasiswa, IdBimbingan),
-    FOREIGN KEY (IdMahasiswa) REFERENCES Mahasiswa(IdPengguna),
-    FOREIGN KEY (IdBimbingan) REFERENCES Bimbingan(IdBim)
-);
-
-CREATE TABLE DosenProsesBimbingan (
-    IdDosen INT,
-    IdBimbingan INT,
-    tipe VARCHAR(50),
-    PRIMARY KEY (IdDosen, IdBimbingan),
-    FOREIGN KEY (IdDosen) REFERENCES Dosen(IdPengguna),
-    FOREIGN KEY (IdBimbingan) REFERENCES Bimbingan(IdBim)
 );
 
 CREATE TABLE Jadwal (
@@ -106,8 +107,9 @@ CREATE TABLE Jadwal (
 );
 
 CREATE TABLE Jadwal_Pribadi (
-    IdJadwal INT PRIMARY KEY,
-    IdPengguna INT,
+    IdJadwal INT, -- Tidak perlu PK tunggal, PK komposit lebih baik
+    IdPengguna VARCHAR(50), -- Diperbaiki: VARCHAR(50)
+    PRIMARY KEY (IdJadwal, IdPengguna), -- Disarankan PK komposit
     FOREIGN KEY (IdJadwal) REFERENCES Jadwal(IdJadwal),
     FOREIGN KEY (IdPengguna) REFERENCES Pengguna(IdPengguna)
 );
@@ -115,6 +117,7 @@ CREATE TABLE Jadwal_Pribadi (
 CREATE TABLE Jadwal_Ruangan (
     IdJadwal INT PRIMARY KEY,
     FOREIGN KEY (IdJadwal) REFERENCES Jadwal(IdJadwal)
+    -- Catatan: Tabel ini kurang informatif. Harusnya ada kolom idRuangan.
 );
 
 CREATE TABLE Jadwal_Bimbingan (
@@ -132,7 +135,7 @@ CREATE TABLE PenjadwalanBimbingan (
 
 CREATE TABLE PemblokiranRuangan (
     IdRuangan INT,
-    idAdmin INT,
+    idAdmin VARCHAR(50), -- Diperbaiki: VARCHAR(50)
     IdJadwal INT,
     Waktu TIMESTAMP,
     Alasan TEXT,
@@ -149,7 +152,7 @@ CREATE TABLE Notifikasi (
 );
 
 CREATE TABLE MahasiswaNotifikasi (
-    IdPengguna INT,
+    IdPengguna VARCHAR(50), -- Diperbaiki: VARCHAR(50)
     IdNotifikasi INT,
     PRIMARY KEY (IdPengguna, IdNotifikasi),
     FOREIGN KEY (IdPengguna) REFERENCES Mahasiswa(IdPengguna),
@@ -157,7 +160,7 @@ CREATE TABLE MahasiswaNotifikasi (
 );
 
 CREATE TABLE DosenNotifikasi (
-    IdPengguna INT,
+    IdPengguna VARCHAR(50), -- Diperbaiki: VARCHAR(50)
     IdNotifikasi INT,
     PRIMARY KEY (IdPengguna, IdNotifikasi),
     FOREIGN KEY (IdPengguna) REFERENCES Dosen(IdPengguna),
@@ -172,3 +175,174 @@ CREATE TABLE BimbinganNotifikasi (
     FOREIGN KEY (IdBim) REFERENCES Bimbingan(IdBim)
 );
 
+INSERT INTO Pengguna VALUES
+('U001', 'mhs1', 'pass1', 'Mahasiswa Satu', TRUE, 'Mahasiswa', NOW()),
+('U002', 'mhs2', 'pass2', 'Mahasiswa Dua', TRUE, 'Mahasiswa', NOW()),
+('U003', 'dsn1', 'pass3', 'Dosen Satu', TRUE, 'Dosen', NOW()),
+('U004', 'adm1', 'pass4', 'Admin Satu', TRUE, 'Admin', NOW()),
+('U005', 'dsn2', 'pass5', 'Dosen Dua', TRUE, 'Dosen', NOW()),
+('U006', 'mhs3', 'pass6', 'Mahasiswa Tiga', TRUE, 'Mahasiswa', NOW()),
+('U007', 'mhs4', 'pass7', 'Mahasiswa Empat', TRUE, 'Mahasiswa', NOW()),
+('U008', 'mhs5', 'pass8', 'Mahasiswa Lima', TRUE, 'Mahasiswa', NOW()),
+('U009', 'dsn3', 'pass9', 'Dosen Tiga', TRUE, 'Dosen', NOW()),
+('U010', 'dsn4', 'pass10', 'Dosen Empat', TRUE, 'Dosen', NOW()),
+('U011', 'dsn5', 'pass11', 'Dosen Lima', TRUE, 'Dosen', NOW()),
+('U012', 'adm2', 'pass12', 'Admin Dua', TRUE, 'Admin', NOW()),
+('U013', 'adm3', 'pass13', 'Admin Tiga', TRUE, 'Admin', NOW()),
+('U014', 'adm4', 'pass14', 'Admin Empat', TRUE, 'Admin', NOW()),
+('U015', 'adm5', 'pass15', 'Admin Lima', TRUE, 'Admin', NOW());
+
+INSERT INTO Mahasiswa VALUES
+('U001', 1),
+('U002', 2),
+('U006', 1),
+('U007', 2),
+('U008', 3);
+
+INSERT INTO Dosen VALUES
+('U003'),
+('U005'),
+('U009'),
+('U010'),
+('U011');
+
+INSERT INTO Admin VALUES
+('U004'),
+('U012'),
+('U013'),
+('U014'),
+('U015');
+
+INSERT INTO Akademik VALUES
+(20241, 2, 3),
+(20242, 2, 3),
+(20243, 2, 3),
+(20244, 2, 3),
+(20245, 2, 3);
+
+INSERT INTO Ruangan VALUES
+(1, 'Ruang A'),
+(2, 'Ruang B'),
+(3, 'Ruang C'),
+(4, 'Ruang D'),
+(5, 'Ruang E');
+
+INSERT INTO TugasAkhir VALUES
+(101, 'Topik A', '2025-03-01', '2025-06-01', 'U001'),
+(102, 'Topik B', '2025-03-01', '2025-06-01', 'U002'),
+(103, 'Topik C', '2025-03-01', '2025-06-01', 'U006'),
+(104, 'Topik D', '2025-03-01', '2025-06-01', 'U007'),
+(105, 'Topik E', '2025-03-01', '2025-06-01', 'U008');
+
+INSERT INTO TAtermasukAkademik VALUES
+(101, 20241),
+(102, 20241),
+(103, 20242),
+(104, 20242),
+(105, 20243);
+
+INSERT INTO Dosen_Pembimbing VALUES
+('U003', 101),
+('U005', 102),
+('U009', 103),
+('U010', 104),
+('U011', 105);
+
+INSERT INTO Bimbingan VALUES
+(1, 'Diskusi awal', 'Catatan 1', 'Topik A', 'Aktif', 1, 1),
+(2, 'Review Bab 1', 'Catatan 2', 'Topik B', 'Aktif', 2, 2),
+(3, 'Review Bab 2', 'Catatan 3', 'Topik C', 'Aktif', 3, 3),
+(4, 'Review Bab 3', 'Catatan 4', 'Topik D', 'Aktif', 4, 4),
+(5, 'Akhir', 'Catatan 5', 'Topik E', 'Selesai', 5, 5);
+
+-- INSERT INTO TopikBimbingan VALUES
+-- (1, 101),
+-- (2, 102),
+-- (3, 103),
+-- (4, 104),
+-- (5, 105);
+
+INSERT INTO TopikBimbingan (IdBim, IdTA, StatusMhs, StatusDosen1, StatusDosen2, StatusBimbingan) VALUES
+(1, 101, 'Menunggu', 'Menunggu', NULL, 'Terjadwalkan'),          -- Kasus 1: Masih menunggu respons, Dosen 2 belum ada info (NULL)
+(2, 102, 'Menerima', 'Menerima', 'Menunggu', 'Terjadwalkan'),    -- Kasus 2: Mhs & Dosen 1 oke, Dosen 2 masih menunggu
+(3, 103, 'Menerima', 'Menolak', NULL, 'Gagal'),           -- Kasus 3: Ditolak oleh Dosen 1
+(4, 104, 'Dibatalkan', NULL, NULL, 'Gagal'),              -- Kasus 4: Bimbingan dibatalkan (Dosen tidak perlu isi/NULL)
+(5, 105, 'Menerima', 'Menerima', 'Menerima', 'Selesai');    -- Kasus 5: Semua pihak Menerima (Sukses)
+
+INSERT INTO Jadwal VALUES
+(1, '2025-01-01', '08:00', '09:00', 0),
+(2, '2025-01-02', '09:00', '10:00', 0),
+(3, '2025-01-03', '10:00', '11:00', 0),
+(4, '2025-01-04', '11:00', '12:00', 0),
+(5, '2025-01-05', '13:00', '14:00', 0);
+
+INSERT INTO Jadwal_Pribadi VALUES
+(1, 'U001'),
+(2, 'U002'),
+(3, 'U003'),
+(4, 'U004'),
+(5, 'U005');
+
+INSERT INTO Jadwal_Ruangan VALUES
+(1),
+(2),
+(3),
+(4),
+(5);
+
+INSERT INTO Jadwal_Bimbingan VALUES
+(1),
+(2),
+(3),
+(4),
+(5);
+
+INSERT INTO PenjadwalanBimbingan VALUES
+(1, 1),
+(2, 2),
+(3, 3),
+(4, 4),
+(5, 5);
+
+INSERT INTO PemblokiranRuangan VALUES
+(1, 'U004', 1, NOW(), 'Perbaikan'),
+(2, 'U012', 2, NOW(), 'Pembersihan'),
+(3, 'U013', 3, NOW(), 'Acara Khusus'),
+(4, 'U014', 4, NOW(), 'Maintenance'),
+(5, 'U015', 5, NOW(), 'Kerusakan');
+
+INSERT INTO Notifikasi VALUES
+(1, 'Diterima', NOW()),
+(2, 'Menunggu', NOW()),
+(3, 'Ditolak', NOW()),
+(4, 'Dibatalkan', NOW()),
+(5, 'Ditolak', NOW());
+
+INSERT INTO MahasiswaNotifikasi VALUES
+('U001', 1),
+('U002', 2),
+('U006', 3),
+('U007', 4),
+('U008', 5);
+
+
+INSERT INTO DosenNotifikasi VALUES
+('U003', 1),
+('U005', 2),
+('U009', 3),
+('U010', 4),
+('U011', 5);
+
+INSERT INTO BimbinganNotifikasi VALUES
+(1, 1),
+(2, 2),
+(3, 3),
+(4, 4),
+(5, 5);
+
+-- SELECT *
+-- FROM Notifikasi
+-- JOIN MahasiswaNotifikasi ON MahasiswaNotifikasi.IdNotifikasi = Notifikasi.IdNotifikasi 
+-- JOIN Mahasiswa ON MahasiswaNotifikasi.IdPengguna = Mahasiswa.IdPengguna
+-- --WHERE Mahasiswa.idPengguna = 'U001'
+-- --ditolak, dibatalkan, diterima, menunggu

@@ -2,7 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/Aplikasi_POTA.iml" filepath="$PROJECT_DIR$/.idea/Aplikasi_POTA.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/pota.iml" filepath="$PROJECT_DIR$/.idea/modules/pota.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/pota.main.iml" filepath="$PROJECT_DIR$/.idea/modules/pota.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/pota.test.iml" filepath="$PROJECT_DIR$/.idea/modules/pota.test.iml" />
     </modules>
   </component>
 </project>

@@ -15,4 +15,9 @@ public class AuthController {
     public String loginPage() {
         return "Login";
     }
+
+    @GetMapping("/lupasandi")
+    public String forgotPasswordPage() {
+        return "LupaSandi";
+    }
 }

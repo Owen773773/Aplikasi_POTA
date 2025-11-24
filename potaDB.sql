@@ -257,27 +257,6 @@ INSERT INTO Bimbingan VALUES
 (4, 'Review Bab 3', 'Catatan 4', 'Topik D', 'Aktif', 4, 4),
 (5, 'Akhir', 'Catatan 5', 'Topik E', 'Selesai', 5, 5);
 
-INSERT INTO TopikBimbingan VALUES
-(1, 101),
-(2, 102),
-(3, 103),
-(4, 104),
-(5, 105);
-
-INSERT INTO MahasiswaProsesBimbingan VALUES
-('U001', 1, 'Peserta'),
-('U002', 2, 'Peserta'),
-('U006', 3, 'Peserta'),
-('U007', 4, 'Peserta'),
-('U008', 5, 'Peserta');
-
-INSERT INTO DosenProsesBimbingan VALUES
-('U003', 1, 'Pembimbing'),
-('U005', 2, 'Pembimbing'),
-('U009', 3, 'Pembimbing'),
-('U010', 4, 'Pembimbing'),
-('U011', 5, 'Pembimbing');
-
 INSERT INTO Jadwal VALUES
 (1, '2025-01-01', '08:00', '09:00', 0),
 (2, '2025-01-02', '09:00', '10:00', 0),

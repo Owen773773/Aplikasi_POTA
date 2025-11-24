@@ -52,17 +52,15 @@ public class AdminController {
     public String halamanRuangan(@RequestParam(required = false) Integer ruanganId,
                                  @RequestParam(required = false) String week,
                                  Model model) {
-        // ✅ List Ruangan
+
         List<Ruangan> listRuangan = ruanganService.getAllRuang();
         model.addAttribute("listRuangan", listRuangan);
 
-        // ✅ Set ruangan pertama sebagai default jika tidak ada parameter
+
         if (ruanganId == null && !listRuangan.isEmpty()) {
             ruanganId = listRuangan.get(0).getIdRuangan();
         }
         model.addAttribute("selectedRuanganId", ruanganId);
-
-        // ✅ Minggu - bila kosong set minggu ini
         if (week == null || week.isEmpty()) {
             LocalDate hariIni = LocalDate.now();
             int weekNum = hariIni.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR);
@@ -73,7 +71,6 @@ public class AdminController {
 
         model.addAttribute("weekParam", week);
 
-        // ✅ Hitung tanggal mulai minggu untuk ditampilkan
         String tahun = week.substring(0, 4);
         String minggu = week.substring(6);
 
@@ -85,10 +82,17 @@ public class AdminController {
         // TODO: Load schedule data
         // model.addAttribute("listScheduleSlots", scheduleService.getSchedule(ruanganId, week));
 
+// IMPLEMENTASI: Load schedule data
+//        List<JadwalService.DayHeader> listHari = jadwalService.getDayHeadersForWeek(week);
+//        List<List<JadwalService.ScheduleSlot>> listScheduleSlots =
+//                jadwalService.getScheduleSlotsForWeek(week);
+//
+//        model.addAttribute("listHari", listHari);
+//        model.addAttribute("listScheduleSlots", listScheduleSlots);
+
         return "Admin_Ruangan";
     }
 
-    // ✅ Helper method untuk hitung tanggal mulai minggu
     private LocalDate hitungTanggalMulaiMinggu(int tahun, int minggu) {
         return LocalDate.of(tahun, 1, 1)
                 .with(IsoFields.WEEK_OF_WEEK_BASED_YEAR, minggu)

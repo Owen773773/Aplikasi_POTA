@@ -80,42 +80,42 @@
                 </div>
             </div>
 
-<!--            <div class="schedule-container">-->
-<!--                <table class="schedule-grid">-->
-<!--                    <thead>-->
-<!--                    <tr>-->
-<!--                        <th class="time-column"></th>-->
-<!--                        <th th:each="day : ${listHari}" class="day-header">-->
-<!--                            <div class="day-header-content">-->
-<!--                                <div class="day-name" th:text="${day.nama}">Senin</div>-->
-<!--                                <div class="day-date" th:text="${day.tanggal}">6/10/2025</div>-->
-<!--                            </div>-->
-<!--                        </th>-->
-<!--                    </tr>-->
-<!--                    </thead>-->
-<!--                    <tbody>-->
-<!--                    &lt;!&ndash; Loop untuk setiap jam (07.00 - 17.00) &ndash;&gt;-->
-<!--                    <tr th:each="hourSlots, iterStat : ${listScheduleSlots}">-->
-<!--                        <td class="time-column">-->
-<!--                            <span th:text="${#numbers.formatInteger(iterStat.index + 7, 2)} + '.00'">07.00</span>-->
-<!--                        </td>-->
-<!--                        &lt;!&ndash; Loop untuk setiap hari dalam satu jam &ndash;&gt;-->
-<!--                        <td th:each="slot : ${hourSlots}"-->
-<!--                            th:class="${'time-slot ' + (slot.status != null ? slot.status : '')}"-->
-<!--                            th:data-hour="${slot.hour}"-->
-<!--                            th:data-day="${slot.dayIndex}"-->
-<!--                            th:data-booking-id="${slot.bookingId}">-->
-<!--                        </td>-->
-<!--                    </tr>-->
-<!--                    </tbody>-->
-<!--                </table>-->
-<!--            </div>-->
+            <div class="schedule-container">
+                <table class="schedule-grid">
+                    <thead>
+                    <tr>
+                        <th class="time-column"></th>
+                        <th th:each="day : ${listHari}" class="day-header">
+                            <div class="day-header-content">
+                                <div class="day-name" th:text="${day.nama}">Senin</div>
+                                <div class="day-date" th:text="${day.tanggal}">6/10/2025</div>
+                            </div>
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <!-- Loop untuk setiap jam (07.00 - 17.00) -->
+                    <tr th:each="hourSlots, iterStat : ${listScheduleSlots}">
+                        <td class="time-column">
+                            <span th:text="${#numbers.formatInteger(iterStat.index + 7, 2)} + '.00'">07.00</span>
+                        </td>
+                        <!-- Loop untuk setiap hari dalam satu jam -->
+                        <td th:each="slot : ${hourSlots}"
+                            th:class="${'time-slot ' + (slot.status != null ? slot.status : '')}"
+                            th:data-hour="${slot.hour}"
+                            th:data-day="${slot.dayIndex}"
+                            th:data-booking-id="${slot.bookingId}">
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
 
-<!--            <div class="schedule-legend">-->
-<!--                <div class="legend-item"><span class="legend-box status-unavailable"></span> Tidak Tersedia</div>-->
-<!--                <div class="legend-item"><span class="legend-box status-scheduled"></span> Terjadwal</div>-->
-<!--                <div class="legend-item"><span class="legend-box status-pending"></span> Menunggu Konfirmasi</div>-->
-<!--            </div>-->
+            <div class="schedule-legend">
+                <div class="legend-item"><span class="legend-box status-unavailable"></span> Tidak Tersedia</div>
+                <div class="legend-item"><span class="legend-box status-scheduled"></span> Terjadwal</div>
+                <div class="legend-item"><span class="legend-box status-pending"></span> Menunggu Konfirmasi</div>
+            </div>
 
 <!--            <h2 class="form-title">Blokir Ruangan</h2>-->
 

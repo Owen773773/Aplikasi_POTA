@@ -15,6 +15,8 @@
     --btn-filter: #7885ff;
     --btn-green-bg: #eaffea;
     --btn-green-border: #66d666;
+    --btn-blue-bg:#91C8FF;
+    --btn-blue-border: #004FAF;
     --btn-red-bg: #ffeaea;
     --btn-red-border: #fa7e7e;
     --btn-grey-bg: #eeeeee;
@@ -342,6 +344,11 @@ body {
 .btn-action.green {
     border-color: var(--btn-green-border);
     background-color: var(--btn-green-bg);
+}
+
+.btn-action.blue {
+    border-color: var(--btn-blue-border);
+    background-color: var(--btn-blue-bg);
 }
 
 .btn-action.red {

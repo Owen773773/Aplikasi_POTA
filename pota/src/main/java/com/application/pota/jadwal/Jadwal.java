@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.sql.Date;
 import java.sql.Time;
 import java.time.LocalDateTime;
 
@@ -12,7 +13,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class Jadwal {
     private int IdJadwal;
-    private LocalDateTime tanggal;
+    private Date tanggal;
     private Time WaktuMulai;
     private Time WaktuSelesai;
     private int berulang;

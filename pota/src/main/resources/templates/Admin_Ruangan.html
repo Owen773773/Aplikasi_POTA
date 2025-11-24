@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="id" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>POTA - Ruangan</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+<div class="main">
+    <aside class="sidebar">
+        <div class="logo-container">
+            <img th:src="@{/assets/icons/logo.svg}" alt="Logo POTA" class="logo-icon"/>
+            <span class="logo-text">POTA</span>
+        </div>
+
+        <nav class="nav-menu">
+            <a th:href="@{/admin/akun}" class="nav-item">
+                <img th:src="@{/assets/icons/ManajemenAkun.svg}" alt="" class="nav-icon"/>
+                <span>Akun</span>
+            </a>
+
+            <a th:href="@{/admin/ruangan}" class="nav-item active">
+                <img th:src="@{/assets/icons/Jadwal.svg}" alt="" class="nav-icon"/>
+                <span>Ruangan</span>
+            </a>
+
+            <a th:href="@{/admin/pengaturan}" class="nav-item">
+                <img th:src="@{/assets/icons/Setting.svg}" alt="" class="nav-icon"/>
+                <span>Pengaturan</span>
+            </a>
+        </nav>
+
+        <div class="logout-section">
+            <button class="btn-logout">
+                <img src="/assets/icons/LogOut.svg" alt="Log Out">
+                Log Out
+            </button>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <header>
+            <h1 class="page-title">Ruangan</h1>
+        </header>
+
+        <div class="content-body">
+            <div class="schedule-header">
+                <div class="room-selector-group">
+                    <select class="room-selector">
+                        <option th:each="ruang : ${listRuangan}"
+                                th:value="${ruang.id}"
+                                th:text="${ruang.nama}">Ruang Tugas Akhir</option>
+                    </select>
+                </div>
+
+                <div class="date-display-group">
+                    <span th:text="${tanggalMulaiMinggu}">10/10/2025</span>
+                    <img th:src="@{/assets/icons/calendar.svg}" alt="Pilih Tanggal" class="calendar-icon"/>
+                </div>
+            </div>
+
+            <div class="schedule-container">
+                <table class="schedule-grid">
+                    <thead>
+                    <tr>
+                        <th class="time-column"></th>
+                        <th th:each="day : ${listHari}" class="day-header">
+                            <div class="day-header-content">
+                                <div class="day-name" th:text="${day.nama}">Senin</div>
+                                <div class="day-date" th:text="${day.tanggal}">6/10/2025</div>
+                            </div>
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <!-- Loop untuk setiap jam (07.00 - 17.00) -->
+                    <tr th:each="hourSlots, iterStat : ${listScheduleSlots}">
+                        <td class="time-column">
+                            <span th:text="${#numbers.formatInteger(iterStat.index + 7, 2)} + '.00'">07.00</span>
+                        </td>
+                        <!-- Loop untuk setiap hari dalam satu jam -->
+                        <td th:each="slot : ${hourSlots}"
+                            th:class="${'time-slot ' + (slot.status != null ? slot.status : '')}"
+                            th:data-hour="${slot.hour}"
+                            th:data-day="${slot.dayIndex}"
+                            th:data-booking-id="${slot.bookingId}">
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="schedule-legend">
+                <div class="legend-item"><span class="legend-box status-unavailable"></span> Tidak Tersedia</div>
+                <div class="legend-item"><span class="legend-box status-scheduled"></span> Terjadwal</div>
+                <div class="legend-item"><span class="legend-box status-pending"></span> Menunggu Konfirmasi</div>
+            </div>
+
+            <h2 class="form-title">Blokir Ruangan</h2>
+
+            <form th:action="@{/admin/block-room}" method="post" class="block-form">
+                <div class="block-form-layout">
+
+                    <div class="form-group">
+                        <label for="lokasi">Lokasi</label>
+                        <select id="lokasi" name="lokasi" th:field="*{blockForm.ruanganId}" class="form-input">
+                            <option th:each="room : ${listRuangan}" th:value="${room.id}" th:text="${room.nama}">Ruang Tugas Akhir</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group date-picker-group">
+                        <label for="tanggal">Tanggal</label>
+                        <div class="input-with-icon">
+                            <input type="text" id="tanggal" name="tanggal" th:field="*{blockForm.tanggal}" class="form-input" placeholder="DD/MM/YYYY" readonly />
+                            <img th:src="@{/assets/icons/calendar.svg}" alt="Kalender" class="input-icon"/>
+                        </div>
+                    </div>
+
+                    <div class="form-group time-range-group">
+                        <label for="waktuMulai">Waktu</label>
+                        <div class="time-inputs">
+                            <input type="text" id="waktuMulai" th:field="*{blockForm.waktuMulai}" class="form-input" placeholder="HH:MM" />
+                            <span class="separator">-</span>
+                            <input type="text" id="waktuSelesai" th:field="*{blockForm.waktuSelesai}" class="form-input" placeholder="HH:MM" />
+                        </div>
+                    </div>
+
+                    <div class="form-group alasan-group">
+                        <label for="alasan">Alasan</label>
+                        <textarea id="alasan" name="alasan" th:field="*{blockForm.alasan}" class="form-input"></textarea>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-konfirmasi">Konfirmasi</button>
+            </form>
+        </div>
+    </main>
+</div>
+
+</body>
+</html>

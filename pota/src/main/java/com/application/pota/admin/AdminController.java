@@ -19,12 +19,12 @@ public class AdminController {
     private PenggunaService penggunaService;
 
     @GetMapping({"", "/"})
-    public String berandaAdmin(Model model) {
-        return akunPage(model);
+    public String halamanAdmin(Model model) {
+        return halamanAkun(model);
     }
     
     @GetMapping("/akun")
-    public String akunPage(Model model) {
+    public String halamanAkun(Model model) {
         List<Pengguna> listUser = penggunaService.getAllPengguna();
 
         if (listUser == null) {
@@ -40,7 +40,12 @@ public class AdminController {
     }
 
     @GetMapping("/ruangan")
-    public String halamanRuangan() {
-        return "Admin_Booking";
+    public String halamanRuangan(Model model) {
+        return "Admin_Ruangan";
     }
+
+    @GetMapping("/pengaturan")
+        public String halamanPengaturan() {
+            return "Admin_Pengaturan";
+        }
 }

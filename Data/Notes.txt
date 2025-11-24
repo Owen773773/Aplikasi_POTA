@@ -1,0 +1,1 @@
+pastikan nama databasenya adalah 'pota'

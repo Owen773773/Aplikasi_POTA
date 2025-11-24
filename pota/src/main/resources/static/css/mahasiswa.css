@@ -479,58 +479,60 @@ h2{
 }
 
 /* === GRID DATA PRIBADI === */
+.profil-card {
+    background: var(--bg-white);
+    padding: 30px 40px;
+    border-radius: 15px;
+    width: 90%;
+    margin: 0 auto;
+    box-shadow: 0px 0px 10px rgba(0,0,0,0.15);
+}
+
 .profil-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 25px;
-    margin-top: 20px;
+    margin-top: 15px;
 }
 
 .profil-item {
     background: var(--bg-white);
-    border-radius: 8px;
+    border-radius: 12px;
     padding: 18px 22px;
-    box-shadow: 1px 2px 5px rgba(0,0,0,0.25);
+    box-shadow: 0px 4px 8px rgba(0,0,0,0.12);
+}
+
+.small-card {
+    width: 100%;
 }
 
 .profil-item h3 {
-    font-weight: bold;
     font-size: 16px;
     color: var(--primary);
-    margin-bottom: 5px;
+    margin-bottom: 6px;
 }
 
 .profil-item p {
     font-size: 15px;
+    margin-top: 4px;
 }
 
-/* === BUTTON === */
 .profil-footer {
+    margin-top: 40px;
     display: flex;
     justify-content: flex-end;
-    margin-top: 25px;
 }
 
 .btn-password {
     background: var(--primary);
-    border: none;
     color: white;
-    padding: 10px 22px;
-    border-radius: 8px;
+    padding: 12px 26px;
+    border-radius: 10px;
+    border: none;
     cursor: pointer;
-    font-family: var(--font-base);
-    font-size: 15px;
-    transition: 0.2s;
+    font-size: 16px;
 }
 
 .btn-password:hover {
     background: #043a75;
-}
-
-#progress.b{
-    grid-area: progressB;
-}
-
-#mendatang.b{
-    grid-area: mendatangB;
 }

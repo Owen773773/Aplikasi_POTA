@@ -15,12 +15,15 @@
         </div>
         <div class="overlayKanan">
             <p>Masuk</p>
-            <form th:action="@{/mahasiswa/beranda}" method="post" class="containerGrid">
+            <div th:if="${error}" class="error-message">
+                <p th:text="${error}"></p>
+            </div>
+            <form th:action="@{/login}" method="post" class="containerGrid">
                 <div id="icon">Icon</div>
-                <input type="text" name="akunHolder" id="akun" placeholder="Masukan Akun Anda">
+                <input type="text" name="username" id="akun" placeholder="Masukan Akun Anda">
                 
                 <div id="icon">Icon</div>
-                <input type="text" name="passHolder" id="pass" placeholder="Masukan Password Anda">
+                <input type="password" name="password" id="pass" placeholder="Masukan Password Anda">
                 
                 <button type="submit">Masuk</button>
             </form>

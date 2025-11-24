@@ -1,3 +1,6 @@
+DROP SCHEMA public CASCADE;
+CREATE SCHEMA public;
+
 CREATE TABLE Pengguna (
     IdPengguna VARCHAR(50) PRIMARY KEY,
     username VARCHAR(50) NOT NULL UNIQUE, -- Ditambahkan UNIQUE
@@ -173,3 +176,174 @@ CREATE TABLE BimbinganNotifikasi (
     FOREIGN KEY (IdNotifikasi) REFERENCES Notifikasi(idNotifikasi),
     FOREIGN KEY (IdBim) REFERENCES Bimbingan(IdBim)
 );
+
+INSERT INTO Pengguna VALUES
+('U001', 'mhs1', 'pass1', 'Mahasiswa Satu', TRUE, 'Mahasiswa', NOW()),
+('U002', 'mhs2', 'pass2', 'Mahasiswa Dua', TRUE, 'Mahasiswa', NOW()),
+('U003', 'dsn1', 'pass3', 'Dosen Satu', TRUE, 'Dosen', NOW()),
+('U004', 'adm1', 'pass4', 'Admin Satu', TRUE, 'Admin', NOW()),
+('U005', 'dsn2', 'pass5', 'Dosen Dua', TRUE, 'Dosen', NOW()),
+('U006', 'mhs3', 'pass6', 'Mahasiswa Tiga', TRUE, 'Mahasiswa', NOW()),
+('U007', 'mhs4', 'pass7', 'Mahasiswa Empat', TRUE, 'Mahasiswa', NOW()),
+('U008', 'mhs5', 'pass8', 'Mahasiswa Lima', TRUE, 'Mahasiswa', NOW()),
+('U009', 'dsn3', 'pass9', 'Dosen Tiga', TRUE, 'Dosen', NOW()),
+('U010', 'dsn4', 'pass10', 'Dosen Empat', TRUE, 'Dosen', NOW()),
+('U011', 'dsn5', 'pass11', 'Dosen Lima', TRUE, 'Dosen', NOW()),
+('U012', 'adm2', 'pass12', 'Admin Dua', TRUE, 'Admin', NOW()),
+('U013', 'adm3', 'pass13', 'Admin Tiga', TRUE, 'Admin', NOW()),
+('U014', 'adm4', 'pass14', 'Admin Empat', TRUE, 'Admin', NOW()),
+('U015', 'adm5', 'pass15', 'Admin Lima', TRUE, 'Admin', NOW());
+
+INSERT INTO Mahasiswa VALUES
+('U001', 1),
+('U002', 2),
+('U006', 1),
+('U007', 2),
+('U008', 3);
+
+INSERT INTO Dosen VALUES
+('U003'),
+('U005'),
+('U009'),
+('U010'),
+('U011');
+
+INSERT INTO Admin VALUES
+('U004'),
+('U012'),
+('U013'),
+('U014'),
+('U015');
+
+INSERT INTO Akademik VALUES
+(20241, 2, 3),
+(20242, 2, 3),
+(20243, 2, 3),
+(20244, 2, 3),
+(20245, 2, 3);
+
+INSERT INTO Ruangan VALUES
+(1, 'Ruang A'),
+(2, 'Ruang B'),
+(3, 'Ruang C'),
+(4, 'Ruang D'),
+(5, 'Ruang E');
+
+INSERT INTO TugasAkhir VALUES
+(101, 'Topik A', '2025-03-01', '2025-06-01', 'U001'),
+(102, 'Topik B', '2025-03-01', '2025-06-01', 'U002'),
+(103, 'Topik C', '2025-03-01', '2025-06-01', 'U006'),
+(104, 'Topik D', '2025-03-01', '2025-06-01', 'U007'),
+(105, 'Topik E', '2025-03-01', '2025-06-01', 'U008');
+
+INSERT INTO TAtermasukAkademik VALUES
+(101, 20241),
+(102, 20241),
+(103, 20242),
+(104, 20242),
+(105, 20243);
+
+INSERT INTO Dosen_Pembimbing VALUES
+('U003', 101),
+('U005', 102),
+('U009', 103),
+('U010', 104),
+('U011', 105);
+
+INSERT INTO Bimbingan VALUES
+(1, 'Diskusi awal', 'Catatan 1', 'Topik A', 'Aktif', 1, 1),
+(2, 'Review Bab 1', 'Catatan 2', 'Topik B', 'Aktif', 2, 2),
+(3, 'Review Bab 2', 'Catatan 3', 'Topik C', 'Aktif', 3, 3),
+(4, 'Review Bab 3', 'Catatan 4', 'Topik D', 'Aktif', 4, 4),
+(5, 'Akhir', 'Catatan 5', 'Topik E', 'Selesai', 5, 5);
+
+INSERT INTO TopikBimbingan VALUES
+(1, 101),
+(2, 102),
+(3, 103),
+(4, 104),
+(5, 105);
+
+INSERT INTO MahasiswaProsesBimbingan VALUES
+('U001', 1, 'Peserta'),
+('U002', 2, 'Peserta'),
+('U006', 3, 'Peserta'),
+('U007', 4, 'Peserta'),
+('U008', 5, 'Peserta');
+
+INSERT INTO DosenProsesBimbingan VALUES
+('U003', 1, 'Pembimbing'),
+('U005', 2, 'Pembimbing'),
+('U009', 3, 'Pembimbing'),
+('U010', 4, 'Pembimbing'),
+('U011', 5, 'Pembimbing');
+
+INSERT INTO Jadwal VALUES
+(1, '2025-01-01', '08:00', '09:00', 0),
+(2, '2025-01-02', '09:00', '10:00', 0),
+(3, '2025-01-03', '10:00', '11:00', 0),
+(4, '2025-01-04', '11:00', '12:00', 0),
+(5, '2025-01-05', '13:00', '14:00', 0);
+
+INSERT INTO Jadwal_Pribadi VALUES
+(1, 'U001'),
+(2, 'U002'),
+(3, 'U003'),
+(4, 'U004'),
+(5, 'U005');
+
+INSERT INTO Jadwal_Ruangan VALUES
+(1),
+(2),
+(3),
+(4),
+(5);
+
+INSERT INTO Jadwal_Bimbingan VALUES
+(1),
+(2),
+(3),
+(4),
+(5);
+
+INSERT INTO PenjadwalanBimbingan VALUES
+(1, 1),
+(2, 2),
+(3, 3),
+(4, 4),
+(5, 5);
+
+INSERT INTO PemblokiranRuangan VALUES
+(1, 'U004', 1, NOW(), 'Perbaikan'),
+(2, 'U012', 2, NOW(), 'Pembersihan'),
+(3, 'U013', 3, NOW(), 'Acara Khusus'),
+(4, 'U014', 4, NOW(), 'Maintenance'),
+(5, 'U015', 5, NOW(), 'Kerusakan');
+
+INSERT INTO Notifikasi VALUES
+(1, 'Info', NOW()),
+(2, 'Pengingat', NOW()),
+(3, 'Warning', NOW()),
+(4, 'Otp', NOW()),
+(5, 'Agenda', NOW());
+
+INSERT INTO MahasiswaNotifikasi VALUES
+('U001', 1),
+('U002', 2),
+('U006', 3),
+('U007', 4),
+('U008', 5);
+
+INSERT INTO DosenNotifikasi VALUES
+('U003', 1),
+('U005', 2),
+('U009', 3),
+('U010', 4),
+('U011', 5);
+
+INSERT INTO BimbinganNotifikasi VALUES
+(1, 1),
+(2, 2),
+(3, 3),
+(4, 4),
+(5, 5);

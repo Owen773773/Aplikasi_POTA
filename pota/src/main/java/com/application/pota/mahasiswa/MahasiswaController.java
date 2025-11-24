@@ -9,11 +9,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
-//@RequestMapping("/")
+@RequestMapping("/mahasiswa")
 public class MahasiswaController {
-    @PostMapping("/mahasiswa/beranda")
-    @ResponseBody
-    public String beranda(Model model, @RequestParam String akunHolder, @RequestParam String passHolder) {
-        return akunHolder + " " + passHolder;
+    @GetMapping({"/", ""})
+    public String berandaDefault() {
+        return beranda();
+    }
+    
+    @GetMapping("/beranda")
+    public String beranda() {
+        return "TemplateMahasiswa";
     }
 }

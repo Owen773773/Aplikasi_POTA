@@ -1,3 +1,24 @@
+:root {
+    --primary: #054a91;
+    --bg-body: #f2f0ef;
+    --bg-white: #ffffff;
+    --text-primary: #000000;
+    --text-muted: #888888;
+    --border: #dddddd;
+    --border-light: #eeeeee;
+
+    --btn-add: #66d666;
+    --btn-filter: #7885ff;
+    --btn-green-bg: #eaffea;
+    --btn-green-border: #66d666;
+    --btn-red-bg: #ffeaea;
+    --btn-red-border: #fa7e7e;
+    --btn-grey-bg: #eeeeee;
+    --btn-grey-border: #aaaaaa;
+
+    --font-base: "Quicksand", sans-serif;
+}
+
 body{
     display: flex;
     justify-content: center;

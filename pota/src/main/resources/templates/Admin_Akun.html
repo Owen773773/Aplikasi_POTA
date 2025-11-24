@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>POTA - Akun</title>
 <!--    <link rel="stylesheet" th:href="@{/css/style.css}" />-->
-    <link rel="stylesheet" href="../static/css/style.css">
+    <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
 <div class="main">
@@ -88,11 +88,11 @@
                             Nama Pengguna
                         </td>
 
-                        <td class="text-center text-bold color-primary" th:text="${user.tipeAkun}">
+                        <td class=" text-bold color-primary" th:text="${user.tipeAkun}">
                             Mahasiswa
                         </td>
 
-                        <td class="text-center text-bold color-primary"
+                        <td class=" text-bold color-primary"
                             th:text="${user.lastLogin != null ? #temporals.format(user.lastLogin, 'dd/M/yyyy HH:mm') : '-'}">
                             -
                         </td>
@@ -180,8 +180,7 @@
                 <div class="popup-header">
                     <h3 class="popup-title">Detail Akun</h3>
                     <button type="button" class="btn-back" onclick="hidePopup('popup-detail-akun')">
-                        <img th:src="@{/assets/icons/back.svg}" alt="Kembali"/>
-                        Kembali
+                        <img th:src="@{/assets/icons/xHitam.svg}" alt="Kembali"/>
                     </button>
                 </div>
 

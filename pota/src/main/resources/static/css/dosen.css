@@ -432,16 +432,22 @@ h2 {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 20px;
+    /* size: 50%; */
+    padding: 0px 300px;
 }
 
 .mid-card {
     padding: 20px;
+    size: 50%;
+    width: 357px;
+    height: 219px;
 }
 
 .mid-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    size: 50%;
 }
 
 .mid-btn {
@@ -449,17 +455,20 @@ h2 {
     border: none;
     font-size: 24px;
     cursor: pointer;
+    size: 50%;
 }
 
 .mid-content {
     margin-top: 10px;
     text-align: center;
+    size: 50%;
 }
 
 .mid-number {
     font-size: 48px;
     font-weight: bold;
     color: var(--primary);
+    size: 50%;
 }
 
 /* Bottom section */
@@ -486,6 +495,7 @@ h2 {
     color: white;
     font-size: 32px;
     font: bold;
+    font-weight: bold;
     margin-bottom: 10px;
     width: 10%;
 
@@ -496,6 +506,12 @@ h2 {
 .bottom-buttons {
     display: flex;
     gap: 10px;
+}
+
+#header-bottom{
+    display: flex;
+    justify-content: space-between;
+    /* background-color: red; */
 }
 
 .btn-grey {

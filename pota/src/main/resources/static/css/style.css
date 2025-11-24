@@ -621,21 +621,51 @@ body {
     border-color: var(--primary);
 }
 
+/* === DATE PICKER IMPROVEMENTS === */
 .date-display-group {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
     padding: 10px 15px;
     border: 1px solid var(--border);
     border-radius: 8px;
     background-color: var(--bg-white);
-    font-size: 16px;
-    font-weight: 500;
+    font-size: 18px;
+    font-weight: bold;
+    color: var(--primary);
+    cursor: pointer;
+    transition: border-color 0.2s;
+    min-width: 220px;
+}
+
+.date-display-group:hover{
+    border-color: var(--primary);
+}
+
+.date-display-text {
+    flex: 1;
+    font-family: var(--font-base);
 }
 
 .calendar-icon {
-    width: 20px;
-    height: 20px;
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+}
+
+.calendar-icon:hover {
+    opacity: 1;
+}
+
+/* Hidden but functional week input */
+.hidden-functional-input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+    pointer-events: none;
 }
 
 /* Schedule Grid */

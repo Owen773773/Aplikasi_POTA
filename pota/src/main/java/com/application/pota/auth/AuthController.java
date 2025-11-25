@@ -38,13 +38,7 @@ public class AuthController {
 
         if (pengguna != null) {
             String tipeAkun = pengguna.getTipeAkun();
-            session.setAttribute("user", pengguna);
-            Cookie cookie = new Cookie("idPengguna", String.valueOf(pengguna.getIdPengguna()));
-            cookie.setMaxAge(3 * 60 * 60); // 3 jam
-            cookie.setPath("/");
-            response.addCookie(cookie);
-
-
+            session.setAttribute("idPengguna", String.valueOf(pengguna.getIdPengguna()));
             if (tipeAkun.equalsIgnoreCase("Mahasiswa")) {
                 return "redirect:/mahasiswa";
             } else if (tipeAkun.equalsIgnoreCase("Dosen")) {
@@ -70,18 +64,6 @@ public class AuthController {
     public String logout(HttpSession session, HttpServletRequest request, HttpServletResponse response) {
         if (session != null) {
             session.invalidate();
-        }
-
-        Cookie[] cookies = request.getCookies();
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if ("idPengguna".equals(cookie.getName())) {
-                    cookie.setValue(null);
-                    cookie.setMaxAge(0);
-                    cookie.setPath("/");
-                    response.addCookie(cookie);
-                }
-            }
         }
 
         return "redirect:/";

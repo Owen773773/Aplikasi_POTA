@@ -46,9 +46,14 @@
 
             </nav>
 
-            <button class="btn-logout">
-                <img src="/assets/icons/LogOut.svg"> Log Out
-            </button>
+            <div class="logout-section">
+                <form th:action="@{/logout}" method="post" style="margin: 0;">
+                    <button type="submit" class="btn-logout">
+                        <img th:src="@{/assets/icons/LogOut.svg}" alt="" />
+                        Log Out
+                    </button>
+                </form>
+            </div>
         </aside>
 
         <main class="main-content">

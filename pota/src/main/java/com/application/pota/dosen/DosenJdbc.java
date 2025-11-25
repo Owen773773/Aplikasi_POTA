@@ -5,8 +5,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 @Repository
-@RequiredArgsConstructor  // Lombok untuk constructor injection
+@RequiredArgsConstructor
 public class DosenJdbc implements DosenRepository {
-
     private final JdbcTemplate jdbcTemplate;
 }

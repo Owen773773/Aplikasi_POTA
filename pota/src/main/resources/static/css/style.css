@@ -1,6 +1,7 @@
 @import url("https://fonts.googleapis.com/css?family=Quicksand&display=swap");
 
 :root {
+<<<<<<< HEAD
     /* Colors */
     --primary: #054a91;
     --bg-body: #f2f0ef;
@@ -29,6 +30,28 @@
 
     /* Font */
     --font-base: "Quicksand", sans-serif;
+=======
+  --primary: #054a91;
+  --bg-body: #f2f0ef;
+  --bg-white: #ffffff;
+  --text-primary: #000000;
+  --text-muted: #888888;
+  --border: #dddddd;
+  --border-light: #eeeeee;
+
+  --btn-add: #66d666;
+  --btn-filter: #7885ff;
+  --btn-green-bg: #eaffea;
+  --btn-green-border: #66d666;
+  --btn-red-bg: #ffeaea;
+  --btn-red-border: #fa7e7e;
+  --btn-grey-bg: #eeeeee;
+  --btn-grey-border: #aaaaaa;
+  --btn-accept: #019D03;
+  --btn-reject: #FF2C2C;
+
+  --font-base: "Quicksand", sans-serif;
+>>>>>>> 95add5ad884d8ee68931df83425848ab4a4824e4
 }
 
 * {
@@ -44,6 +67,7 @@ body {
 }
 
 /* === UTILITY CLASSES === */
+<<<<<<< HEAD
 .hidden {
     display: none !important;
 }
@@ -58,6 +82,18 @@ body {
 
 .color-primary {
     color: var(--primary);
+=======
+.text-center {
+  text-align: center;
+}
+
+.text-bold {
+  font-weight: bold;
+}
+
+.color-primary {
+  color: var(--primary);
+>>>>>>> 95add5ad884d8ee68931df83425848ab4a4824e4
 }
 
 /* === LAYOUT === */

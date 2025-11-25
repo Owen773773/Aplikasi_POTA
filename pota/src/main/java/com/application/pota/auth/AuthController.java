@@ -2,6 +2,7 @@ package com.application.pota.auth;
 
 import com.application.pota.pengguna.Pengguna;
 import com.application.pota.pengguna.PenggunaService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
@@ -63,5 +64,26 @@ public class AuthController {
     @GetMapping("/lupasandi")
     public String forgotPasswordPage() {
         return "LupaSandi";
+    }
+
+    @PostMapping("/logout")
+    public String logout(HttpSession session, HttpServletRequest request, HttpServletResponse response) {
+        if (session != null) {
+            session.invalidate();
+        }
+
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if ("idPengguna".equals(cookie.getName())) {
+                    cookie.setValue(null);
+                    cookie.setMaxAge(0);
+                    cookie.setPath("/");
+                    response.addCookie(cookie);
+                }
+            }
+        }
+
+        return "redirect:/";
     }
 }

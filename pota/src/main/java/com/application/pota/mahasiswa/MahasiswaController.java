@@ -15,9 +15,30 @@ public class MahasiswaController {
     public String berandaDefault() {
         return beranda();
     }
-    
+
     @GetMapping("/beranda")
     public String beranda() {
         return "TemplateMahasiswa";
     }
+
+    @GetMapping({"/bimbingan", "/bimbinganProses"})
+    public String bimbinganDefault() {
+        return "MahasiswaBimbinganProses";
+    }
+
+    @GetMapping("/bimbinganTerjadwal")
+    public String bimbinganTerjadwal() {
+        return "MahasiswaBimbinganTerjadwalkan";
+    }
+
+    @GetMapping("/bimbinganSelesai")
+    public String bimbinganSelesai() {
+        return "MahasiswaBimbinganSelesai";
+    }
+
+    @GetMapping("/bimbinganGagal")
+    public String bimbinganGagal() {
+        return "MahasiswaBimbinganGagal";
+    }
+
 }

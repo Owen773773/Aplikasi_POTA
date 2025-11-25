@@ -25,11 +25,11 @@ DROP TABLE IF EXISTS Pengguna CASCADE;
 
 CREATE TABLE Pengguna (
     IdPengguna VARCHAR(50) PRIMARY KEY,
-    username VARCHAR(50) NOT NULL UNIQUE, -- Ditambahkan UNIQUE
-    password VARCHAR(255) NOT NULL, -- Diperpanjang untuk keamanan (disarankan)
+    username VARCHAR(50) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
     nama VARCHAR(70) NOT NULL,
     statusAktif BOOLEAN DEFAULT TRUE,
-    tipeAkun VARCHAR(10) CHECK (tipeAkun IN ('Mahasiswa', 'Dosen', 'Admin')), -- Ditambahkan CHECK
+    tipeAkun VARCHAR(10) CHECK (tipeAkun IN ('Mahasiswa', 'Dosen', 'Admin')),
     lastLogin TIMESTAMP
 );
 
@@ -65,7 +65,7 @@ CREATE TABLE TugasAkhir (
     TopikTA VARCHAR(150),
     TanggalUTS DATE,
     TanggalUas DATE,
-    IdMahasiswa VARCHAR(50) NOT NULL, -- Diperbaiki: VARCHAR(50)
+    IdMahasiswa VARCHAR(50) NOT NULL,
     FOREIGN KEY (IdMahasiswa) REFERENCES Mahasiswa(IdPengguna)
 );
 
@@ -78,7 +78,7 @@ CREATE TABLE TAtermasukAkademik (
 );
 
 CREATE TABLE Dosen_Pembimbing (
-    IdDosen VARCHAR(50), -- Diperbaiki: VARCHAR(50)
+    IdDosen VARCHAR(50),
     idTA INT,
     PRIMARY KEY (IdDosen, idTA),
     FOREIGN KEY (IdDosen) REFERENCES Dosen(IdPengguna),
@@ -99,9 +99,9 @@ CREATE TABLE Bimbingan (
 CREATE TABLE TopikBimbingan (
 	IdBim INT,
     IdTA INT,
-    StatusMhs VARCHAR(20),      -- Tambahan: Status Mahasiswa (Misal: Mengajukan)
-    StatusDosen1 VARCHAR(20),   -- Tambahan: Status Dosen Pembimbing 1
-    StatusDosen2 VARCHAR(20),   -- Tambahan: Status Dosen Pembimbing 2
+    StatusMhs VARCHAR(20),
+    StatusDosen1 VARCHAR(20),
+    StatusDosen2 VARCHAR(20),
 	StatusBimbingan VARCHAR (20),
     PRIMARY KEY (IdBim, IdTA),
     FOREIGN KEY (IdBim) REFERENCES Bimbingan(IdBim),
@@ -109,7 +109,7 @@ CREATE TABLE TopikBimbingan (
 );
 
 CREATE TABLE Jadwal (
-    IdJadwal INT PRIMARY KEY,
+    IdJadwal SERIAL PRIMARY KEY,
     tanggal DATE,
     WaktuMulai TIME,
     WaktuSelesai TIME,
@@ -117,9 +117,9 @@ CREATE TABLE Jadwal (
 );
 
 CREATE TABLE Jadwal_Pribadi (
-    IdJadwal INT, -- Tidak perlu PK tunggal, PK komposit lebih baik
-    IdPengguna VARCHAR(50), -- Diperbaiki: VARCHAR(50)
-    PRIMARY KEY (IdJadwal, IdPengguna), -- Disarankan PK komposit
+    IdJadwal INT,
+    IdPengguna VARCHAR(50),
+    PRIMARY KEY (IdJadwal, IdPengguna),
     FOREIGN KEY (IdJadwal) REFERENCES Jadwal(IdJadwal),
     FOREIGN KEY (IdPengguna) REFERENCES Pengguna(IdPengguna)
 );
@@ -144,7 +144,7 @@ CREATE TABLE PenjadwalanBimbingan (
 
 CREATE TABLE PemblokiranRuangan (
     IdRuangan INT,
-    idAdmin VARCHAR(50), -- Diperbaiki: VARCHAR(50)
+    idAdmin VARCHAR(50),
     IdJadwal INT,
     Waktu TIMESTAMP,
     Alasan TEXT,
@@ -155,13 +155,13 @@ CREATE TABLE PemblokiranRuangan (
 );
 
 CREATE TABLE Notifikasi (
-    idNotifikasi INT PRIMARY KEY,
+    idNotifikasi SERIAL PRIMARY KEY,
     tipeNotif VARCHAR(50),
     waktuAcara TIMESTAMP
 );
 
 CREATE TABLE MahasiswaNotifikasi (
-    IdPengguna VARCHAR(50), -- Diperbaiki: VARCHAR(50)
+    IdPengguna VARCHAR(50),
     IdNotifikasi INT,
     PRIMARY KEY (IdPengguna, IdNotifikasi),
     FOREIGN KEY (IdPengguna) REFERENCES Mahasiswa(IdPengguna),
@@ -169,7 +169,7 @@ CREATE TABLE MahasiswaNotifikasi (
 );
 
 CREATE TABLE DosenNotifikasi (
-    IdPengguna VARCHAR(50), -- Diperbaiki: VARCHAR(50)
+    IdPengguna VARCHAR(50),
     IdNotifikasi INT,
     PRIMARY KEY (IdPengguna, IdNotifikasi),
     FOREIGN KEY (IdPengguna) REFERENCES Dosen(IdPengguna),
@@ -264,19 +264,12 @@ INSERT INTO Bimbingan VALUES
 (4, 'Review Bab 3', 'Catatan 4', 'Topik D', 'Aktif', 4, 4),
 (5, 'Akhir', 'Catatan 5', 'Topik E', 'Selesai', 5, 5);
 
--- INSERT INTO TopikBimbingan VALUES
--- (1, 101),
--- (2, 102),
--- (3, 103),
--- (4, 104),
--- (5, 105);
-
-INSERT INTO TopikBimbingan (IdBim, IdTA, StatusMhs, StatusDosen1, StatusDosen2, StatusBimbingan) VALUES
-(1, 101, 'Menunggu', 'Menunggu', NULL, 'Terjadwalkan'),          -- Kasus 1: Masih menunggu respons, Dosen 2 belum ada info (NULL)
-(2, 102, 'Menerima', 'Menerima', 'Menunggu', 'Terjadwalkan'),    -- Kasus 2: Mhs & Dosen 1 oke, Dosen 2 masih menunggu
-(3, 103, 'Menerima', 'Menolak', NULL, 'Gagal'),           -- Kasus 3: Ditolak oleh Dosen 1
-(4, 104, 'Dibatalkan', NULL, NULL, 'Gagal'),              -- Kasus 4: Bimbingan dibatalkan (Dosen tidak perlu isi/NULL)
-(5, 105, 'Menerima', 'Menerima', 'Menerima', 'Selesai');    -- Kasus 5: Semua pihak Menerima (Sukses)
+INSERT INTO TopikBimbingan VALUES
+(1, 101, 'Menunggu', 'Menunggu', NULL, 'Terjadwalkan'),
+(2, 102, 'Menerima', 'Menerima', 'Menunggu', 'Terjadwalkan'),
+(3, 103, 'Menerima', 'Menolak', NULL, 'Gagal'),
+(4, 104, 'Dibatalkan', NULL, NULL, 'Gagal'),
+(5, 105, 'Menerima', 'Menerima', 'Menerima', 'Selesai');
 
 INSERT INTO Jadwal VALUES
 (1, '2025-11-24', '08:00', '10:00', 0), 
@@ -351,25 +344,12 @@ INSERT INTO BimbinganNotifikasi VALUES
 (4, 4),
 (5, 5);
 
+SELECT setval(
+	'public.jadwal_idjadwal_seq', 
+	(SELECT MAX(IdJadwal) FROM Jadwal)
+);
+SELECT setval(
+	'public.notifikasi_idnotifikasi_seq', 
+	(SELECT MAX(idNotifikasi) FROM Notifikasi)
+);
 
-
--- SELECT *
--- FROM Notifikasi
--- JOIN MahasiswaNotifikasi ON Notifikasi.idNotifikasi = MahasiswaNotifikasi.IdNotifikasi
--- JOIN DosenNotifikasi ON Notifikasi.idNotifikasi = DosenNotifikasi.IdNotifikasi
--- JOIN Pengguna ON (
--- 	Pengguna.IdPengguna = MahasiswaNotifikasi.IdPengguna
---     OR 
---     Pengguna.IdPengguna = DosenNotifikasi.IdPengguna
--- )
---         WHERE p.username = 'dsn3'
-	
--- -- FROM Notifikasi
--- -- JOIN MahasiswaNotifikasi ON MahasiswaNotifikasi.IdNotifikasi = Notifikasi.IdNotifikasi 
--- -- JOIN Mahasiswa ON Mahasiswa.idPengguna = MahasiswaNotifikasi.idPengguna
--- -- WHERE Mahasiswa.idPengguna = 'U001'
--- -- --ditolak, dibatalkan, diterima, menunggu
-
--- SELECT *
--- FROM Notifikasi
--- WHERE idNotifikasi = '3'

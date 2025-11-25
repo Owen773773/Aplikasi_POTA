@@ -1,25 +1,3 @@
-@import url("https://fonts.googleapis.com/css?family=Quicksand&display=swap");
-
-:root {
-    --primary: #054a91;
-    --bg-body: #f2f0ef;
-    --bg-white: #ffffff;
-    --text-primary: #000000;
-    --text-muted: #888888;
-    --border: #dddddd;
-    --border-light: #eeeeee;
-
-    --btn-add: #66d666;
-    --btn-filter: #7885ff;
-    --btn-green-bg: #eaffea;
-    --btn-green-border: #66d666;
-    --btn-red-bg: #ffeaea;
-    --btn-red-border: #fa7e7e;
-    --btn-grey-bg: #eeeeee;
-    --btn-grey-border: #aaaaaa;
-
-    --font-base: "Quicksand", sans-serif;
-}
 body {
     display: flex;
     justify-content: center;
@@ -28,14 +6,9 @@ body {
     padding: 0;
     width: 100%;
     min-height: 100vh;
-<<<<<<< HEAD
-    background-color: gray;
-    font-family: var(--font-base);
-=======
     background-image: url('../assets/Background/BackgroundUtama.png');
     background-repeat: no-repeat;
     background-size: cover;
->>>>>>> 95add5ad884d8ee68931df83425848ab4a4824e4
 }
 
 body .containerUtama {
@@ -66,21 +39,6 @@ body .containerUtama {
     margin: 0;
 }
 
-.error-message {
-    background-color: #f8d7da;
-    color: #721c24;
-    border: 1px solid #f5c6cb;
-    border-radius: 5px;
-    padding: 10px 15px;
-    margin-bottom: 15px;
-    font-size: 14px;
-    text-align: center;
-    font-family: var(--font-base);
-}
-
-.error-message p {
-    margin: 0;
-}
 
 .containerUtama .overlayKanan .containerGrid {
     display: grid;
@@ -121,7 +79,6 @@ body .containerUtama {
 .containerUtama .overlayKiri p {
     text-align: center;
     font-size: 36px;
-    font-family: var(--font-base);
     color: #ffffff;
     width: 312px;
     height: 90px;
@@ -167,4 +124,20 @@ form {
     align-items: center;
     flex-direction: column;
     row-gap: 20px;
+}
+
+.error-message {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+    border-radius: 5px;
+    padding: 10px 15px;
+    margin-bottom: 15px;
+    font-size: 14px;
+    text-align: center;
+    font-family: var(--font-base);
+}
+
+.error-message p {
+    margin: 0;
 }

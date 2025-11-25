@@ -239,7 +239,7 @@ p#itemkiri {
 }
 
 .card-actions .img {
-  background-image: url("../assets/icons/Jam.svg");
+  background-image: url("/assets/icons/Jam.svg");
   background-size: cover;
   width: 16px;
   height: 16px;

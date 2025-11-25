@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 :root {
     --primary: #054a91;
     --bg-body: #f2f0ef;
@@ -20,22 +19,14 @@
     --font-base: "Quicksand", sans-serif;
 }
 
-body{
+.containerCard {
+    background-color: #ffffff;
+    border-radius: 48px;
+    width: 50vw;
+    height: 75vh;
     display: flex;
     justify-content: center;
     align-items: center;
-=======
-body {
-    height: 100vh;
->>>>>>> 95add5ad884d8ee68931df83425848ab4a4824e4
-    margin: 0;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-image: url('../assets/Background/BackgroundUtama.png');
-    background-repeat: no-repeat;
-    background-size: cover;
 }
 
 .containerCard {
@@ -120,6 +111,81 @@ body {
     margin: 9px;
 }
 
+=======
+    flex-direction: column;
+}
+
+.containerCard .containerinfo {
+    margin: 0;
+    padding: 0;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.containerCard .Icon {
+    background-image: url('/assets/icons/Logo.svg');
+    width: 75px;
+    height: 75px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    padding: 0;
+    margin: 0;
+}
+
+.containerCard h1{
+    font-size: 36x;
+    color: #000000;
+    margin: 0;
+    padding: 0;
+}
+.containerGrid {
+    display: grid;
+    grid-template-columns: 1fr;
+}
+
+.upload-btn {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100px;
+    height: 45px;
+    align-self: center;
+}
+
+.file-display {
+    margin-left: 20px;
+    width: 250px;
+    height: 200px;
+    background-color: #f1f1f1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    border-width: medium;
+}
+
+.file-display img {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+.file-display p {
+    font-size: 14px;
+    color: #666;
+    margin: 0;
+    padding: 0;
+}
+
+.containerSection {
+    display: flex;
+    justify-content: space-around;
+    margin: 9px;
+}
+
 .sendbtn {
     background-color: #007bff;
     color: white;
@@ -130,7 +196,7 @@ body {
 }
 
 .containerSection .IconGrid {
-    background-image: url('../assets/icons/Profil.svg');
+    background-image: url('/assets/icons/Profil.svg');
     background-size: contain;
     background-repeat: no-repeat;
     width: 35px;

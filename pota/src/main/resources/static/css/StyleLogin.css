@@ -1,25 +1,3 @@
-@import url("https://fonts.googleapis.com/css?family=Quicksand&display=swap");
-
-:root {
-    --primary: #054a91;
-    --bg-body: #f2f0ef;
-    --bg-white: #ffffff;
-    --text-primary: #000000;
-    --text-muted: #888888;
-    --border: #dddddd;
-    --border-light: #eeeeee;
-
-    --btn-add: #66d666;
-    --btn-filter: #7885ff;
-    --btn-green-bg: #eaffea;
-    --btn-green-border: #66d666;
-    --btn-red-bg: #ffeaea;
-    --btn-red-border: #fa7e7e;
-    --btn-grey-bg: #eeeeee;
-    --btn-grey-border: #aaaaaa;
-
-    --font-base: "Quicksand", sans-serif;
-}
 body {
     display: flex;
     justify-content: center;
@@ -28,8 +6,9 @@ body {
     padding: 0;
     width: 100%;
     min-height: 100vh;
-    background-color: gray;
-    font-family: var(--font-base);
+    /* background-image: url('/assets/Background/BackgroundUtama.png'); */
+    background-repeat: no-repeat;
+    background-size: cover;
 }
 
 body .containerUtama {
@@ -60,21 +39,6 @@ body .containerUtama {
     margin: 0;
 }
 
-.error-message {
-    background-color: #f8d7da;
-    color: #721c24;
-    border: 1px solid #f5c6cb;
-    border-radius: 5px;
-    padding: 10px 15px;
-    margin-bottom: 15px;
-    font-size: 14px;
-    text-align: center;
-    font-family: var(--font-base);
-}
-
-.error-message p {
-    margin: 0;
-}
 
 .containerUtama .overlayKanan .containerGrid {
     display: grid;
@@ -86,8 +50,10 @@ body .containerUtama {
     margin: 0;
 }
 
-.containerGridinput {
+.containerGrid input {
     border-radius: 5px;
+    border: 3px solid black;
+    width: 200px;
     height: 30px;
 }
 
@@ -107,13 +73,71 @@ body .containerUtama {
     width: 488px;
     height: 545px;
     border-radius: 48px;
+    flex-direction: column;
 }
 
 .containerUtama .overlayKiri p {
     text-align: center;
     font-size: 36px;
-    font-family: var(--font-base);
     color: #ffffff;
     width: 312px;
     height: 90px;
+    padding: 0;
+    margin: 0;
+}
+
+.overlayKiri #logo {
+    background-image: url('../assets/icons/Logo.svg');
+    width: 100px;
+    height: 100px;
+    background-size: contain;
+    background-repeat: no-repeat;
+    padding: 0;
+    margin: 0;
+}
+
+.containerGrid #icon1 {
+    width: 35px;
+    height: 35px;
+}
+
+.containerGrid #icon2 {
+    width: 35px;
+    height: 35px;
+}
+
+.overlayKanan #in {
+    display: flex;
+    justify-content: flex-start;
+    width: 200px;
+}
+
+.overlayKanan p {
+    font-size: 1.5em;
+    color: black;
+    margin: 0;
+    padding: 0;
+}
+
+form {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    row-gap: 20px;
+}
+
+.error-message {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+    border-radius: 5px;
+    padding: 10px 15px;
+    margin-bottom: 15px;
+    font-size: 14px;
+    text-align: center;
+    font-family: var(--font-base);
+}
+
+.error-message p {
+    margin: 0;
 }

@@ -1,26 +1,63 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>POTA Lupa Sandi</title>
+    <title>Document</title>
     <link rel="stylesheet" href="/css/styleLupaSandi.css">
 </head>
+
 <body>
-    <div class="containerLupaSandi">
-        <div id="atas">
-            <p>POTA</p>
-            <p>Ubah Kata Sandi</p>
-            <div id="icon">Icon</div>
-            <input type="text" name="akunHolder" id="lupaAkun" placeholder="Tuliskan e-mail anda">
+    <div class="containerCard">
+
+         <div class="backbtn">
+            <img src="/assets/icons/BackBtn.svg">
         </div>
 
-        <div id="bawah">
-            <button type="button" id="unggah">Unggah</button>
-            <div id="kartuPengenal">Kartu Pengenal</div>
-            <p>*Password akan direset dengan maksimal 2 hari kerja</p>
-            <button type="button" id="kirim">Kirim</button>
-        </div>
+        <div class="Icon"></div>
+        <h1>POTA</h1>
+        <h3>Ubah Kata Sandi</h3>
+
+        <form action="" method="POST">
+            <div class="containerGrid">
+                <div class="containerSection">
+                    <div class="IconGrid"></div>
+                    <input style="height: 25px; border-width: 2px 2px 2px 2px;" type="text"
+                        placeholder="Tuliskan Email Anda">
+                </div>
+                <div class="containerSection">
+                    <button type="button" class="upload-btn" onclick="document.getElementById('fileInput').click()">Unggah</button>
+                    <div class="file-display" id="fileDisplay">
+                        <p>Kartu Pengenal</p>
+                    </div>
+                    <input type="file" id="fileInput" style="display:none" onchange="previewFile()">
+                </div>
+            </div>
+            <p style="color: red; font-size: 15px; margin-top: 25px;">*Password akan direset dengan maksimal 2 hari
+                kerja</p>
+            <button type="submit" class="sendbtn">Kirim</button>
+        </form>
     </div>
+
+    <script>
+        function previewFile() {
+            var file = document.getElementById('fileInput').files[0];
+            var fileDisplay = document.getElementById('fileDisplay');
+            var reader = new FileReader();
+
+            if (file) {
+                if (file.type.startsWith('image/')) {
+                    reader.onload = function (e) {
+                        fileDisplay.innerHTML = '<img src="' + e.target.result + '" alt="Preview">';
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    fileDisplay.innerHTML = '<p>' + file.name + '</p>';
+                }
+            }
+        }
+    </script>
 </body>
+
 </html>

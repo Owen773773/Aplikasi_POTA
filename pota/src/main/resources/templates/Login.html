@@ -11,27 +11,28 @@
 <body>
     <div class="containerUtama">
         <div class="overlayKiri">
+            <div id="logo"></div>
             <p>Selamat Datang di POTA</p>
         </div>
         <div class="overlayKanan">
-            <p>Masuk</p>
+            <div id="in">
+                <p>Masuk</p>
+            </div>
             <div th:if="${error}" class="error-message">
                 <p th:text="${error}"></p>
             </div>
-            <form th:action="@{/login}" method="post" class="containerGrid">
-                <div id="icon">Icon</div>
-                <input type="text" name="username" id="akun" placeholder="Masukan Akun Anda">
-                
-                <div id="icon">Icon</div>
-                <input type="password" name="password" id="pass" placeholder="Masukan Password Anda">
-                
+           <form th:action="@{/login}" method="POST">
+                <div class="containerGrid">
+                    <img src="/assets/icons/Profil.svg" alt="" id="icon1">
+                    <input type="text" name="username" id="akun" placeholder="Masukan Akun Anda">
+                    <img src="/assets/icons/Notifikasi.svg" alt="" id="icon2">
+                    <input type="password" name="password" id="pass" placeholder="Masukan Password Anda">
+                </div>
                 <button type="submit">Masuk</button>
             </form>
             <a th:href="@{/lupasandi}">Lupa Kata Sandi?</a>
         </div>
     </div>
-
-    
 </body>
 
 </html>

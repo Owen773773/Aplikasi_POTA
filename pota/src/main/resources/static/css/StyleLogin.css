@@ -6,7 +6,7 @@ body {
     padding: 0;
     width: 100%;
     min-height: 100vh;
-    background-image: url('/Background/BackgroundUtama.png');
+    background-image: url('/assets/Background/BackgroundUtama.png');
     background-repeat: no-repeat;
     background-size: cover;
 }
@@ -87,7 +87,7 @@ body .containerUtama {
 }
 
 .overlayKiri #logo {
-    background-image: url('../assets/icons/Logo.svg');
+    background-image: url('/assets/icons/Logo.svg');
     width: 100px;
     height: 100px;
     background-size: contain;

@@ -1,117 +1,23 @@
-:root {
-    --primary: #054a91;
-    --bg-body: #f2f0ef;
-    --bg-white: #ffffff;
-    --text-primary: #000000;
-    --text-muted: #888888;
-    --border: #dddddd;
-    --border-light: #eeeeee;
-
-    --btn-add: #66d666;
-    --btn-filter: #7885ff;
-    --btn-green-bg: #eaffea;
-    --btn-green-border: #66d666;
-    --btn-red-bg: #ffeaea;
-    --btn-red-border: #fa7e7e;
-    --btn-grey-bg: #eeeeee;
-    --btn-grey-border: #aaaaaa;
-
-    --font-base: "Quicksand", sans-serif;
-}
-
-.containerCard {
-    background-color: #ffffff;
-    border-radius: 48px;
-    width: 50vw;
-    height: 75vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.containerCard {
-    background-color: #ffffff;
-    border-radius: 48px;
-    width: 50vw;
-    height: 75vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-}
-
-.containerCard .containerinfo {
+body {
+    height: 100vh;
     margin: 0;
     padding: 0;
+    display: flex;
     justify-content: center;
     align-items: center;
-    flex-direction: column;
-}
-
-.containerCard .Icon {
-    background-image: url('../assets/icons/Logo.svg');
-    width: 75px;
-    height: 75px;
-    background-size: contain;
+    background-image: url('/assets/Background/BackgroundUtama.png');
     background-repeat: no-repeat;
-    padding: 0;
-    margin: 0;
+    background-size: cover;
 }
 
-.containerCard h1{
-    font-size: 36x;
-    color: #000000;
-    margin: 0;
-    padding: 0;
-}
-.containerGrid {
-    display: grid;
-    grid-template-columns: 1fr;
-}
-
-.upload-btn {
-    background-color: #007bff;
-    color: white;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    width: 100px;
-    height: 45px;
-    align-self: center;
-}
-
-.file-display {
-    margin-left: 20px;
-    width: 250px;
-    height: 200px;
-    background-color: #f1f1f1;
+.containerCard {
+    background-color: #ffffff;
+    border-radius: 48px;
+    width: 50vw;
+    height: 75vh;
     display: flex;
     justify-content: center;
     align-items: center;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    border-width: medium;
-}
-
-.file-display img {
-    max-width: 100%;
-    max-height: 100%;
-}
-
-.file-display p {
-    font-size: 14px;
-    color: #666;
-    margin: 0;
-    padding: 0;
-}
-
-.containerSection {
-    display: flex;
-    justify-content: space-around;
-    margin: 9px;
-}
-
-=======
     flex-direction: column;
 }
 

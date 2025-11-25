@@ -1,5 +1,7 @@
 package com.application.pota.admin;
 
+import com.application.pota.jadwal.JadwalService;
+import com.application.pota.jadwal.SlotWaktu;
 import com.application.pota.pengguna.Pengguna;
 import com.application.pota.pengguna.PenggunaService;
 import com.application.pota.ruangan.Ruangan;
@@ -17,6 +19,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.IsoFields;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/admin")
@@ -26,6 +29,10 @@ public class AdminController {
     private PenggunaService penggunaService;
     @Autowired
     private RuanganService ruanganService;
+    @Autowired
+    private JadwalService jadwalService;
+    @Autowired
+    private AdminService adminService;
 
     @GetMapping({"", "/"})
     public String halamanAdmin(Model model) {
@@ -41,7 +48,6 @@ public class AdminController {
         }
 
         model.addAttribute("listUser", listUser);
-
         model.addAttribute("user", new Pengguna());
         model.addAttribute("thesis", new Object());
 
@@ -52,17 +58,15 @@ public class AdminController {
     public String halamanRuangan(@RequestParam(required = false) Integer ruanganId,
                                  @RequestParam(required = false) String week,
                                  Model model) {
-        // ✅ List Ruangan
+
         List<Ruangan> listRuangan = ruanganService.getAllRuang();
         model.addAttribute("listRuangan", listRuangan);
 
-        // ✅ Set ruangan pertama sebagai default jika tidak ada parameter
         if (ruanganId == null && !listRuangan.isEmpty()) {
             ruanganId = listRuangan.get(0).getIdRuangan();
         }
         model.addAttribute("selectedRuanganId", ruanganId);
 
-        // ✅ Minggu - bila kosong set minggu ini
         if (week == null || week.isEmpty()) {
             LocalDate hariIni = LocalDate.now();
             int weekNum = hariIni.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR);
@@ -73,7 +77,6 @@ public class AdminController {
 
         model.addAttribute("weekParam", week);
 
-        // ✅ Hitung tanggal mulai minggu untuk ditampilkan
         String tahun = week.substring(0, 4);
         String minggu = week.substring(6);
 
@@ -82,13 +85,17 @@ public class AdminController {
 
         model.addAttribute("tanggalMulaiMinggu", tanggalMulaiFormatted);
 
-        // TODO: Load schedule data
-        // model.addAttribute("listScheduleSlots", scheduleService.getSchedule(ruanganId, week));
+        // Ambil data jadwal dengan tipe (PEMBLOKIRAN atau BIMBINGAN)
+        JadwalService.DataJadwalMingguan temp = jadwalService.dapatkanJadwalMingguan(week, "" + ruanganId, true);
+        Map<DayOfWeek, String> HariTanggal = temp.getTanggalHeader();
+        List<List<SlotWaktu>> timetableGrid = temp.getGridJadwal();
+
+        model.addAttribute("listHari", HariTanggal);
+        model.addAttribute("timetable", timetableGrid);
 
         return "Admin_Ruangan";
     }
 
-    // ✅ Helper method untuk hitung tanggal mulai minggu
     private LocalDate hitungTanggalMulaiMinggu(int tahun, int minggu) {
         return LocalDate.of(tahun, 1, 1)
                 .with(IsoFields.WEEK_OF_WEEK_BASED_YEAR, minggu)

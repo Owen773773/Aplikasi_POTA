@@ -1,14 +1,17 @@
 package com.application.pota.admin;
 
+import com.application.pota.jadwal.Jadwal;
+import com.application.pota.jadwal.JadwalService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.time.DayOfWeek;
+import java.time.LocalTime;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
 public class AdminService {
-    @Autowired
     private final AdminRepository adminRepository;
+
 }

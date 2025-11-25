@@ -100,7 +100,7 @@
                         <td class="table-actions">
                             <!-- Toggle Status Button -->
                             <a th:href="@{/user/toggleStatus/{id}(id=${user.idPengguna})}"
-                               th:class="'btn-action ' + (${user.statusAktif} ? 'green' : 'grey')"
+                               th:class="'btn-action ' + (${user.statusAktif} ? 'blue' : 'grey')"
                                th:title="${user.statusAktif} ? 'Nonaktifkan Akun' : 'Aktifkan Akun'"
                                onclick="return confirm('Apakah Anda yakin ingin mengubah status pengguna ini?')">
                                 <img th:if="${user.statusAktif}"

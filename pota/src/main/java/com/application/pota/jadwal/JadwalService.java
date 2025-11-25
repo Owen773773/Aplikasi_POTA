@@ -10,173 +10,122 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.IsoFields;
 import java.util.*;
 
-/**
- * Service untuk mengelola jadwal dan membuat timetable
- *
- * ALUR KERJA:
- * 1. Terima parameter minggu (string) dan ID target (pengguna/ruangan)
- * 2. Konversi minggu ke range tanggal (Senin-Jumat)
- * 3. Ambil data jadwal dari database
- * 4. Kelompokkan jadwal per hari
- * 5. Buat grid timetable (baris=jam, kolom=hari)
- * 6. Return data lengkap (grid + header tanggal)
- */
 @Service
 @RequiredArgsConstructor
 public class JadwalService {
 
-    private final PembuatGridJadwal pembuatGridJadwal = new PembuatGridJadwal();
     private final JadwalRepository jadwalRepository;
 
     /**
-     * Data jadwal dengan informasi tipe dan status
+     * Inner class untuk data jadwal dengan informasi tipe
      */
     @lombok.Data
     @lombok.AllArgsConstructor
-    public static class JadwalDenganTipe {
+    public static class JadwalWithType {
         private Jadwal jadwal;
-        private String tipe; // "PEMBLOKIRAN" atau "BIMBINGAN" atau "PRIBADI"
+        private String type; // "PEMBLOKIRAN" atau "BIMBINGAN"
         private String status; // untuk bimbingan: status dari tabel Bimbingan
     }
 
     /**
-     * Struktur data lengkap untuk tampilan jadwal mingguan
+     * Inner class untuk mengembalikan struktur data yang lengkap untuk tampilan jadwal mingguan.
      */
     @Value
-    public static class DataJadwalMingguan {
-        Map<DayOfWeek, String> tanggalHeader;
-        List<List<SlotWaktu>> gridJadwal;
-        LocalDate tanggalMulaiMinggu;
-        LocalDate tanggalAkhirMinggu;
+    public static class WeeklyScheduleData {
+        Map<DayOfWeek, String> headerDates;
+        Map<DayOfWeek, List<JadwalWithType>> scheduledSlots;
+        LocalDate startOfWeek;
+        LocalDate endOfWeek;
     }
 
-    /**
-     * Mendapatkan jadwal mingguan untuk pengguna atau ruangan
-     *
-     * @param minggu Format: "2024-W01"
-     * @param idTarget ID pengguna atau ID ruangan
-     * @param apakahRuangan true jika mencari jadwal ruangan, false jika pengguna
-     * @return Data jadwal mingguan lengkap dengan grid
-     */
-    public DataJadwalMingguan dapatkanJadwalMingguan(String minggu, String idTarget, boolean apakahRuangan) {
-        // Konversi minggu ke tanggal Senin dan Jumat
-        LocalDate hariSenin = konversiMingguKeHariSenin(minggu);
-        LocalDate hariJumat = hariSenin.plusDays(4);
+    public WeeklyScheduleData getWeeklySchedule(String week, String targetId, boolean isRuangan) {
+        LocalDate weekStartDate = getHariSenin(week);
+        LocalDate weekEndDate = weekStartDate.plusDays(4);
 
-        Map<DayOfWeek, List<JadwalDenganTipe>> jadwalPerHari;
-        List<List<SlotWaktu>> gridJadwal;
+        Map<DayOfWeek, List<JadwalWithType>> groupedSlots;
 
-        if (apakahRuangan) {
-            // Ambil jadwal untuk ruangan (pemblokiran + bimbingan)
-            List<Jadwal> jadwalPemblokiran = jadwalRepository.findByWeekRangeRuangan(
-                    hariSenin, hariJumat, Integer.parseInt(idTarget)
+        if (isRuangan) {
+            // Ambil pemblokiran ruangan
+            List<Jadwal> blockedSlots = jadwalRepository.findByWeekRangeRuangan(
+                    weekStartDate, weekEndDate, Integer.parseInt(targetId)
             );
 
-            List<JadwalJdbc.JadwalWithStatus> jadwalBimbingan = jadwalRepository.findBimbinganByWeekRangeRuangan(
-                    hariSenin, hariJumat, Integer.parseInt(idTarget)
+            // Ambil jadwal bimbingan dengan status dari database
+            List<JadwalJdbc.JadwalWithStatus> bimbinganSlots = jadwalRepository.findBimbinganByWeekRangeRuangan(
+                    weekStartDate, weekEndDate, Integer.parseInt(targetId)
             );
 
-            // Gabungkan semua jadwal dengan tipenya
-            List<JadwalDenganTipe> semuaJadwal = new ArrayList<>();
+            // Gabungkan dengan tipe
+            List<JadwalWithType> combined = new ArrayList<>();
 
-            // Tambahkan jadwal pemblokiran
-            for (Jadwal j : jadwalPemblokiran) {
-                semuaJadwal.add(new JadwalDenganTipe(j, "PEMBLOKIRAN", null));
+            // Tambahkan pemblokiran
+            for (Jadwal j : blockedSlots) {
+                combined.add(new JadwalWithType(j, "PEMBLOKIRAN", null));
             }
 
-            // Tambahkan jadwal bimbingan dengan statusnya
-            for (JadwalJdbc.JadwalWithStatus jws : jadwalBimbingan) {
-                semuaJadwal.add(new JadwalDenganTipe(jws.getJadwal(), "BIMBINGAN", jws.getStatus()));
+            // Tambahkan bimbingan dengan status dari database
+            for (JadwalJdbc.JadwalWithStatus jws : bimbinganSlots) {
+                combined.add(new JadwalWithType(jws.getJadwal(), "BIMBINGAN", jws.getStatus()));
             }
 
-            jadwalPerHari = kelompokkanJadwalPerHari(semuaJadwal);
-            gridJadwal = pembuatGridJadwal.buatGridJadwal(jadwalPerHari);
-
+            groupedSlots = processJadwalWithType(combined);
         } else {
-            // Ambil jadwal untuk pengguna (jadwal pribadi + bimbingan)
-            List<Jadwal> jadwalPribadi = jadwalRepository.findByWeekRangePengguna(
-                    hariSenin, hariJumat, idTarget
+            List<Jadwal> rawJadwalList = jadwalRepository.findByWeekRangePengguna(
+                    weekStartDate, weekEndDate, targetId
             );
-
-            List<JadwalJdbc.JadwalWithStatus> jadwalBimbingan = jadwalRepository.findBimbinganByWeekRangePengguna(
-                    hariSenin, hariJumat, idTarget
-            );
-
-            // Gabungkan semua jadwal pengguna
-            List<JadwalDenganTipe> semuaJadwal = new ArrayList<>();
-
-            // Tambahkan jadwal pribadi (kelas/acara pribadi)
-            for (Jadwal j : jadwalPribadi) {
-                semuaJadwal.add(new JadwalDenganTipe(j, "PRIBADI", null));
+            List<JadwalWithType> jadwalWithTypes = new ArrayList<>();
+            for (Jadwal j : rawJadwalList) {
+                jadwalWithTypes.add(new JadwalWithType(j, "PRIBADI", null));
             }
-
-            // Tambahkan jadwal bimbingan dengan statusnya
-            for (JadwalJdbc.JadwalWithStatus jws : jadwalBimbingan) {
-                semuaJadwal.add(new JadwalDenganTipe(jws.getJadwal(), "BIMBINGAN", jws.getStatus()));
-            }
-
-            jadwalPerHari = kelompokkanJadwalPerHari(semuaJadwal);
-            gridJadwal = pembuatGridJadwal.buatGridJadwal(jadwalPerHari);
+            groupedSlots = processJadwalWithType(jadwalWithTypes);
         }
 
-        Map<DayOfWeek, String> headerTanggal = buatHeaderTanggal(hariSenin);
+        Map<DayOfWeek, String> headerDates = formatHariTanggal(weekStartDate);
 
-        return new DataJadwalMingguan(headerTanggal, gridJadwal, hariSenin, hariJumat);
+        return new WeeklyScheduleData(headerDates, groupedSlots, weekStartDate, weekEndDate);
     }
 
-    /**
-     * Konversi string minggu (format: "2024-W01") ke tanggal hari Senin
-     */
-    public static LocalDate konversiMingguKeHariSenin(String minggu) {
-        int tahun = Integer.parseInt(minggu.substring(0, 4));
-        int nomorMinggu = Integer.parseInt(minggu.substring(6));
+    public static LocalDate getHariSenin(String week) {
+        int year = Integer.parseInt(week.substring(0, 4));
+        int weekNum = Integer.parseInt(week.substring(6));
 
         return LocalDate.now()
-                .with(IsoFields.WEEK_BASED_YEAR, tahun)
-                .with(IsoFields.WEEK_OF_WEEK_BASED_YEAR, nomorMinggu)
+                .with(IsoFields.WEEK_BASED_YEAR, year)
+                .with(IsoFields.WEEK_OF_WEEK_BASED_YEAR, weekNum)
                 .with(DayOfWeek.MONDAY);
     }
 
-    /**
-     * Kelompokkan daftar jadwal berdasarkan hari (Senin-Jumat)
-     */
-    private Map<DayOfWeek, List<JadwalDenganTipe>> kelompokkanJadwalPerHari(List<JadwalDenganTipe> daftarJadwal) {
-        Map<DayOfWeek, List<JadwalDenganTipe>> mapJadwal = new LinkedHashMap<>();
+    private Map<DayOfWeek, List<JadwalWithType>> processJadwalWithType(List<JadwalWithType> jadwalList) {
+        Map<DayOfWeek, List<JadwalWithType>> mapJadwal = new LinkedHashMap<>();
 
-        // Inisialisasi untuk hari kerja (Senin-Jumat)
-        List<DayOfWeek> hariKerja = List.of(
+        List<DayOfWeek> workDays = List.of(
                 DayOfWeek.MONDAY, DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY,
                 DayOfWeek.THURSDAY, DayOfWeek.FRIDAY
         );
 
-        for (DayOfWeek hari : hariKerja) {
-            mapJadwal.put(hari, new ArrayList<>());
+        for (DayOfWeek day : workDays) {
+            mapJadwal.put(day, new ArrayList<>());
         }
 
-        // Masukkan jadwal ke hari yang sesuai
-        for (JadwalDenganTipe jadwalDenganTipe : daftarJadwal) {
-            DayOfWeek hari = jadwalDenganTipe.getJadwal().getTanggal().toLocalDate().getDayOfWeek();
-            if (mapJadwal.containsKey(hari)) {
-                mapJadwal.get(hari).add(jadwalDenganTipe);
+        for (JadwalWithType jadwalWithType : jadwalList) {
+            DayOfWeek day = jadwalWithType.getJadwal().getTanggal().toLocalDate().getDayOfWeek();
+            if (mapJadwal.containsKey(day)) {
+                mapJadwal.get(day).add(jadwalWithType);
             }
         }
 
         return mapJadwal;
     }
 
-    /**
-     * Buat header tanggal untuk setiap hari kerja (format: d/M/yyyy)
-     */
-    private Map<DayOfWeek, String> buatHeaderTanggal(LocalDate hariSenin) {
+    private Map<DayOfWeek, String> formatHariTanggal(LocalDate mondayDate) {
         Map<DayOfWeek, String> headerMap = new LinkedHashMap<>();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy");
 
-        // Senin sampai Jumat (5 hari kerja)
         for (int i = 0; i < 5; i++) {
-            LocalDate tanggal = hariSenin.plusDays(i);
-            DayOfWeek hari = tanggal.getDayOfWeek();
-            String tanggalTerformat = tanggal.format(formatter);
-            headerMap.put(hari, tanggalTerformat);
+            LocalDate date = mondayDate.plusDays(i);
+            DayOfWeek day = date.getDayOfWeek();
+            String formattedDate = date.format(formatter);
+            headerMap.put(day, formattedDate);
         }
 
         return headerMap;

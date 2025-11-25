@@ -1,7 +1,7 @@
 package com.application.pota.admin;
 
+import com.application.pota.jadwal.Jadwal;
 import com.application.pota.jadwal.JadwalService;
-import com.application.pota.jadwal.SlotWaktu;
 import com.application.pota.pengguna.Pengguna;
 import com.application.pota.pengguna.PenggunaService;
 import com.application.pota.ruangan.Ruangan;
@@ -86,9 +86,12 @@ public class AdminController {
         model.addAttribute("tanggalMulaiMinggu", tanggalMulaiFormatted);
 
         // Ambil data jadwal dengan tipe (PEMBLOKIRAN atau BIMBINGAN)
-        JadwalService.DataJadwalMingguan temp = jadwalService.dapatkanJadwalMingguan(week, "" + ruanganId, true);
-        Map<DayOfWeek, String> HariTanggal = temp.getTanggalHeader();
-        List<List<SlotWaktu>> timetableGrid = temp.getGridJadwal();
+        JadwalService.WeeklyScheduleData temp = jadwalService.getWeeklySchedule(week, "" + ruanganId, true);
+        Map<DayOfWeek, String> HariTanggal = temp.getHeaderDates();
+        Map<DayOfWeek, List<JadwalService.JadwalWithType>> timetableRuang = temp.getScheduledSlots();
+
+        // Gunakan AdminService untuk build grid dengan status yang benar
+        List<List<TimeSlot>> timetableGrid = adminService.buildTimetableGrid(timetableRuang);
 
         model.addAttribute("listHari", HariTanggal);
         model.addAttribute("timetable", timetableGrid);

@@ -11,13 +11,13 @@ public class NotifikasiController {
     @Autowired
     private NotifikasiService notifikasiService;
 
-    @GetMapping("/")
+    @GetMapping("/") //
     public String showNotificationByUsername(@RequestParam String username, Model model){
         List<Notifikasi> listNotif = notifikasiService.kirimNotifikasiInAppByUsername(username);
         model.addAttribute("daftarNotifikasi", listNotif); //th each
         return "notifikasi"; 
     }
-    @GetMapping("/")
+    @GetMapping("/") //
     public String showNotificationByIdUser(@RequestParam String idUser, Model model){
         List<Notifikasi> listNotif = notifikasiService.kirimNotifikasiInAppByUsername(idPengguna);
         model.addAttribute("daftarNotifikasi", listNotif); //th each

@@ -10,7 +10,19 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Notifikasi {
+    // private int idNotifikasi;
+    // private String tipeNotif;
+    // private Timestamp waktuAcara;
+
     private int idNotifikasi;
     private String tipeNotif;
     private Timestamp waktuAcara;
+    
+    private String infoTanggal;
+    private String infoWaktuMulai;
+    private String infoWaktuSelesai;
+    private String infoRuangan;
+    private String catatan;
+    private String pesanDiFrontend;
+
 }

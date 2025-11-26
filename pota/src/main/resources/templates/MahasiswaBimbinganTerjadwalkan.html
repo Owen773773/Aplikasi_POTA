@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>POTA - Proses</title>
+    <link rel="stylesheet" href="/css/BimbinganTerjadwalkan.css">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+
+    <div class="main">
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+            <div class="logo-container">
+                <img src="/assets/icons/logo.svg">
+                <span class="text-navbar">POTA</span>
+            </div>
+
+            <nav class="nav-menu">
+                <a th:href="@{/mahasiswa/beranda}" class="nav-item">
+                    <img th:src="@{/assets/icons/ManajemenAkun.svg}" alt="" class="nav-icon" />
+                    <span>Beranda</span>
+                </a>
+
+                <a th:href="@{/mahasiswa/jadwal}" class="nav-item">
+                    <img th:src="@{/assets/icons/Jadwal.svg}" alt="" class="nav-icon" />
+                    <span>Jadwal</span>
+                </a>
+
+                <a th:href="@{/mahasiswa/bimbingan}" class="nav-item active">
+                    <img th:src="@{/assets/icons/Bimbingan.svg}" alt="" class="nav-icon" />
+                    <span>Bimbingan</span>
+                </a>
+
+                <a th:href="@{/mahasiswa/notifikasi}" class="nav-item">
+                    <img th:src="@{/assets/icons/Notifikasi.svg}" alt="" class="nav-icon" />
+                    <span>Notifikasi</span>
+                </a>
+
+                <a th:href="@{/mahasiswa/profil}" class="nav-item">
+                    <img th:src="@{/assets/icons/Profil.svg}" alt="" class="nav-icon" />
+                    <span>Profil</span>
+                </a>
+
+            </nav>
+
+            <div class="logout-section">
+                <form th:action="@{/logout}" method="post" style="margin: 0;">
+                    <button type="submit" class="btn-logout">
+                        <img th:src="@{/assets/icons/LogOut.svg}" alt="" />
+                        Log Out
+                    </button>
+                </form>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <h1 class="page-title">Bimbingan</h1>
+
+            <div class="tab-menu">
+                <a class="tab" th:href="@{/mahasiswa/bimbinganProses}">Proses</a>
+                <a class="tab active" th:href="@{/mahasiswa/bimbinganTerjadwal}">Terjadwalkan</a>
+                <a class="tab" th:href="@{/mahasiswa/bimbinganSelesai}">Selesai</a>
+                <a class="tab" th:href="@{/mahasiswa/bimbinganGagal}">Gagal</a>
+            </div>
+
+            <div class="bimbingan-list">
+
+                <!-- Tempat buat nampilin Data -->
+                <div class="card">
+                    <div class="card-header">
+                        <span>10/10/2025 </span> <!-- Ini masih contoh data -->
+                        <span>10.00 - 11.00</span>
+                        <span>Ruang Tugas Akhir</span>
+                        <img src="/assets/icons/Arrow.svg" class="dropdown-btn">
+                    </div>
+
+                    <div class="card-body">
+                        <div class="containerutama">
+                            <p class="item">Rincian Bimbingan</p>
+                            <div class="containerItem">
+                                <div class="containerGrid">
+                                    <p id="itemkiri">Tanggal</p>
+                                    <p id="itemkanan">: 10/10/2025</p>
+                                    <p id="itemkiri">Jam</p>
+                                    <p id="itemkanan">: 10.00 - 11.00</p>
+                                    <p id="itemkiri">Durasi</p>
+                                    <p id="itemkanan">: 1 Jam</p>
+                                    <p id="itemkiri">Lokasi</p>
+                                    <p id="itemkanan">: Ruang Tugas Akhir</p>
+                                    <p id="itemkiri">Dosen</p>
+                                    <p id="itemkanan">: Maria Veronica</p>
+                                    <p id="itemkiri">Mahasiswa</p>
+                                    <p id="itemkanan">: -</p>
+                                </div>
+
+                                <div class="containerGrid2">
+                                    <p id="itemkiri">Topik</p>
+                                    <p id="itemkanan">: Bimbingan Mingguan</p>
+                                    <p id="itemkiri">Deskripsi Topik</p>
+                                    <p id="itemkanan">: -</p>
+                                </div>
+                            </div>
+                            <div class="card-actions">
+                                <button class="btn accept"><div class="img"></div>Validasi</button>
+                                <button class="btn reject">Batalkan Bimbingan</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <script>
+        document.querySelectorAll(".dropdown-btn").forEach(btn => {
+            btn.addEventListener("click", () => {
+                let card = btn.closest(".card");
+                card.classList.toggle("open");
+            });
+        });
+
+
+        document.querySelectorAll(".nav-item").forEach(item => {
+            if (item.textContent.trim() === document.title.replace("POTA - ", "")) {
+                item.classList.add("active");
+            }
+        });
+
+
+
+    </script>
+
+</body>
+
+</html>

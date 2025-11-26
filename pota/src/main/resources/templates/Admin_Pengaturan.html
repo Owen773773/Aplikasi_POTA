@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="id" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>POTA - Akun</title>
+
+    <link rel="stylesheet" href="/css/style.css" />
+  </head>
+  <body>
+    <div class="main">
+      <aside class="sidebar">
+          <div class="logo-container">
+              <img th:src="@{/assets/icons/logo.svg}" alt="Logo POTA" class="logo-icon"/>
+              <span class="logo-text">POTA</span>
+          </div>
+
+        <nav class="nav-menu">
+            <a th:href="@{/admin/akun}" class="nav-item">
+                <img th:src="@{/assets/icons/ManajemenAkun.svg}" alt="" class="nav-icon" />
+                <span>Akun</span>
+            </a>
+
+            <a th:href="@{/admin/ruangan}" class="nav-item">
+                <img th:src="@{/assets/icons/Jadwal.svg}" alt="" class="nav-icon" />
+                <span>Ruangan</span>
+            </a>
+
+            <a th:href="@{/admin/pengaturan}" class="nav-item active">
+                <img th:src="@{/assets/icons/Setting.svg}" alt="" class="nav-icon" />
+                <span>Pengaturan</span>
+            </a>
+        </nav>
+
+          <div class="logout-section">
+              <form th:action="@{/logout}" method="post" style="margin: 0;">
+                  <button type="submit" class="btn-logout">
+                      <img th:src="@{/assets/icons/LogOut.svg}" alt="" />
+                      Log Out
+                  </button>
+              </form>
+          </div>
+      </aside>
+
+      <main class="main-content">
+        <header>
+          <h1 class="page-title">Setting</h1>
+        </header>
+
+        <div class="content-body"></div>
+      </main>
+    </div>
+
+    <script>
+        // Submit week change to backend
+        function submitWeekChange() {
+            const weekInput = document.getElementById('week-input');
+            const roomSelector = document.getElementById('room-selector');
+
+            const currentUrl = new URL(window.location.href);
+            currentUrl.searchParams.set('week', weekInput.value);
+
+            // Keep room selection
+            if (roomSelector && roomSelector.value) {
+                currentUrl.searchParams.set('ruanganId', roomSelector.value);
+            }
+
+            window.location.href = currentUrl.toString();
+        }
+
+        // Handle room change
+        function handleRoomChange(ruanganId) {
+            const weekInput = document.getElementById('week-input');
+
+            const currentUrl = new URL(window.location.href);
+            currentUrl.searchParams.set('ruanganId', ruanganId);
+
+            // Keep week selection
+            if (weekInput && weekInput.value) {
+                currentUrl.searchParams.set('week', weekInput.value);
+            }
+
+            window.location.href = currentUrl.toString();
+        }
+    </script>
+  </body>
+</html>

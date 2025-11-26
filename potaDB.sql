@@ -127,6 +127,7 @@ CREATE TABLE Jadwal_Pribadi (
 CREATE TABLE Jadwal_Ruangan (
     IdJadwal INT PRIMARY KEY,
     FOREIGN KEY (IdJadwal) REFERENCES Jadwal(IdJadwal)
+    -- Catatan: Tabel ini kurang informatif. Harusnya ada kolom idRuangan.
 );
 
 CREATE TABLE Jadwal_Bimbingan (
@@ -329,7 +330,6 @@ INSERT INTO MahasiswaNotifikasi VALUES
 ('U007', 4),
 ('U008', 5);
 
-
 INSERT INTO DosenNotifikasi VALUES
 ('U003', 1),
 ('U005', 2),
@@ -343,13 +343,3 @@ INSERT INTO BimbinganNotifikasi VALUES
 (3, 3),
 (4, 4),
 (5, 5);
-
-SELECT setval(
-	'public.jadwal_idjadwal_seq', 
-	(SELECT MAX(IdJadwal) FROM Jadwal)
-);
-SELECT setval(
-	'public.notifikasi_idnotifikasi_seq', 
-	(SELECT MAX(idNotifikasi) FROM Notifikasi)
-);
-

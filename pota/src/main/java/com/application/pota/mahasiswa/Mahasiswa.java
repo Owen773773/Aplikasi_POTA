@@ -13,6 +13,8 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
 public class Mahasiswa extends Pengguna {
+    private String IdMahasiswa;
+    private String tahapTA;
 
     public Mahasiswa(String idPengguna, String username, String password,
                  String nama, boolean statusAktif, String tipeAkun,

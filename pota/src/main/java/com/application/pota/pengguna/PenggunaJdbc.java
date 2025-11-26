@@ -1,6 +1,7 @@
 package com.application.pota.pengguna;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -37,6 +38,17 @@ public class PenggunaJdbc implements PenggunaRepository {
     public Pengguna getByUsername(String username) {
         String sql = "SELECT * FROM Pengguna WHERE username = ?";
         return jdbcTemplate.queryForObject(sql, this::mapRowToPengguna, username);
+    }
+
+    @Override
+    public Pengguna authenticate(String username, String password) {
+        try {
+            String sql = "SELECT * FROM Pengguna WHERE username = ? AND password = ?";
+            Pengguna temp = jdbcTemplate.queryForObject(sql, this::mapRowToPengguna, username, password);
+            return temp;
+        } catch (EmptyResultDataAccessException e) {
+            return null;
+        }
     }
 
     @Override

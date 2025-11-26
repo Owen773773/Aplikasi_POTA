@@ -15,6 +15,10 @@ public class PenggunaService {
         return PenggunaRepository.getById(idPengguna);
     }
 
+    public Pengguna authenticatePengguna(String username, String password) {
+        return PenggunaRepository.authenticate(username, password);
+    }
+
     public List<Pengguna> getAllPengguna() {
         return PenggunaRepository.findAll();
     }

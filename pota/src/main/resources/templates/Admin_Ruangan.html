@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="id" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>POTA - Ruangan</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+<div class="main">
+    <aside class="sidebar">
+        <div class="logo-container">
+            <img th:src="@{/assets/icons/logo.svg}" alt="Logo POTA" class="logo-icon"/>
+            <span class="logo-text">POTA</span>
+        </div>
+
+        <nav class="nav-menu">
+            <a th:href="@{/admin/akun}" class="nav-item">
+                <img th:src="@{/assets/icons/ManajemenAkun.svg}" alt="" class="nav-icon"/>
+                <span>Akun</span>
+            </a>
+
+            <a th:href="@{/admin/ruangan}" class="nav-item active">
+                <img th:src="@{/assets/icons/Jadwal.svg}" alt="" class="nav-icon"/>
+                <span>Ruangan</span>
+            </a>
+
+            <a th:href="@{/admin/pengaturan}" class="nav-item">
+                <img th:src="@{/assets/icons/Setting.svg}" alt="" class="nav-icon"/>
+                <span>Pengaturan</span>
+            </a>
+        </nav>
+
+        <div class="logout-section">
+            <form th:action="@{/logout}" method="post" style="margin: 0;">
+                <button type="submit" class="btn-logout">
+                    <img th:src="@{/assets/icons/LogOut.svg}" alt="" />
+                    Log Out
+                </button>
+            </form>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <header>
+            <h1 class="page-title">Ruangan</h1>
+        </header>
+
+        <div class="content-body">
+            <div class="schedule-header">
+                <!-- ✅ Room selector tanpa opsi kosong -->
+                <div class="room-selector-group">
+                    <select class="room-selector" id="room-selector" onchange="handleRoomChange(this.value)">
+                        <option th:each="ruang : ${listRuangan}"
+                                th:value="${ruang.idRuangan}"
+                                th:text="${ruang.namaRuangan}"
+                                th:selected="${ruang.idRuangan == selectedRuanganId}">
+                            Ruang Tugas Akhir
+                        </option>
+                    </select>
+                </div>
+
+                <!-- ✅ Date display dengan tanggal dari backend -->
+                <div class="date-display-group" onclick="document.getElementById('week-input').showPicker()">
+        <span class="date-display-text">
+            <!-- Tampilkan tanggal yang sudah dihitung backend -->
+            <span th:text="${tanggalMulaiMinggu}">24/11/2025</span>
+        </span>
+
+                    <input type="week"
+                           name="week"
+                           th:value="${weekParam}"
+                           id="week-input"
+                           onchange="submitWeekChange()"
+                           class="hidden-functional-input"/>
+
+                    <img th:src="@{/assets/icons/Jadwal.svg}"
+                         alt="Pilih Tanggal"
+                         class="calendar-icon"
+                         onclick="event.stopPropagation(); document.getElementById('week-input').showPicker()"/>
+                </div>
+            </div>
+
+            <div class="schedule-container">
+                <table class="schedule-grid">
+                    <thead>
+                    <tr>
+                        <th class="time-column"></th>
+                        <!-- Perbaikan: gunakan variable 'entry' untuk Map.Entry -->
+                        <th th:each="entry : ${listHari}" class="day-header">
+                            <div class="day-header-content">
+                                <div class="day-name"
+                                     th:text="${entry.key.getDisplayName(T(java.time.format.TextStyle).FULL, T(java.util.Locale).forLanguageTag('id'))}">
+                                    Senin
+                                </div>
+                                <div class="day-date" th:text="${entry.value}">6/10/2025</div>
+                            </div>
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <!-- Loop untuk setiap jam (07.00 - 17.00) -->
+                    <tr th:each="hourSlots, iterStat : ${timetable}">
+                        <td class="time-column">
+                            <span th:text="${#numbers.formatInteger(iterStat.index + 7, 2)} + '.00'">07.00</span>
+                        </td>
+                        <!-- Loop untuk setiap hari dalam satu jam -->
+                        <td th:each="slot : ${hourSlots}"
+                            th:class="${'time-slot ' + (slot.status != null ? slot.status : 'available')}"
+                            th:data-hour="${slot.hour}"
+                            th:data-day="${slot.day}"
+                            th:data-booking-id="${slot.bookingId != null ? slot.bookingId : ''}">
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="schedule-legend">
+                <div class="legend-item"><span class="legend-box status-unavailable"></span> Tidak Tersedia</div>
+                <div class="legend-item"><span class="legend-box status-scheduled"></span> Terjadwal</div>
+                <div class="legend-item"><span class="legend-box status-pending"></span> Menunggu Konfirmasi</div>
+            </div>
+
+            <!--            <h2 class="form-title">Blokir Ruangan</h2>-->
+
+            <!--            <form th:action="@{/admin/block-room}" method="post" class="block-form">-->
+            <!--                <div class="block-form-layout">-->
+
+            <!--                    <div class="form-group">-->
+            <!--                        <label for="lokasi">Lokasi</label>-->
+            <!--                        <select id="lokasi" name="lokasi" th:field="*{blockForm.ruanganId}" class="form-input">-->
+            <!--                            <option th:each="room : ${listRuangan}" th:value="${room.id}" th:text="${room.nama}">Ruang Tugas Akhir</option>-->
+            <!--                        </select>-->
+            <!--                    </div>-->
+
+            <!--                    <div class="form-group date-picker-group">-->
+            <!--                        <label for="tanggal">Tanggal</label>-->
+            <!--                        <div class="input-with-icon">-->
+            <!--                            <input type="text" id="tanggal" name="tanggal" th:field="*{blockForm.tanggal}" class="form-input" placeholder="DD/MM/YYYY" readonly />-->
+            <!--                            <img th:src="@{/assets/icons/calendar.svg}" alt="Kalender" class="input-icon"/>-->
+            <!--                        </div>-->
+            <!--                    </div>-->
+
+            <!--                    <div class="form-group time-range-group">-->
+            <!--                        <label for="waktuMulai">Waktu</label>-->
+            <!--                        <div class="time-inputs">-->
+            <!--                            <input type="text" id="waktuMulai" th:field="*{blockForm.waktuMulai}" class="form-input" placeholder="HH:MM" />-->
+            <!--                            <span class="separator">-</span>-->
+            <!--                            <input type="text" id="waktuSelesai" th:field="*{blockForm.waktuSelesai}" class="form-input" placeholder="HH:MM" />-->
+            <!--                        </div>-->
+            <!--                    </div>-->
+
+            <!--                    <div class="form-group alasan-group">-->
+            <!--                        <label for="alasan">Alasan</label>-->
+            <!--                        <textarea id="alasan" name="alasan" th:field="*{blockForm.alasan}" class="form-input"></textarea>-->
+            <!--                    </div>-->
+            <!--                </div>-->
+
+            <!--                <button type="submit" class="btn-konfirmasi">Konfirmasi</button>-->
+            <!--            </form>-->
+        </div>
+
+        <script>
+            // Submit week change to backend
+            function submitWeekChange() {
+                const weekInput = document.getElementById('week-input');
+                const roomSelector = document.getElementById('room-selector');
+
+                const currentUrl = new URL(window.location.href);
+                currentUrl.searchParams.set('week', weekInput.value);
+
+                // Keep room selection
+                if (roomSelector && roomSelector.value) {
+                    currentUrl.searchParams.set('ruanganId', roomSelector.value);
+                }
+
+                window.location.href = currentUrl.toString();
+            }
+
+            // Handle room change
+            function handleRoomChange(ruanganId) {
+                const weekInput = document.getElementById('week-input');
+
+                const currentUrl = new URL(window.location.href);
+                currentUrl.searchParams.set('ruanganId', ruanganId);
+
+                // Keep week selection
+                if (weekInput && weekInput.value) {
+                    currentUrl.searchParams.set('week', weekInput.value);
+                }
+
+                window.location.href = currentUrl.toString();
+            }
+        </script>
+    </main>
+</div>
+
+</body>
+</html>

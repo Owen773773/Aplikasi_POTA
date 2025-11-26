@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>POTA - Akun</title>
+
+    <link rel="stylesheet" href="/css/dosen.css">
+</head>
+
+<body>
+
+    <div class="main">
+        <aside class="sidebar">
+            <div class="logo-container">
+                <div class="logo-icon-slot">
+                    <img src="/assets/icons/logo.svg">
+                </div>
+                <span class="text-navbar">POTA</span>
+            </div>
+
+            <nav class="nav-menu">
+                <a th:href="@{/dosen/beranda}" class="nav-item">
+                    <img th:src="@{/assets/icons/ManajemenAkun.svg}" alt="" class="nav-icon"/>
+                    <span>Beranda</span>
+                </a>
+
+                <a th:href="@{/dosen/jadwal}" class="nav-item">
+                    <img th:src="@{/assets/icons/Jadwal.svg}" alt="" class="nav-icon"/>
+                    <span>Jadwal</span>
+                </a>
+
+                <a th:href="@{/dosen/bimbingan}" class="nav-item">
+                    <img th:src="@{/assets/icons/Bimbingan.svg}" alt="" class="nav-icon"/>
+                    <span>Bimbingan</span>
+                </a>
+
+                <a th:href="@{/dosen/notifikasi}" class="nav-item">
+                    <img th:src="@{/assets/icons/Notifikasi.svg}" alt="" class="nav-icon"/>
+                    <span>Notifikasi</span>
+                </a>
+
+                <a th:href="@{/dosen/profil}" class="nav-item active">
+                    <img th:src="@{/assets/icons/Profil.svg}" alt="" class="nav-icon"/>
+                    <span>Profil</span>
+                </a>
+
+            </nav>
+
+            <div class="logout-section">
+                <button class="btn-logout">
+                    <div class="logo-slot">
+                        <img src="/assets/icons/LogOut.svg">
+                    </div>
+                    Log Out
+                </button>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header>
+                <h1 class="page-title">Profil</h1>
+            </header>
+
+            <div class="content-body">
+                <div class="profil-card">
+                    <h2 class="profil-title">Data Pribadi</h2>
+
+                    <div class="profil-icon">
+                        <img src="/assets/icons/Profil.svg" />
+                    </div>
+
+                    <div class="profil-grid">
+                        <div class="profil-item">
+                            <h3>Nama</h3>
+                            <p><b>Husnul Hakim</b></p>
+                        </div>
+
+                        <div class="profil-item">
+                            <h3>Kode Nama</h3>
+                            <p><b>HUH</b></p>
+                        </div>
+
+                        <div class="profil-item">
+                            <h3>Peran</h3>
+                            <p><b>Dosen Pembimbing</b></p>
+                        </div>
+
+                        <div class="profil-item">
+                            <h3>Username</h3>
+                            <p><b>husnul@unpar.ac.id</b></p>
+                        </div>
+                    </div>
+
+                    <div class="profil-footer">
+                        <button class="btn-password"><b>Ubah Password</b></button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+</body>
+
+</html>

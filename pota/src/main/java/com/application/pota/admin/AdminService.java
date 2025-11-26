@@ -13,5 +13,4 @@ import java.util.*;
 @RequiredArgsConstructor
 public class AdminService {
     private final AdminRepository adminRepository;
-
 }

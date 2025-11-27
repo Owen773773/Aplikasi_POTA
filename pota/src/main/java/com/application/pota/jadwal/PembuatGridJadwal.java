@@ -21,7 +21,6 @@ public class PembuatGridJadwal {
 
     /**
      * Membuat grid timetable dari jadwal yang sudah dikelompokkan per hari
-     *
      * @param jadwalPerHari Map yang berisi jadwal untuk setiap hari kerja
      * @return Grid 2D berisi SlotWaktu (baris=jam, kolom=hari)
      */

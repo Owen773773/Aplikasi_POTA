@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 
 @Data
 @NoArgsConstructor
@@ -12,7 +13,6 @@ import java.time.LocalDateTime;
 public class TugasAkhir {
     private int IdTa;
     private String TopikTA ;
-    private LocalDateTime TanggalUTS;
-    private LocalDateTime TanggalUas;
-    private String IdMahasiswa;
+    private Date TanggalUTS;
+    private Date TanggalUas;
 }

@@ -1,22 +1,21 @@
 package com.application.pota.admin;
 
+import com.application.pota.dosen.DosenService;
 import com.application.pota.jadwal.JadwalService;
 import com.application.pota.jadwal.SlotWaktu;
 import com.application.pota.pengguna.Pengguna;
 import com.application.pota.pengguna.PenggunaService;
 import com.application.pota.ruangan.Ruangan;
 import com.application.pota.ruangan.RuanganService;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
+import com.application.pota.tugasakhir.TugasAkhir;
+import com.application.pota.tugasakhir.TugasAkhirService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -38,6 +37,11 @@ public class AdminController {
     private JadwalService jadwalService;
     @Autowired
     private AdminService adminService;
+    @Autowired
+    private TugasAkhirService tugasAkhirService;
+    @Autowired
+    private DosenService dosenService;
+
 
     @GetMapping({"", "/"})
     public String halamanAdmin(Model model) {
@@ -56,7 +60,7 @@ public class AdminController {
         model.addAttribute("user", new Pengguna());
         model.addAttribute("thesis", new Object());
 
-        return "Admin_Akun";
+        return "admin/Admin_Akun";
     }
 
     @GetMapping("/toggleStatus")
@@ -104,7 +108,7 @@ public class AdminController {
         model.addAttribute("listHari", HariTanggal);
         model.addAttribute("timetable", timetableGrid);
 
-        return "Admin_Ruangan";
+        return "admin/Admin_Ruangan";
     }
 
     private LocalDate hitungTanggalMulaiMinggu(int tahun, int minggu) {
@@ -115,8 +119,30 @@ public class AdminController {
 
     @GetMapping("/pengaturan")
     public String halamanPengaturan() {
-        return "Admin_Pengaturan";
+        return "admin/Admin_Pengaturan";
     }
 
-    
+//    // 1. Get User Data
+//    @GetMapping("/getUser")
+//    @ResponseBody
+//    public Pengguna getUser(@RequestParam String idPengguna) {
+//        return penggunaService.findById(idPengguna);
+//    }
+//
+//    // 2. Get TA Data untuk Mahasiswa
+//    @GetMapping("/getTAData")
+//    @ResponseBody
+//    public TugasAkhir getTAData(@RequestParam String idPengguna) {
+//        return tugasAkhirService.findByIdPengguna(idPengguna);
+//    }
+//
+//    // 3. Get Topik Bimbingan untuk Dosen
+//    @GetMapping("/getTopikBimbingan")
+//    @ResponseBody
+//    public Map<String, Object> getTopikBimbingan(@RequestParam String idPengguna) {
+//        List<String> topikList = dosenService.getTopikBimbingan(idPengguna);
+//        response.put("topikBimbingan", topikList);
+//        return response;
+//    }
+
 }

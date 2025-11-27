@@ -61,7 +61,6 @@
                     </select>
                 </div>
 
-                <!-- ✅ Date display dengan tanggal dari backend -->
                 <div class="date-display-group" onclick="document.getElementById('week-input').showPicker()">
         <span class="date-display-text">
             <!-- Tampilkan tanggal yang sudah dihitung backend -->
@@ -87,7 +86,6 @@
                     <thead>
                     <tr>
                         <th class="time-column"></th>
-                        <!-- Perbaikan: gunakan variable 'entry' untuk Map.Entry -->
                         <th th:each="entry : ${listHari}" class="day-header">
                             <div class="day-header-content">
                                 <div class="day-name"
@@ -108,9 +106,9 @@
                         <!-- Loop untuk setiap hari dalam satu jam -->
                         <td th:each="slot : ${hourSlots}"
                             th:class="${'time-slot ' + (slot.status != null ? slot.status : 'available')}"
-                            th:data-hour="${slot.hour}"
-                            th:data-day="${slot.day}"
-                            th:data-booking-id="${slot.bookingId != null ? slot.bookingId : ''}">
+                            th:data-hour="${slot.jam}"
+                            th:data-day="${slot.hari}"
+                            th:data-booking-id="${slot.idBooking != null ? slot.idBooking : ''}">
                         </td>
                     </tr>
                     </tbody>

@@ -1,7 +1,7 @@
 package com.application.pota.notifikasi;
 import org.springframework.stereotype.Repository;
 import java.util.*;
-@Repository
+
 public interface NotifikasiRepository {
     List<Notifikasi> getNotifikasiLengkapByUsername(String username);
     List<Notifikasi> getNotifikasiLengkapByIdPengguna(String idPengguna);

@@ -43,7 +43,7 @@ public class PenggunaJdbc implements PenggunaRepository {
     @Override
     public Pengguna authenticate(String username, String password) {
         try {
-            String sql = "SELECT * FROM Pengguna WHERE username = ? AND password = ?";
+            String sql = "SELECT * FROM Pengguna WHERE username = ? AND password = ? AND statusAktif = TRUE";
             Pengguna temp = jdbcTemplate.queryForObject(sql, this::mapRowToPengguna, username, password);
             return temp;
         } catch (EmptyResultDataAccessException e) {
@@ -97,5 +97,22 @@ public class PenggunaJdbc implements PenggunaRepository {
     public List<Pengguna> findAll() {
         String sql = "SELECT * FROM Pengguna";
         return jdbcTemplate.query(sql, this::mapRowToPengguna);
+    }
+
+    @Override
+    public boolean getStatus(String idPengguna) {
+        String sql = "SELECT statusAktif FROM Pengguna WHERE IdPengguna = ?";
+        Boolean statusPengguna = jdbcTemplate.queryForObject(
+                sql,
+                Boolean.class,
+                idPengguna
+        );
+        return statusPengguna != null ? statusPengguna : false;
+    }
+    @Override
+    public void ubahStatus(String idPengguna) {
+        boolean statusPost = !getStatus(idPengguna);
+        String sql = "UPDATE Pengguna set statusAktif = ? where IdPengguna = ?";
+        jdbcTemplate.update(sql, statusPost, idPengguna);
     }
 }

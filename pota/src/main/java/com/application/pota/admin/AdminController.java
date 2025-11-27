@@ -59,6 +59,12 @@ public class AdminController {
         return "Admin_Akun";
     }
 
+    @GetMapping("/toggleStatus")
+    public String toggleStatus(Model model, @RequestParam(required = true) String idPengguna) {
+        penggunaService.ubaStatus(idPengguna);
+        return "redirect:/admin/akun";
+    }
+
     @GetMapping("/ruangan")
     public String halamanRuangan(@RequestParam(required = false) Integer ruanganId,
                                  @RequestParam(required = false) String week,

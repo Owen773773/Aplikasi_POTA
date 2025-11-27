@@ -11,4 +11,6 @@ public interface PenggunaRepository {
     void edit(Pengguna pengguna);
     void delete(String id);
     List<Pengguna>findAll();
+    boolean getStatus(String idPengguna);
+    void ubahStatus(String idPengguna);
 }

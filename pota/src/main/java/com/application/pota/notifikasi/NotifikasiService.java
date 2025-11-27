@@ -1,7 +1,9 @@
 package com.application.pota.notifikasi;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -64,7 +66,7 @@ public class NotifikasiService {
         return listNotif;
     }
 
-    public void buatNotifikasiBaru(String targetUsername, String tipeNotif, Timestamp waktu) {
+    public void buatNotifikasiBaru(String targetUsername, String tipeNotif, LocalDateTime waktu) {
         Notifikasi notif = new Notifikasi();
         notif.setTipeNotif(tipeNotif);
         notif.setWaktuAcara(waktu);

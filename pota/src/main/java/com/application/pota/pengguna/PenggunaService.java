@@ -19,6 +19,10 @@ public class PenggunaService {
         return PenggunaRepository.authenticate(username, password);
     }
 
+    public void ubaStatus(String idPengguna) {
+         PenggunaRepository.ubahStatus(idPengguna);
+    }
+
     public List<Pengguna> getAllPengguna() {
         return PenggunaRepository.findAll();
     }

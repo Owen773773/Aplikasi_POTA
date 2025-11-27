@@ -7,10 +7,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
-
-import com.example.demo.User.User;
 
 @Repository
 @RequiredArgsConstructor  // Lombok untuk constructor injection
@@ -89,8 +88,8 @@ public class NotifikasiJdbc implements NotifikasiRepository {
         try {
             notif.setIdNotifikasi(rs.getInt("idNotifikasi"));
             notif.setTipeNotif(rs.getString("tipeNotif"));
-            notif.setWaktuAcara(rs.getTimestamp("waktuAcara"));
-            notif.setCatatan(rs.getTimestamp("Catatan"));
+            notif.setWaktuAcara(rs.getTimestamp("waktuAcara").toLocalDateTime());
+            notif.setCatatan(rs.getString("Catatan"));
             String tgl = rs.getString("tanggal"); 
             if (tgl != null) {
                 notif.setInfoTanggal(tgl);

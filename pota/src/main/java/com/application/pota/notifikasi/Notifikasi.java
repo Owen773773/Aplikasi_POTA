@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
@@ -16,7 +17,7 @@ public class Notifikasi {
 
     private int idNotifikasi;
     private String tipeNotif;
-    private Timestamp waktuAcara;
+    private LocalDateTime waktuAcara;
     
     private String infoTanggal;
     private String infoWaktuMulai;

@@ -32,14 +32,14 @@
             </a>
         </nav>
 
-        <div class="logout-section">
-          <button class="btn-logout">
-            <div class="logo-slot">
-              <img src="../static/assets/icons/LogOut.svg" />
-            </div>
-            Log Out
-          </button>
-        </div>
+          <div class="logout-section">
+              <form th:action="@{/logout}" method="post" style="margin: 0;">
+                  <button type="submit" class="btn-logout">
+                      <img th:src="@{/assets/icons/LogOut.svg}" alt="" />
+                      Log Out
+                  </button>
+              </form>
+          </div>
       </aside>
 
       <main class="main-content">

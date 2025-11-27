@@ -89,7 +89,6 @@ public class JadwalJdbc implements JadwalRepository {
 
     @Override
     public List<Jadwal> findByWeekRangeRuangan(LocalDate startOfWeek, LocalDate endOfWeek, int idRuangan) {
-        // Query untuk pemblokiran ruangan
         String sql = "SELECT j.* FROM Jadwal j " +
                 "JOIN PemblokiranRuangan pr ON j.IdJadwal = pr.IdJadwal " +
                 "WHERE pr.IdRuangan = ? AND j.tanggal >= ? AND j.tanggal <= ?";
@@ -98,13 +97,34 @@ public class JadwalJdbc implements JadwalRepository {
 
     @Override
     public List<JadwalWithStatus> findBimbinganByWeekRangeRuangan(LocalDate startOfWeek, LocalDate endOfWeek, int idRuangan) {
-        // Query untuk jadwal bimbingan di ruangan tertentu, termasuk status dari tabel Bimbingan
         String sql = "SELECT j.*, b.Status FROM Jadwal j " +
                 "JOIN Jadwal_Bimbingan jb ON j.IdJadwal = jb.IdJadwal " +
                 "JOIN PenjadwalanBimbingan pb ON jb.IdJadwal = pb.IdJadwal " +
                 "JOIN Bimbingan b ON pb.IdBim = b.IdBim " +
                 "WHERE b.idRuangan = ? AND j.tanggal >= ? AND j.tanggal <= ?";
         return jdbcTemplate.query(sql, this::mapRowToJadwalWithStatus, idRuangan, startOfWeek, endOfWeek);
+    }
+
+    @Override
+    public List<JadwalWithStatus> findBimbinganByWeekRangePengguna(LocalDate startOfWeek, LocalDate endOfWeek, String idPengguna) {
+        // Query untuk mendapatkan jadwal bimbingan pengguna
+        // Cek apakah pengguna terlibat sebagai mahasiswa ATAU dosen dalam bimbingan
+        String sql = "SELECT DISTINCT j.*, b.Status FROM Jadwal j " +
+                "JOIN Jadwal_Bimbingan jb ON j.IdJadwal = jb.IdJadwal " +
+                "JOIN PenjadwalanBimbingan pb ON jb.IdJadwal = pb.IdJadwal " +
+                "JOIN Bimbingan b ON pb.IdBim = b.IdBim " +
+                "WHERE (" +
+                "   EXISTS (" +
+                "       SELECT 1 FROM MahasiswaProsesBimbingan mpb " +
+                "       WHERE mpb.IdBimbingan = b.IdBim AND mpb.IdMahasiswa = ?" +
+                "   ) OR EXISTS (" +
+                "       SELECT 1 FROM DosenProsesBimbingan dpb " +
+                "       WHERE dpb.IdBimbingan = b.IdBim AND dpb.IdDosen = ?" +
+                "   )" +
+                ") " +
+                "AND j.tanggal >= ? AND j.tanggal <= ?";
+        return jdbcTemplate.query(sql, this::mapRowToJadwalWithStatus,
+                idPengguna, idPengguna, startOfWeek, endOfWeek);
     }
 
     // Inner class untuk menampung jadwal dengan status

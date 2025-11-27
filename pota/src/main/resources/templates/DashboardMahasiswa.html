@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>POTA - Akun</title>
+
+    <link rel="stylesheet" href="../static/css/mahasiswa.css">
+</head>
+
+<body>
+
+    <div class="main">
+        <aside class="sidebar">
+            <div class="logo-container">
+                <div class="logo-icon-slot">
+                    <img src="../static/assets/icons/logo.svg">
+                </div>
+                <span class="text-navbar">POTA</span>
+            </div>
+
+            <nav class="nav-menu">
+                <a href="#" class="nav-item active">
+                    <div class="active-indicator"></div>
+
+                    <div class="icon-slot">
+                        <img src="../static/assets/icons/ManajemenAkun.svg">
+                    </div>
+
+                    <span>Beranda</span>
+                </a>
+
+                <a href="#" class="nav-item">
+                    <div class="icon-slot">
+                        <img src="../static/assets/icons/Jadwal.svg">
+                    </div>
+                    <span>Jadwal</span>
+                </a>
+
+                <a href="#" class="nav-item">
+                    <div class="icon-slot">
+                        <img src="../static/assets/icons/Bimbingan.svg">
+                    </div>
+                    <span>Bimbingan</span>
+                </a>
+
+                <a href="#" class="nav-item">
+                    <div class="icon-slot">
+                        <img src="../static/assets/icons/Notifikasi.svg">
+                    </div>
+                    <span>Notifikasi</span>
+                </a>
+
+                <a href="#" class="nav-item">
+                    <div class="icon-slot">
+                        <img src="../static/assets/icons/Profil.svg">
+                    </div>
+                    <span>Profil</span>
+                </a>
+            </nav>
+
+            <div class="logout-section">
+                <button class="btn-logout">
+                    <div class="logo-slot">
+                        <img src="../static/assets/icons/LogOut.svg">
+                    </div>
+                    Log Out
+                </button>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header>
+                <h1 class="page-title">Beranda</h1>
+            </header>
+
+            <div class="content-body">
+                <section class="card card-full" id="progress.b">
+                    <h2>Progress Bimbingan</h2>
+
+                    <div class="ringkasan-grid">
+                        <div class="ringkasan-info">
+                            <p>Semester Aktif : <b>Ganjil 2025/2026</b></p>
+                            <p>Tahap Bimbingan : <b>Pra - UTS</b></p>
+                            <p>Jumlah Mahasiswa : <b>9</b></p>
+                        </div>
+
+                        <div class="target-box">
+                            <h3>Sesi Pra - UTS</h3>
+                            <div class="target-number">2</div>
+                            <p>Total Sesi</p>
+                            <span>Target: 7</span>
+                        </div>
+
+                        <div class="target-box">
+                            <h3>Sesi Pasca - UTS</h3>
+                            <div class="target-number">-</div>
+                            <p>Total Sesi</p>
+                            <span>Target: 7</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- BIMBINGAN MENDATANG -->
+                <section class="card card-full" id="mendatang.b">
+                    <div id="header-bottom">
+                        <h2>Bimbingan Mendatang</h2>
+                        <div class="clock">
+                            <img src="../static/assets/icons/Jam.svg" alt=""> 12:00
+                        </div>
+                    </div>
+
+                    <div class="bottom-grid">
+                        <div class="bottom-info">
+                            <p>Tanggal : <b>10/8/2025</b></p>
+                            <p>Jam : <b>10 : 00 - 11 : 00</b></p>
+                            <p>Durasi : <b>1 Jam</b></p>
+                            <p>Lokasi : <b>Ruang Tugas Akhir</b></p>
+                            <p>Dosen : <b>Maria Veronica</b></p>
+                            <p>Mahasiswa : <b>-</b></p>
+                        </div>
+
+                        <div class="bottom-right">
+                            <textarea placeholder="Catatan:"></textarea>
+
+                            <div class="bottom-buttons">
+                                <button class="btn-grey">VALIDASI</button>
+                                <button class="btn-red">Batalkan Bimbingan</button>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+</body>
+
+</html>

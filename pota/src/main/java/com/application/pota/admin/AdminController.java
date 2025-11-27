@@ -1,15 +1,20 @@
 package com.application.pota.admin;
 
-import com.application.pota.jadwal.Jadwal;
 import com.application.pota.jadwal.JadwalService;
+import com.application.pota.jadwal.SlotWaktu;
 import com.application.pota.pengguna.Pengguna;
 import com.application.pota.pengguna.PenggunaService;
 import com.application.pota.ruangan.Ruangan;
 import com.application.pota.ruangan.RuanganService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -54,6 +59,12 @@ public class AdminController {
         return "Admin_Akun";
     }
 
+    @GetMapping("/toggleStatus")
+    public String toggleStatus(Model model, @RequestParam(required = true) String idPengguna) {
+        penggunaService.ubaStatus(idPengguna);
+        return "redirect:/admin/akun";
+    }
+
     @GetMapping("/ruangan")
     public String halamanRuangan(@RequestParam(required = false) Integer ruanganId,
                                  @RequestParam(required = false) String week,
@@ -86,12 +97,9 @@ public class AdminController {
         model.addAttribute("tanggalMulaiMinggu", tanggalMulaiFormatted);
 
         // Ambil data jadwal dengan tipe (PEMBLOKIRAN atau BIMBINGAN)
-        JadwalService.WeeklyScheduleData temp = jadwalService.getWeeklySchedule(week, "" + ruanganId, true);
-        Map<DayOfWeek, String> HariTanggal = temp.getHeaderDates();
-        Map<DayOfWeek, List<JadwalService.JadwalWithType>> timetableRuang = temp.getScheduledSlots();
-
-        // Gunakan AdminService untuk build grid dengan status yang benar
-        List<List<TimeSlot>> timetableGrid = adminService.buildTimetableGrid(timetableRuang);
+        JadwalService.DataJadwalMingguan temp = jadwalService.dapatkanJadwalMingguan(week, "" + ruanganId, true);
+        Map<DayOfWeek, String> HariTanggal = temp.getTanggalHeader();
+        List<List<SlotWaktu>> timetableGrid = temp.getGridJadwal();
 
         model.addAttribute("listHari", HariTanggal);
         model.addAttribute("timetable", timetableGrid);
@@ -109,4 +117,6 @@ public class AdminController {
     public String halamanPengaturan() {
         return "Admin_Pengaturan";
     }
+
+    
 }

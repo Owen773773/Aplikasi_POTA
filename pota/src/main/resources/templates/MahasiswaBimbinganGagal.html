@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>POTA - Gagal</title>
     <link rel="stylesheet" href="/css/BimbinganGagal.css">
+    <link rel="stylesheet" href="/css/style.css">
 </head>
 
 <body>
@@ -19,46 +20,51 @@
             </div>
 
             <nav class="nav-menu">
-                <a href="#" class="nav-item">
-                    <img src="/assets/icons/ManajemenAkun.svg">
+                    <a th:href="@{/mahasiswa/beranda}" class="nav-item">
+                        <img th:src="@{/assets/icons/ManajemenAkun.svg}" alt="" class="nav-icon" />
                     <span>Beranda</span>
                 </a>
 
-                <a href="#" class="nav-item">
-                    <img src="/assets/icons/Jadwal.svg">
+                <a th:href="@{/mahasiswa/jadwal}" class="nav-item">
+                    <img th:src="@{/assets/icons/Jadwal.svg}" alt="" class="nav-icon" />
                     <span>Jadwal</span>
                 </a>
 
-                <a href="#" class="nav-item active">
-                    <img src="/assets/icons/Bimbingan.svg">
+                <a th:href="@{/mahasiswa/bimbingan}" class="nav-item active">
+                    <img th:src="@{/assets/icons/Bimbingan.svg}" alt="" class="nav-icon" />
                     <span>Bimbingan</span>
                 </a>
 
-                <a href="#" class="nav-item">
-                    <img src="/assets/icons/Notifikasi.svg">
+                <a th:href="@{/mahasiswa/notifikasi}" class="nav-item">
+                    <img th:src="@{/assets/icons/Notifikasi.svg}" alt="" class="nav-icon" />
                     <span>Notifikasi</span>
                 </a>
 
-                <a href="#" class="nav-item">
-                    <img src="/assets/icons/Profil.svg">
+                <a th:href="@{/mahasiswa/profil}" class="nav-item">
+                    <img th:src="@{/assets/icons/Profil.svg}" alt="" class="nav-icon" />
                     <span>Profil</span>
                 </a>
 
             </nav>
 
-            <button class="btn-logout">
-                <img src="/assets/icons/LogOut.svg"> Log Out
-            </button>
+            <div class="logout-section">
+                <form th:action="@{/logout}" method="post" style="margin: 0;">
+                    <button type="submit" class="btn-logout">
+                        <img th:src="@{/assets/icons/LogOut.svg}" alt="" />
+                        Log Out
+                    </button>
+                </form>
+            </div>
         </aside>
 
         <main class="main-content">
             <h1 class="page-title">Bimbingan</h1>
 
             <div class="tab-menu">
-                <button class="tab" href="MahasiswaBimbinganProses.html">Proses</button>
-                <button class="tab" href="MahasiswaBimbinganTerjadwalkan.html">Terjadwalkan</button>
-                <button class="tab" href="MahasiswaBimbinganSelesai.html">Selesai</button>
-                <button class="tab active">Gagal</button>
+                <a class="tab" th:href="@{/mahasiswa/bimbinganProses}">Proses</a>
+                <a class="tab" th:href="@{/mahasiswa/bimbinganTerjadwal}">Terjadwalkan</a>
+                <a class="tab" th:href="@{/mahasiswa/bimbinganSelesai}">Selesai</a>
+                <a class="tab active" th:href="@{/mahasiswa/bimbinganGagal}">Gagal</a>
             </div>
 
             <div class="bimbingan-list">

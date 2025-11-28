@@ -17,7 +17,7 @@ public class AkademikService {
     }
 
     public int getAkademikMinimumPasca(int idSemester){
-        return akademikRepository.getMinimumPra(idSemester);
+        return akademikRepository.getMinimumPasca(idSemester);
     }
 
     

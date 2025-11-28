@@ -15,6 +15,7 @@ import com.application.pota.notifikasi.Notifikasi;
 public class AkademikJdbc implements AkademikRepository {
 
     private final JdbcTemplate jdbcTemplate;
+    
     public int getMinimumPra(int idSemester){
         String querySql = """
                 SELECT minimumPra FROM Akademik WHERE idSemester = ?

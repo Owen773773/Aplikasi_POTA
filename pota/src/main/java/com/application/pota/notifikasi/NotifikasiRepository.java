@@ -3,6 +3,7 @@ import org.springframework.stereotype.Repository;
 import java.util.*;
 
 public interface NotifikasiRepository {
+    Notifikasi getById(int id);//bisi perlu
     List<Notifikasi> getNotifikasiLengkapByUsername(String username);
     List<Notifikasi> getNotifikasiLengkapByIdPengguna(String idPengguna);
     void buatNotifikasiBaru(Notifikasi notif, String username);

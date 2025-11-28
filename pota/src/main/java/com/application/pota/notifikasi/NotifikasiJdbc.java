@@ -17,7 +17,7 @@ public class NotifikasiJdbc implements NotifikasiRepository {
     @Autowired
     private final JdbcTemplate jdbcTemplate;
     
-    public Notifikasi getById(int id){
+    public Notifikasi getById(int id){ //bisi perlu
         String querySql = """
                         SELECT *
                         FROM Notifikasi

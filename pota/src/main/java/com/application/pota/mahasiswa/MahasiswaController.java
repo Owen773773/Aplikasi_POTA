@@ -2,7 +2,6 @@ package com.application.pota.mahasiswa;
 
 import com.application.pota.jadwal.JadwalService;
 import com.application.pota.jadwal.SlotWaktu;
-import com.application.pota.pengguna.Pengguna;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -31,27 +30,32 @@ public class MahasiswaController {
 
     @GetMapping("/beranda")
     public String beranda() {
-        return "TemplateMahasiswa";
+        return "mahasiswa/DashboardMahasiswa";
     }
 
     @GetMapping({"/bimbingan", "/bimbinganProses"})
     public String bimbinganDefault() {
-        return "MahasiswaBimbinganProses";
+        return "mahasiswa/bimbingan/MahasiswaBimbinganProses";
     }
 
     @GetMapping("/bimbinganTerjadwal")
     public String bimbinganTerjadwal() {
-        return "MahasiswaBimbinganTerjadwalkan";
+        return "mahasiswa/bimbingan/MahasiswaBimbinganTerjadwalkan";
     }
 
     @GetMapping("/bimbinganSelesai")
     public String bimbinganSelesai() {
-        return "MahasiswaBimbinganSelesai";
+        return "mahasiswa/bimbingan/MahasiswaBimbinganSelesai";
     }
 
     @GetMapping("/bimbinganGagal")
     public String bimbinganGagal() {
-        return "MahasiswaBimbinganGagal";
+        return "mahasiswa/bimbingan/MahasiswaBimbinganGagal";
+    }
+
+    @GetMapping("/profil")
+    public String profil() {
+        return "mahasiswa/ProfileMahasiswa";
     }
 
     @GetMapping("/jadwal")

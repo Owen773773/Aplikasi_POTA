@@ -32,7 +32,7 @@ class DosenController {
     
     @GetMapping("/beranda")
     public String beranda() {
-        return "DashboardDosen";
+        return "dosen/DashboardDosen";
     }
     
     @GetMapping("/jadwal")
@@ -66,7 +66,7 @@ class DosenController {
         model.addAttribute("timetable", timetableGrid);
 
 
-        return "DosenJadwal";
+        return "dosen/DosenJadwal";
     }
     
     private LocalDate hitungTanggalMulaiMinggu(int tahun, int minggu) {
@@ -77,6 +77,6 @@ class DosenController {
 
     @GetMapping("/profil")
     public String profil() {
-        return "ProfileDosen";
+        return "dosen/ProfileDosen";
     }
 }

@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>POTA - Akun</title>
 
-    <link rel="stylesheet" href="../static/css/mahasiswa.css">
+    <link rel="stylesheet" href="../../static/css/mahasiswa.css">
 </head>
 
 <body>
@@ -25,7 +25,7 @@
                     <div class="active-indicator"></div>
 
                     <div class="icon-slot">
-                        <img src="../static/assets/icons/ManajemenAkun.svg">
+                        <img src="../../static/assets/icons/ManajemenAkun.svg">
                     </div>
 
                     <span>Beranda</span>
@@ -33,40 +33,40 @@
 
                 <a href="#" class="nav-item">
                     <div class="icon-slot">
-                        <img src="../static/assets/icons/Jadwal.svg">
+                        <img src="../../static/assets/icons/Jadwal.svg">
                     </div>
                     <span>Jadwal</span>
                 </a>
 
                 <a href="#" class="nav-item">
                     <div class="icon-slot">
-                        <img src="../static/assets/icons/Bimbingan.svg">
+                        <img src="../../static/assets/icons/Bimbingan.svg">
                     </div>
                     <span>Bimbingan</span>
                 </a>
 
                 <a href="#" class="nav-item">
                     <div class="icon-slot">
-                        <img src="../static/assets/icons/Notifikasi.svg">
+                        <img src="../../static/assets/icons/Notifikasi.svg">
                     </div>
                     <span>Notifikasi</span>
                 </a>
 
                 <a href="#" class="nav-item">
                     <div class="icon-slot">
-                        <img src="../static/assets/icons/Profil.svg">
+                        <img src="../../static/assets/icons/Profil.svg">
                     </div>
                     <span>Profil</span>
                 </a>
             </nav>
 
             <div class="logout-section">
-                <button class="btn-logout">
-                    <div class="logo-slot">
-                        <img src="../static/assets/icons/LogOut.svg">
-                    </div>
-                    Log Out
-                </button>
+                <form th:action="@{/logout}" method="post" style="margin: 0;">
+                    <button type="submit" class="btn-logout">
+                        <img th:src="@{/assets/icons/LogOut.svg}" alt=""/>
+                        Log Out
+                    </button>
+                </form>
             </div>
         </aside>
 
@@ -107,7 +107,7 @@
                     <div id="header-bottom">
                         <h2>Bimbingan Mendatang</h2>
                         <div class="clock">
-                            <img src="../static/assets/icons/Jam.svg" alt=""> 12:00
+                            <img src="../../static/assets/icons/Jam.svg" alt=""> 12:00
                         </div>
                     </div>
 

@@ -15,6 +15,7 @@ public class NotifikasiService {
     public Notifikasi getNotifikasiById(int id){
         return notifikasiRepository.getById(id);
     }
+    
     public List<Notifikasi> getNotifikasiInAppByUsername(String username){
         List<Notifikasi> listNotif = notifikasiRepository.getNotifikasiLengkapByUsername(username);
         for (Notifikasi iterNotif : listNotif) {

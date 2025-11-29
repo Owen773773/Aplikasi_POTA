@@ -89,7 +89,7 @@ public class MahasiswaController {
         model.addAttribute("timetable", timetableGrid);
 
 
-        return "MahasiswaJadwal";
+        return "mahasiswa/MahasiswaJadwal";
     }
 
     private LocalDate hitungTanggalMulaiMinggu(int tahun, int minggu) {

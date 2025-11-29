@@ -16,7 +16,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -69,19 +72,18 @@ public class AdminController {
         return "redirect:/admin/akun";
     }
 
-    @GetMapping("/ruangan")
-    public String halamanRuangan(@RequestParam(required = false) Integer ruanganId,
-                                 @RequestParam(required = false) String week,
-                                 Model model) {
 
-        List<Ruangan> listRuangan = ruanganService.getAllRuang();
-        model.addAttribute("listRuangan", listRuangan);
+    @GetMapping("/jadwal")
+    public String mahasiswajadwal(@RequestParam(required = false) String week,
+                                  HttpSession session,
+                                  Model model) {
+        // Validasi session
+        String idPengguna = (String) session.getAttribute("idPengguna");
+//        if (idPengguna == null) {
+//            return "redirect:/login";
+//        }
 
-        if (ruanganId == null && !listRuangan.isEmpty()) {
-            ruanganId = listRuangan.get(0).getIdRuangan();
-        }
-        model.addAttribute("selectedRuanganId", ruanganId);
-
+        // Handle week parameter - SAMA SEPERTI ADMIN
         if (week == null || week.isEmpty()) {
             LocalDate hariIni = LocalDate.now();
             int weekNum = hariIni.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR);
@@ -92,6 +94,7 @@ public class AdminController {
 
         model.addAttribute("weekParam", week);
 
+        // Parse week - SAMA SEPERTI ADMIN
         String tahun = week.substring(0, 4);
         String minggu = week.substring(6);
 
@@ -100,15 +103,15 @@ public class AdminController {
 
         model.addAttribute("tanggalMulaiMinggu", tanggalMulaiFormatted);
 
-        // Ambil data jadwal dengan tipe (PEMBLOKIRAN atau BIMBINGAN)
-        JadwalService.DataJadwalMingguan temp = jadwalService.dapatkanJadwalMingguan(week, "" + ruanganId, true);
+        // Parameter terakhir FALSE karena ini untuk pengguna, bukan ruangan
+        JadwalService.DataJadwalMingguan temp = jadwalService.dapatkanJadwalMingguan(week, idPengguna, false);
         Map<DayOfWeek, String> HariTanggal = temp.getTanggalHeader();
         List<List<SlotWaktu>> timetableGrid = temp.getGridJadwal();
 
         model.addAttribute("listHari", HariTanggal);
         model.addAttribute("timetable", timetableGrid);
 
-        return "admin/Admin_Ruangan";
+        return "MahasiswaJadwal";
     }
 
     private LocalDate hitungTanggalMulaiMinggu(int tahun, int minggu) {

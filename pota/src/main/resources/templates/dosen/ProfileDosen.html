@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>POTA - Akun</title>
 
+    <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="/css/dosen.css">
 </head>
 
@@ -49,12 +50,12 @@
             </nav>
 
             <div class="logout-section">
-                <button class="btn-logout">
-                    <div class="logo-slot">
-                        <img src="/assets/icons/LogOut.svg">
-                    </div>
-                    Log Out
-                </button>
+                <form th:action="@{/logout}" method="post" style="margin: 0;">
+                    <button type="submit" class="btn-logout">
+                        <img th:src="@{/assets/icons/LogOut.svg}" alt=""/>
+                        Log Out
+                    </button>
+                </form>
             </div>
         </aside>
 

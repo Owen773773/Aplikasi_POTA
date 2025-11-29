@@ -90,7 +90,6 @@ CREATE TABLE Bimbingan (
     DeskripsiBim TEXT,
     Catatan TEXT,
     TopikBim VARCHAR(150),
-    Status VARCHAR(20),
     JumlahPeserta INT,
     idRuangan INT,
     FOREIGN KEY (idRuangan) REFERENCES Ruangan(idRuangan)
@@ -259,11 +258,11 @@ INSERT INTO Dosen_Pembimbing VALUES
 ('U011', 105);
 
 INSERT INTO Bimbingan VALUES
-(1, 'Diskusi awal', 'Catatan 1', 'Topik A', 'Aktif', 1, 1),
-(2, 'Review Bab 1', 'Catatan 2', 'Topik B', 'Aktif', 2, 2),
-(3, 'Review Bab 2', 'Catatan 3', 'Topik C', 'Aktif', 3, 3),
-(4, 'Review Bab 3', 'Catatan 4', 'Topik D', 'Aktif', 4, 4),
-(5, 'Akhir', 'Catatan 5', 'Topik E', 'Selesai', 5, 5);
+(1, 'Diskusi awal', 'Catatan 1', 'Topik A', 1, 1),
+(2, 'Review Bab 1', 'Catatan 2', 'Topik B', 2, 2),
+(3, 'Review Bab 2', 'Catatan 3', 'Topik C', 3, 3),
+(4, 'Review Bab 3', 'Catatan 4', 'Topik D',  4, 4),
+(5, 'Akhir', 'Catatan 5', 'Topik E', 5, 5);
 
 INSERT INTO TopikBimbingan VALUES
 (1, 101, 'Menunggu', 'Menunggu', NULL, 'Terjadwalkan'),

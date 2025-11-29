@@ -90,7 +90,6 @@ CREATE TABLE Bimbingan (
     DeskripsiBim TEXT,
     Catatan TEXT,
     TopikBim VARCHAR(150),
-    Status VARCHAR(20),
     JumlahPeserta INT,
     idRuangan INT,
     FOREIGN KEY (idRuangan) REFERENCES Ruangan(idRuangan)
@@ -186,21 +185,21 @@ CREATE TABLE BimbinganNotifikasi (
 );
 
 INSERT INTO Pengguna VALUES
-('U001', 'mhs1', 'pass1', 'Mahasiswa Satu', TRUE, 'Mahasiswa', NOW()),
-('U002', 'mhs2', 'pass2', 'Mahasiswa Dua', TRUE, 'Mahasiswa', NOW()),
-('U003', 'dsn1', 'pass3', 'Dosen Satu', TRUE, 'Dosen', NOW()),
-('U004', 'adm1', 'pass4', 'Admin Satu', TRUE, 'Admin', NOW()),
-('U005', 'dsn2', 'pass5', 'Dosen Dua', TRUE, 'Dosen', NOW()),
-('U006', 'mhs3', 'pass6', 'Mahasiswa Tiga', TRUE, 'Mahasiswa', NOW()),
-('U007', 'mhs4', 'pass7', 'Mahasiswa Empat', TRUE, 'Mahasiswa', NOW()),
-('U008', 'mhs5', 'pass8', 'Mahasiswa Lima', TRUE, 'Mahasiswa', NOW()),
-('U009', 'dsn3', 'pass9', 'Dosen Tiga', TRUE, 'Dosen', NOW()),
-('U010', 'dsn4', 'pass10', 'Dosen Empat', TRUE, 'Dosen', NOW()),
-('U011', 'dsn5', 'pass11', 'Dosen Lima', TRUE, 'Dosen', NOW()),
-('U012', 'adm2', 'pass12', 'Admin Dua', TRUE, 'Admin', NOW()),
-('U013', 'adm3', 'pass13', 'Admin Tiga', TRUE, 'Admin', NOW()),
-('U014', 'adm4', 'pass14', 'Admin Empat', TRUE, 'Admin', NOW()),
-('U015', 'adm5', 'pass15', 'Admin Lima', TRUE, 'Admin', NOW());
+('U001', 'mhs1', 'pass', 'Mahasiswa Satu', TRUE, 'Mahasiswa', NOW()),
+('U002', 'mhs2', 'pass', 'Mahasiswa Dua', TRUE, 'Mahasiswa', NOW()),
+('U003', 'dsn1', 'pass', 'Dosen Satu', TRUE, 'Dosen', NOW()),
+('U004', 'adm1', 'pass', 'Admin Satu', TRUE, 'Admin', NOW()),
+('U005', 'dsn2', 'pass', 'Dosen Dua', TRUE, 'Dosen', NOW()),
+('U006', 'mhs3', 'pass', 'Mahasiswa Tiga', TRUE, 'Mahasiswa', NOW()),
+('U007', 'mhs4', 'pass', 'Mahasiswa Empat', TRUE, 'Mahasiswa', NOW()),
+('U008', 'mhs5', 'pass', 'Mahasiswa Lima', TRUE, 'Mahasiswa', NOW()),
+('U009', 'dsn3', 'pass', 'Dosen Tiga', TRUE, 'Dosen', NOW()),
+('U010', 'dsn4', 'pass', 'Dosen Empat', TRUE, 'Dosen', NOW()),
+('U011', 'dsn5', 'pass', 'Dosen Lima', TRUE, 'Dosen', NOW()),
+('U012', 'adm2', 'pass', 'Admin Dua', TRUE, 'Admin', NOW()),
+('U013', 'adm3', 'pass', 'Admin Tiga', TRUE, 'Admin', NOW()),
+('U014', 'adm4', 'pass', 'Admin Empat', TRUE, 'Admin', NOW()),
+('U015', 'adm5', 'pass', 'Admin Lima', TRUE, 'Admin', NOW());
 
 INSERT INTO Mahasiswa VALUES
 ('U001', 1),
@@ -259,11 +258,11 @@ INSERT INTO Dosen_Pembimbing VALUES
 ('U011', 105);
 
 INSERT INTO Bimbingan VALUES
-(1, 'Diskusi awal', 'Catatan 1', 'Topik A', 'Aktif', 1, 1),
-(2, 'Review Bab 1', 'Catatan 2', 'Topik B', 'Aktif', 2, 2),
-(3, 'Review Bab 2', 'Catatan 3', 'Topik C', 'Aktif', 3, 3),
-(4, 'Review Bab 3', 'Catatan 4', 'Topik D', 'Aktif', 4, 4),
-(5, 'Akhir', 'Catatan 5', 'Topik E', 'Selesai', 5, 5);
+(1, 'Diskusi awal', 'Catatan 1', 'Topik A', 1, 1),
+(2, 'Review Bab 1', 'Catatan 2', 'Topik B', 2, 2),
+(3, 'Review Bab 2', 'Catatan 3', 'Topik C', 3, 3),
+(4, 'Review Bab 3', 'Catatan 4', 'Topik D',  4, 4),
+(5, 'Akhir', 'Catatan 5', 'Topik E', 5, 5);
 
 INSERT INTO TopikBimbingan VALUES
 (1, 101, 'Menunggu', 'Menunggu', NULL, 'Terjadwalkan'),

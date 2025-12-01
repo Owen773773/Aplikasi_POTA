@@ -1,0 +1,74 @@
+/* === PROFIL CARD === */
+.profil-card {
+    background: var(--bg-white);
+    padding: 30px 40px;
+    border-radius: 10px;
+    box-shadow: 1px 2px 5px rgba(0,0,0,0.2);
+    width: 85%;
+    margin: 0 auto;
+}
+
+.profil-title {
+    color: var(--primary);
+    margin-bottom: 10px;
+}
+
+/* === ICON === */
+.profil-icon {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+.profil-icon img {
+    width: 120px;
+    opacity: 0.85;
+}
+
+/* === GRID === */
+.profil-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 25px;
+    margin-top: 20px;
+}
+
+.profil-item {
+    background: var(--bg-white);
+    border-radius: 8px;
+    padding: 18px 22px;
+    box-shadow: 1px 2px 5px rgba(0,0,0,0.25);
+}
+
+.profil-item h3 {
+    font-weight: bold;
+    font-size: 16px;
+    color: var(--primary);
+    margin-bottom: 5px;
+}
+
+.profil-item p {
+    font-size: 15px;
+}
+
+/* === BUTTON === */
+.profil-footer {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 25px;
+}
+
+.btn-password {
+    background: var(--primary);
+    border: none;
+    color: white;
+    padding: 10px 22px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 15px;
+    transition: 0.2s;
+}
+
+.btn-password:hover {
+    background: #043a75;
+}

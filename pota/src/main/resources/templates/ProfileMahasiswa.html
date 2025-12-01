@@ -6,7 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>POTA - Akun</title>
 
-    <link rel="stylesheet" href="../static/css/mahasiswa.css">
+    <link rel="stylesheet" href="../static/css/mahasiswaGlobal.css">
+    <link rel="stylesheet" href="../static/css/ProfileMahasiswa.css">
 </head>
 
 <body>
@@ -20,7 +21,7 @@
 
             <nav class="nav-menu">
 
-                <a href="DashboardMahasiswa.html" class="nav-item active">
+                <a href="DashboardMahasiswa.html" class="nav-item">
                     <img src="../static/assets/icons/ManajemenAkun.svg">
                     <span>Beranda</span>
                 </a>
@@ -40,7 +41,7 @@
                     <span>Notifikasi</span>
                 </a>
 
-                <a href="MahasiswaProfil.html" class="nav-item">
+                <a href="MahasiswaProfil.html" class="nav-item active">
                     <img src="../static/assets/icons/Profil.svg">
                     <span>Profil</span>
                 </a>
@@ -79,7 +80,7 @@
                         </div>
                     </div>
 
-                    <h2 style="margin-top: 40px;">Data Tugas Akhir</h2>
+                    <h2 class="section-title-ta">Data Tugas Akhir</h2>
                     <div class="profil-grid">
                         <div class="profil-item">
                             <h3>Dosen Pembimbing 1</h3>
@@ -93,17 +94,19 @@
 
                         <div class="profil-item">
                             <h3>Syarat Jumlah Kelayakan Sidang</h3>
-                            <p><b style="color: green;">Memenuhi</b></p>
+                            <p class="syarat-status"><b>Memenuhi</b></p>
                         </div>
 
-                        <div class="profil-item" id="small-card">
-                            <h3>Total Bimbingan Pra - UTS</h3>
-                            <p><b>2 Kali</b></p>
-                        </div>
+                        <div class="split-column">
+                            <div class="profil-item small-box">
+                                <h3>Total Bimbingan Pra - UTS</h3>
+                                <p><b>2 Kali</b></p>
+                            </div>
 
-                        <div class="profil-item" id="small-card">
-                            <h3>Total Bimbingan Pasca - UTS</h3>
-                            <p><b>2 Kali</b></p>
+                            <div class="profil-item small-box">
+                                <h3>Total Bimbingan Pasca - UTS</h3>
+                                <p><b>2 Kali</b></p>
+                            </div>
                         </div>
                     </div>
 

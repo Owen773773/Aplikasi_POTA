@@ -1,23 +1,25 @@
 package com.application.pota.admin;
 
+import com.application.pota.dosen.DosenService;
 import com.application.pota.jadwal.JadwalService;
 import com.application.pota.jadwal.SlotWaktu;
 import com.application.pota.pengguna.Pengguna;
 import com.application.pota.pengguna.PenggunaService;
 import com.application.pota.ruangan.Ruangan;
 import com.application.pota.ruangan.RuanganService;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
+import com.application.pota.tugasakhir.TugasAkhir;
+import com.application.pota.tugasakhir.TugasAkhirService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
+import org.springframework.web.bind.annotation.ResponseBody;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -38,6 +40,11 @@ public class AdminController {
     private JadwalService jadwalService;
     @Autowired
     private AdminService adminService;
+    @Autowired
+    private TugasAkhirService tugasAkhirService;
+    @Autowired
+    private DosenService dosenService;
+
 
     @GetMapping({"", "/"})
     public String halamanAdmin(Model model) {
@@ -56,7 +63,7 @@ public class AdminController {
         model.addAttribute("user", new Pengguna());
         model.addAttribute("thesis", new Object());
 
-        return "Admin_Akun";
+        return "admin/Admin_Akun";
     }
 
     @GetMapping("/toggleStatus")
@@ -65,19 +72,18 @@ public class AdminController {
         return "redirect:/admin/akun";
     }
 
-    @GetMapping("/ruangan")
-    public String halamanRuangan(@RequestParam(required = false) Integer ruanganId,
-                                 @RequestParam(required = false) String week,
-                                 Model model) {
 
-        List<Ruangan> listRuangan = ruanganService.getAllRuang();
-        model.addAttribute("listRuangan", listRuangan);
+    @GetMapping("/jadwal")
+    public String mahasiswajadwal(@RequestParam(required = false) String week,
+                                  HttpSession session,
+                                  Model model) {
+        // Validasi session
+        String idPengguna = (String) session.getAttribute("idPengguna");
+//        if (idPengguna == null) {
+//            return "redirect:/login";
+//        }
 
-        if (ruanganId == null && !listRuangan.isEmpty()) {
-            ruanganId = listRuangan.get(0).getIdRuangan();
-        }
-        model.addAttribute("selectedRuanganId", ruanganId);
-
+        // Handle week parameter - SAMA SEPERTI ADMIN
         if (week == null || week.isEmpty()) {
             LocalDate hariIni = LocalDate.now();
             int weekNum = hariIni.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR);
@@ -88,6 +94,7 @@ public class AdminController {
 
         model.addAttribute("weekParam", week);
 
+        // Parse week - SAMA SEPERTI ADMIN
         String tahun = week.substring(0, 4);
         String minggu = week.substring(6);
 
@@ -96,15 +103,15 @@ public class AdminController {
 
         model.addAttribute("tanggalMulaiMinggu", tanggalMulaiFormatted);
 
-        // Ambil data jadwal dengan tipe (PEMBLOKIRAN atau BIMBINGAN)
-        JadwalService.DataJadwalMingguan temp = jadwalService.dapatkanJadwalMingguan(week, "" + ruanganId, true);
+        // Parameter terakhir FALSE karena ini untuk pengguna, bukan ruangan
+        JadwalService.DataJadwalMingguan temp = jadwalService.dapatkanJadwalMingguan(week, idPengguna, false);
         Map<DayOfWeek, String> HariTanggal = temp.getTanggalHeader();
         List<List<SlotWaktu>> timetableGrid = temp.getGridJadwal();
 
         model.addAttribute("listHari", HariTanggal);
         model.addAttribute("timetable", timetableGrid);
 
-        return "Admin_Ruangan";
+        return "MahasiswaJadwal";
     }
 
     private LocalDate hitungTanggalMulaiMinggu(int tahun, int minggu) {
@@ -115,8 +122,30 @@ public class AdminController {
 
     @GetMapping("/pengaturan")
     public String halamanPengaturan() {
-        return "Admin_Pengaturan";
+        return "admin/Admin_Pengaturan";
     }
 
-    
+//    // 1. Get User Data
+//    @GetMapping("/getUser")
+//    @ResponseBody
+//    public Pengguna getUser(@RequestParam String idPengguna) {
+//        return penggunaService.findById(idPengguna);
+//    }
+//
+//    // 2. Get TA Data untuk Mahasiswa
+//    @GetMapping("/getTAData")
+//    @ResponseBody
+//    public TugasAkhir getTAData(@RequestParam String idPengguna) {
+//        return tugasAkhirService.findByIdPengguna(idPengguna);
+//    }
+//
+//    // 3. Get Topik Bimbingan untuk Dosen
+//    @GetMapping("/getTopikBimbingan")
+//    @ResponseBody
+//    public Map<String, Object> getTopikBimbingan(@RequestParam String idPengguna) {
+//        List<String> topikList = dosenService.getTopikBimbingan(idPengguna);
+//        response.put("topikBimbingan", topikList);
+//        return response;
+//    }
+
 }

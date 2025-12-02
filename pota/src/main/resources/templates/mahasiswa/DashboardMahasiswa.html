@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>POTA - Beranda</title>
+    <link rel="stylesheet" href="/css/mahasiswa.css">
+</head>
+
+<body>
+
+<div class="main">
+    <aside class="sidebar">
+        <div class="logo-container">
+            <img src="/assets/icons/logo.svg">
+            <span class="text-navbar">POTA</span>
+        </div>
+
+        <nav class="nav-menu">
+            <a th:href="@{/mahasiswa/beranda}" class="nav-item active">
+                <img th:src="@{/assets/icons/ManajemenAkun.svg}" alt="" class="nav-icon"/>
+                <span>Beranda</span>
+            </a>
+
+            <a th:href="@{/mahasiswa/jadwal}" class="nav-item">
+                <img th:src="@{/assets/icons/Jadwal.svg}" alt="" class="nav-icon"/>
+                <span>Jadwal</span>
+            </a>
+
+            <a th:href="@{/mahasiswa/bimbingan}" class="nav-item">
+                <img th:src="@{/assets/icons/Bimbingan.svg}" alt="" class="nav-icon"/>
+                <span>Bimbingan</span>
+            </a>
+
+            <a th:href="@{/mahasiswa/notifikasi}" class="nav-item">
+                <img th:src="@{/assets/icons/Notifikasi.svg}" alt="" class="nav-icon"/>
+                <span>Notifikasi</span>
+            </a>
+
+            <a th:href="@{/mahasiswa/profil}" class="nav-item">
+                <img th:src="@{/assets/icons/Profil.svg}" alt="" class="nav-icon"/>
+                <span>Profil</span>
+            </a>
+
+        </nav>
+
+        <div class="logout-section">
+            <form th:action="@{/logout}" method="post" style="margin: 0;">
+                <button type="submit" class="btn-logout">
+                    <img th:src="@{/assets/icons/LogOut.svg}" alt=""/>
+                    Log Out
+                </button>
+            </form>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <header>
+            <h1 class="page-title">Beranda</h1>
+        </header>
+
+        <div class="content-body">
+
+            <!-- PROGRESS BIMBINGAN -->
+            <section class="card card-full">
+                <h2>Progress Bimbingan</h2>
+
+                <div class="ringkasan-grid">
+                    <div class="ringkasan-info">
+                        <p>Semester Aktif : <b>Ganjil 2025/2026</b></p>
+                        <p>Tahap Skripsi : <b>Tugas Akhir II (TA 2)</b></p>
+                        <p>Judul Skripsi : <b>Si Pemulai Kecoa berbasis AI</b></p>
+                        <p>Dosen Pembimbing 1 : <b>Maria Veronica</b></p>
+                        <p>Dosen Pembimbing 2 : <b>-</b></p>
+                    </div>
+
+                    <div class="target-box">
+                        <h3>Sesi Pra - UTS</h3>
+                        <div class="target-number">2</div>
+                        <p>Total Sesi</p>
+                        <span>Target: 2</span>
+                    </div>
+
+                    <div class="target-box">
+                        <h3>Sesi Pasca - UTS</h3>
+                        <div class="target-number">0</div>
+                        <p>Total Sesi</p>
+                        <span>Target: 3</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- BIMBINGAN MENDATANG -->
+            <section class="card card-full">
+                <div id="header-bottom">
+                    <h2>Bimbingan Mendatang</h2>
+                    <div class="clock">
+                        <img src="/assets/icons/Jam.svg" alt=""> 12:00
+                    </div>
+                </div>
+
+                <div class="bottom-grid">
+                    <div class="bottom-info">
+                        <div class="info-row">
+                            <span class="info-label">Tanggal</span>
+                            <span class="info-separator">:</span>
+                            <span class="info-value">10/8/2025</span>
+                        </div>
+
+                        <div class="info-row">
+                            <span class="info-label">Jam</span>
+                            <span class="info-separator">:</span>
+                            <span class="info-value">10 : 00 - 11 : 00</span>
+                        </div>
+
+                        <div class="info-row">
+                            <span class="info-label">Durasi</span>
+                            <span class="info-separator">:</span>
+                            <span class="info-value">1 Jam</span>
+                        </div>
+
+                        <div class="info-row">
+                            <span class="info-label">Lokasi</span>
+                            <span class="info-separator">:</span>
+                            <span class="info-value">Ruang Tugas Akhir</span>
+                        </div>
+
+                        <div class="info-row">
+                            <span class="info-label">Dosen</span>
+                            <span class="info-separator">:</span>
+                            <span class="info-value">Maria Veronica</span>
+                        </div>
+
+                        <div class="info-row">
+                            <span class="info-label">Mahasiswa</span>
+                            <span class="info-separator">:</span>
+                            <span class="info-value">-</span>
+                        </div>
+                    </div>
+
+                    <div class="bottom-right">
+                        <textarea placeholder="Catatan:"></textarea>
+
+                        <div class="bottom-buttons">
+                            <button class="btn-grey">VALIDASI</button>
+                            <button class="btn-red">Batalkan Bimbingan</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+</div>
+
+</body>
+
+</html>

@@ -56,6 +56,8 @@ body {
     color: var(--primary);
 }
 
+
+/* Navigation */
 .nav-menu {
     display: flex;
     flex-direction: column;
@@ -97,44 +99,46 @@ a {
     text-decoration: none;
 }
 
+/* Logout */
 .logout-section {
-  padding: 20px 30px 20px;
-  border-top: 1px solid var(--border-light);
+    padding: 20px 30px 20px;
+    border-top: 1px solid var(--border-light);
 }
 
 .btn-logout {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  background: transparent;
-  border: 2px solid #d1d9e2;
-  color: var(--primary);
-  padding: 10px 20px;
-  border-radius: 12px;
-  font-family: var(--font-base);
-  font-weight: bold;
-  font-size: 16px;
-  cursor: pointer;
-  width: 100%;
-  transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    background: transparent;
+    border: 2px solid #d1d9e2;
+    color: var(--primary);
+    padding: 10px 20px;
+    border-radius: 12px;
+    font-family: var(--font-base);
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+    width: 100%;
+    transition: all 0.2s;
 }
 
 .btn-logout:hover {
-  border-color: var(--primary);
-  background-color: var(--primary);
-  color: var(--bg-white);
+    border-color: var(--primary);
+    background-color: var(--primary);
+    color: var(--bg-white);
 }
 
 .btn-logout img {
-  width: 20px;
-  height: 20px;
+    width: 20px;
+    height: 20px;
 }
 
-/* MAIN CONTENT */
 .main-content {
     flex-grow: 1;
     padding: 0;
+    display: flex;
+    flex-direction: column;
 }
 
 .page-title {
@@ -159,6 +163,8 @@ a {
     cursor: pointer;
     padding-bottom: 6px;
     font-size: 1.2em;
+    text-decoration: none;
+    color: var(--text-primary);
 }
 
 .tab.active {
@@ -265,4 +271,60 @@ p#itemkiri {
 
 .btn.accept {
     background: var(--btn-accept);
+}
+
+
+.btn-mahasiswa {
+    padding: 6px 12px;
+    background-color: var(--bg-white);
+    border: 1px solid var(--text-primary);
+    cursor: pointer;
+    border-radius: 12px;
+    margin-left: 25px;
+}
+
+.popup-mahasiswa {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+}
+
+.popup-content {
+    background: white;
+    padding: 20px;
+    width: 350px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+}
+
+.popup-content h3 {
+    margin-top: 0;
+}
+
+.close-popup {
+    margin-top: 15px;
+    padding: 8px 20px;
+    background-color: var(--btn-reject);
+    border: none;
+    color: white;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.listMahasiswa {
+    text-align: start;
+    padding: 8px 20px;
+    margin: 5px;
+    background-color: var(--bg-white);
+    border: 1px solid var(--text-primary);
+    border-radius: 6px;
 }

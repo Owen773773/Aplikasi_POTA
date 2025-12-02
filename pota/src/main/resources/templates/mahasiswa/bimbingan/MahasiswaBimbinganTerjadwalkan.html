@@ -4,8 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>POTA - Selesai</title>
-    <link rel="stylesheet" href="/css/BimbinganSelesai.css">
+    <title>POTA - Proses</title>
+    <link rel="stylesheet" href="/css/BimbinganTerjadwalkan.css">
     <link rel="stylesheet" href="/css/style.css">
 </head>
 
@@ -30,7 +30,7 @@
                     <span>Jadwal</span>
                 </a>
 
-                <a th:href="@{/mahasiswa/bimbingan}" class="nav-item active">
+                <a th:href="@{/templates/mahasiswa/bimbingan}" class="nav-item active">
                     <img th:src="@{/assets/icons/Bimbingan.svg}" alt="" class="nav-icon" />
                     <span>Bimbingan</span>
                 </a>
@@ -62,8 +62,8 @@
 
             <div class="tab-menu">
                 <a class="tab" th:href="@{/mahasiswa/bimbinganProses}">Proses</a>
-                <a class="tab" th:href="@{/mahasiswa/bimbinganTerjadwal}">Terjadwalkan</a>
-                <a class="tab active" th:href="@{/mahasiswa/bimbinganSelesai}">Selesai</a>
+                <a class="tab active" th:href="@{/mahasiswa/bimbinganTerjadwal}">Terjadwalkan</a>
+                <a class="tab" th:href="@{/mahasiswa/bimbinganSelesai}">Selesai</a>
                 <a class="tab" th:href="@{/mahasiswa/bimbinganGagal}">Gagal</a>
             </div>
 
@@ -98,13 +98,15 @@
                                 </div>
 
                                 <div class="containerGrid2">
-                                    <p id="itemkiri" style="grid-area: kiri1;">Topik</p>
-                                    <p id="itemkanan" style="grid-area: kanan1;">: Bimbingan Mingguan</p>
-                                    <p id="itemkiri" style="grid-area: kiri2;">Deskripsi Topik</p>
-                                    <p id="itemkanan" style="grid-area: kanan2;">: -</p>
-                                    <textarea id="catatan" name="catatan" rows="4" cols="50"
-                                        placeholder="Catatan Bimbingan..." disabled style="grid-area: note;">Catatan bimbingan selesai...</textarea>
+                                    <p id="itemkiri">Topik</p>
+                                    <p id="itemkanan">: Bimbingan Mingguan</p>
+                                    <p id="itemkiri">Deskripsi Topik</p>
+                                    <p id="itemkanan">: -</p>
                                 </div>
+                            </div>
+                            <div class="card-actions">
+                                <button class="btn accept"><div class="img"></div>Validasi</button>
+                                <button class="btn reject">Batalkan Bimbingan</button>
                             </div>
                         </div>
                     </div>

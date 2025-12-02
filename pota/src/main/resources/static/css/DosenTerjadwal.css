@@ -23,112 +23,116 @@
   --font-base: "Quicksand", sans-serif;
 }
 
+
 body {
-  font-family: var(--font-base);
-  margin: 0;
-  background: var(--bg-body);
+    font-family: var(--font-base);
+    margin: 0;
+    background: var(--bg-body);
 }
 
 .main {
-  display: flex;
-  height: 100vh;
+    display: flex;
+    height: 100vh;
 }
 
 /* SIDEBAR */
 .sidebar {
-  width: 180px;
-  background: var(--bg-white);
-  display: flex;
-  flex-direction: column;
-  padding: 25px;
+    width: 180px;
+    background: var(--bg-white);
+    display: flex;
+    flex-direction: column;
+    padding: 25px;
 }
 
 .logo-container {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 35px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 35px;
 }
 
 .text-navbar {
-  font-size: 26px;
-  font-weight: bold;
-  color: var(--primary);
+    font-size: 26px;
+    font-weight: bold;
+    color: var(--primary);
 }
 
+
+/* Navigation */
 .nav-menu {
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-  flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    flex-grow: 1;
 }
 
 .nav-item {
-  display: flex;
-  gap: 14px;
-  align-items: center;
-  color: var(--primary);
-  font-size: 18px;
-  cursor: pointer;
-  padding: 10px 6px;
-  border-radius: 8px;
-  position: relative;
+    display: flex;
+    gap: 14px;
+    align-items: center;
+    color: var(--primary);
+    font-size: 18px;
+    cursor: pointer;
+    padding: 10px 6px;
+    border-radius: 8px;
+    position: relative;
 }
 
 .nav-item.active {
-  font-weight: bold;
-  color: var(--primary);
+    font-weight: bold;
+    color: var(--primary);
 }
 
 .nav-item.active::before {
-  content: '';
-  position: absolute;
-  left: -10%;
-  top: 50%;
-  transform: translateY(-50%);
-  height: 30px;
-  width: 6px;
-  background-color: var(--primary);
-  border-top-right-radius: 6px;
-  border-bottom-right-radius: 6px;
+    content: '';
+    position: absolute;
+    left: -10%;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 30px;
+    width: 6px;
+    background-color: var(--primary);
+    border-top-right-radius: 6px;
+    border-bottom-right-radius: 6px;
 }
 
 a {
-  text-decoration: none;
+    text-decoration: none;
 }
 
+/* Logout */
 .logout-section {
-  padding: 20px 30px 20px;
-  border-top: 1px solid var(--border-light);
+    padding: 20px 30px 20px;
+    border-top: 1px solid var(--border-light);
 }
 
 .btn-logout {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  background: transparent;
-  border: 2px solid #d1d9e2;
-  color: var(--primary);
-  padding: 10px 20px;
-  border-radius: 12px;
-  font-family: var(--font-base);
-  font-weight: bold;
-  font-size: 16px;
-  cursor: pointer;
-  width: 100%;
-  transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    background: transparent;
+    border: 2px solid #d1d9e2;
+    color: var(--primary);
+    padding: 10px 20px;
+    border-radius: 12px;
+    font-family: var(--font-base);
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+    width: 100%;
+    transition: all 0.2s;
 }
 
 .btn-logout:hover {
-  border-color: var(--primary);
-  background-color: var(--primary);
-  color: var(--bg-white);
+    border-color: var(--primary);
+    background-color: var(--primary);
+    color: var(--bg-white);
 }
 
 .btn-logout img {
-  width: 20px;
-  height: 20px;
+    width: 20px;
+    height: 20px;
 }
 
 /* MAIN CONTENT */
@@ -159,6 +163,7 @@ a {
   cursor: pointer;
   padding-bottom: 6px;
   font-size: 1.2em;
+  color: var(--text-primary);
 }
 
 .tab.active {
@@ -257,6 +262,7 @@ p#itemkiri {
   color: white;
   font-size: 15px;
   cursor: pointer;
+  
 }
 
 .card-actions .img {
@@ -277,4 +283,59 @@ p#itemkiri {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.btn-mahasiswa {
+    padding: 6px 12px;
+    background-color: var(--bg-white);
+    border: 1px solid var(--text-primary);
+    cursor: pointer;
+    border-radius: 12px;
+    margin-left: 25px;
+}
+
+.popup-mahasiswa {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+    justify-content: center;
+    align-items: center;
+    z-index: 999;
+}
+
+.popup-content {
+    background: white;
+    padding: 20px;
+    width: 350px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+}
+
+.popup-content h3 {
+    margin-top: 0;
+}
+
+.close-popup {
+    margin-top: 15px;
+    padding: 8px 20px;
+    background-color: var(--btn-reject);
+    border: none;
+    color: white;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.listMahasiswa {
+    text-align: start;
+    padding: 8px 20px;
+    margin: 5px;
+    background-color: var(--bg-white);
+    border: 1px solid var(--text-primary);
+    border-radius: 6px;
 }

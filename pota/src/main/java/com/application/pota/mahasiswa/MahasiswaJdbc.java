@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -34,4 +35,5 @@ public class MahasiswaJdbc implements MahasiswaRepository {
         String sql = "SELECT * FROM Pengguna WHERE IdPengguna = ?";
         return jdbcTemplate.queryForObject(sql, this::mapRowToPengguna, id);
     }
+
 }

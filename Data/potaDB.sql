@@ -266,10 +266,10 @@ INSERT INTO Bimbingan VALUES
 (5, 'Akhir', 'Catatan 5', 'Topik E', 5, 5);
 
 INSERT INTO TopikBimbingan VALUES
-(1, 101, 'Menunggu', 'Menunggu', NULL, 'Terjadwalkan'),
-(2, 102, 'Menerima', 'Menerima', 'Menunggu', 'Terjadwalkan'),
-(3, 103, 'Menerima', 'Menolak', NULL, 'Gagal'),
-(4, 104, 'Dibatalkan', NULL, NULL, 'Gagal'),
+(1, 101, 'Proses', 'Menunggu', NULL, 'Terjadwalkan'),
+(2, 102, 'Terjadwalkan', 'Menerima', 'Menunggu', 'Terjadwalkan'),
+(3, 103, 'Selesai', 'Menolak', NULL, 'Gagal'),
+(4, 104, 'Diba', NULL, NULL, 'Gagal'),
 (5, 105, 'Menerima', 'Menerima', 'Menerima', 'Selesai');
 
 INSERT INTO Jadwal VALUES
@@ -278,7 +278,7 @@ INSERT INTO Jadwal VALUES
 (3, '2025-11-26', '10:00', '12:00', 1), 
 (4, '2025-11-26', '13:00', '15:00', 0), 
 (5, '2025-11-27', '09:00', '11:00', 1), 
-(6, '2025-11-28', '14:00', '16:00', 0);
+(6, '2025-12-09', '14:00', '16:00', 0);
 
 INSERT INTO Jadwal_Pribadi VALUES
 (1, 'U001'), 
@@ -344,3 +344,20 @@ INSERT INTO BimbinganNotifikasi VALUES
 (4, 4),
 (5, 5);
 
+-- SELECT 
+--                     j.tanggal, j.WaktuMulai, j.WaktuSelesai, r.namaRuangan, p_dosen.nama ,
+--                     b.IdBim, b.TopikBim, b.DeskripsiBim
+--                 FROM 
+--                     Bimbingan b
+--                     JOIN PenjadwalanBimbingan pb ON b.IdBim = pb.IdBim
+--                     JOIN Jadwal j ON pb.IdJadwal = j.IdJadwal
+--                     JOIN Ruangan r ON b.idRuangan = r.idRuangan
+--                     JOIN TopikBimbingan tb ON b.IdBim = tb.IdBim
+--                     JOIN TugasAkhir ta ON tb.IdTA = ta.IdTA
+--                     JOIN Dosen_Pembimbing dp ON ta.IdTa = dp.idTA
+--                     JOIN Pengguna p_dosen ON dp.IdDosen = p_dosen.IdPengguna
+--                     WHERE ta.IdMahasiswa = 'U001' 
+--                         AND (j.tanggal > CURRENT_DATE OR (j.tanggal = CURRENT_DATE AND j.WaktuMulai > CURRENT_TIME))
+--                         ORDER BY j.tanggal ASC, j.WaktuMulai ASC
+--                         LIMIT 1
+	

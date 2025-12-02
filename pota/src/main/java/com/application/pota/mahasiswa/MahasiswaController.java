@@ -1,5 +1,7 @@
 package com.application.pota.mahasiswa;
 
+import com.application.pota.bimbingan.Bimbingan;
+import com.application.pota.bimbingan.BimbinganService;
 import com.application.pota.jadwal.JadwalService;
 import com.application.pota.jadwal.SlotWaktu;
 import jakarta.servlet.http.HttpSession;
@@ -23,15 +25,32 @@ public class MahasiswaController {
     @Autowired
     private JadwalService jadwalService;
 
+    @Autowired
+    private MahasiswaService mahasiswaService;
+
+    @Autowired
+    private BimbinganService bimbinganService;
+
     @GetMapping({"/", ""})
     public String berandaDefault() {
-        return beranda();
+        return "redirect:/mahasiswa/beranda";
     }
 
-    @GetMapping("/beranda")
-    public String beranda() {
-        return "mahasiswa/DashboardMahasiswa";
+    // @GetMapping("/beranda")
+    // public String beranda() {
+    //     return "mahasiswa/DashboardMahasiswa";
+    // }
+      @GetMapping("/beranda")
+    public String beranda(HttpSession session, Model model) {        
+        String idPengguna = (String) session.getAttribute("idPengguna");
+        if (idPengguna == null) {
+            return "redirect:/login"; 
+        }
+        // Bimbingan bimbinganTerdekat = bimbinganService.getJadwalTerdekat(idPengguna);
+        // model.addAttribute("bimbinganTerdekat", bimbinganTerdekat);
+        return "mahasiswa/DashboardMahasiswa";    
     }
+    
 
     @GetMapping({"/bimbingan", "/bimbinganProses"})
     public String bimbinganDefault() {

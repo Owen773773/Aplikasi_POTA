@@ -1,0 +1,156 @@
+:root {
+    --primary: #054a91;
+    --bg-body: #f2f0ef;
+    --bg-white: #ffffff;
+    --text-primary: #000000;
+    --text-muted: #888888;
+    --border: #dddddd;
+    --border-light: #eeeeee;
+
+    --btn-add: #66d666;
+    --btn-filter: #7885ff;
+    --btn-green-bg: #eaffea;
+    --btn-green-border: #66d666;
+    --btn-red-bg: #ffeaea;
+    --btn-red-border: #fa7e7e;
+    --btn-grey-bg: #eeeeee;
+    --btn-grey-border: #aaaaaa;
+
+    --font-base: "Quicksand", sans-serif;
+}
+
+/* Global Styles */
+body {
+    font-family: var(--font-base);
+    background-color: var(--bg-body);
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+/* Main Container - The whole form box */
+.main-container {
+    background-color: var(--bg-white);
+    max-width: 400px; /* Adjust as needed */
+    width: 100%;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); 
+}
+
+/* Header Section */
+.header {
+    background-color: var(--primary);
+    color: var(--bg-white);
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header h2 {
+    margin: 0;
+    font-weight: 600;
+    font-size: 1.25rem;
+}
+
+.close-btn {
+    font-size: 1.5rem;
+    cursor: pointer;
+    line-height: 1;
+}
+
+/* Form Container */
+.form-container {
+    padding: 20px;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    font-weight: 500;
+    margin-bottom: 5px;
+    font-size: 0.95rem;
+    color: var(--text-primary);
+}
+
+/* Input Fields and Select/Textarea Base Style */
+.form-group input[type="text"],
+.form-group select,
+.form-group textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-family: var(--font-base);
+    font-size: 1rem;
+    color: var(--text-primary);
+    background-color: var(--bg-white);
+    appearance: none;
+}
+
+.form-group textarea {
+    resize: vertical;
+}
+
+/* Input with Icon Wrapper (for Dosen, Tanggal, Waktu) */
+.input-with-icon {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-with-icon input[type="text"],
+.input-with-icon select {
+    padding-right: 40px;
+    background-color: var(--bg-white);
+}
+
+.input-icon {
+    position: absolute;
+    right: 0;
+    width: 40px;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    pointer-events: none;
+}
+
+
+/* Form Actions and Button */
+.form-actions {
+    padding: 10px 0 0 0;
+    margin: -20px -20px 0 -20px;
+    background-color: #f7f7f7;
+    border-top: 1px solid var(--border-light);
+    display: flex;
+    justify-content: center;
+    padding: 15px 20px;
+}
+
+.submit-btn {
+    background-color: var(--primary);
+    color: var(--bg-white);
+    border: none;
+    padding: 12px 25px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    width: 100%;
+    max-width: 250px;
+    transition: background-color 0.2s;
+}
+
+.submit-btn:hover {
+    background-color: #043a75;
+}
+
+#mid{
+    width: 80%;;
+}

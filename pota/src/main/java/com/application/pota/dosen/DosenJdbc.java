@@ -17,7 +17,7 @@ public class DosenJdbc implements DosenRepository {
     private final JdbcTemplate jdbcTemplate;
 
     @Override
-    public ProfilDosen findNamaByIdPengguna(String idPengguna) {
+    public ProfilDosen makeProfileByIdPengguna(String idPengguna) {
         String query = """
             SELECT p.IdPengguna, p.username, p.nama, p.tipeAkun
             FROM Pengguna p

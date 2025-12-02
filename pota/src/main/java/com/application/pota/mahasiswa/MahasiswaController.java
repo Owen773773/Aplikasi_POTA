@@ -2,7 +2,6 @@ package com.application.pota.mahasiswa;
 
 import com.application.pota.jadwal.JadwalService;
 import com.application.pota.jadwal.SlotWaktu;
-import com.application.pota.pengguna.Pengguna;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -23,6 +22,9 @@ import java.util.Map;
 public class MahasiswaController {
     @Autowired
     private JadwalService jadwalService;
+
+    @Autowired
+    private MahasiswaRepository mahasiswaRepository;
 
     @GetMapping({"/", ""})
     public String berandaDefault() {
@@ -84,7 +86,6 @@ public class MahasiswaController {
         model.addAttribute("listHari", HariTanggal);
         model.addAttribute("timetable", timetableGrid);
 
-
         return "MahasiswaJadwal";
     }
 
@@ -92,5 +93,21 @@ public class MahasiswaController {
         return LocalDate.of(tahun, 1, 1)
                 .with(IsoFields.WEEK_OF_WEEK_BASED_YEAR, minggu)
                 .with(DayOfWeek.MONDAY);
+    }
+
+    @GetMapping("/profil")
+    public String profil(Model model, HttpSession session) {
+        String id = (String)session.getAttribute("idPengguna");
+
+        ProfilMahasiswa profilMahasiswa = mahasiswaRepository.makeProfileByIdPengguna(id);
+
+        model.addAttribute("nama", profilMahasiswa.getNama());
+        model.addAttribute("npm", profilMahasiswa.getNpm());
+        model.addAttribute("peran", profilMahasiswa.getPeran());
+        model.addAttribute("dospem1", profilMahasiswa.getDosen1());
+        model.addAttribute("dospem2 ", profilMahasiswa.getDosen2());
+        // model.addAttribute(id, profilMahasiswa);
+
+        return "ProfileMahasiswa";
     }
 }

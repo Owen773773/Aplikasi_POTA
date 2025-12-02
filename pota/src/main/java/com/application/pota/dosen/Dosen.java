@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 @ToString(callSuper = true)
-class Dosen extends Pengguna {
+public class Dosen extends Pengguna {
     public Dosen(String idPengguna, String username, String password,
                  String nama, boolean statusAktif, String tipeAkun,
                  LocalDateTime lastLogin) {

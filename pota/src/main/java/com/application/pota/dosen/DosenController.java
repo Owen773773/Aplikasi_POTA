@@ -16,14 +16,18 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.application.pota.jadwal.JadwalService;
 import com.application.pota.jadwal.SlotWaktu;
+import com.fasterxml.jackson.annotation.JsonCreator.Mode;
 
 import jakarta.servlet.http.HttpSession;
+import lombok.RequiredArgsConstructor;
 
 @Controller
+@RequiredArgsConstructor
 @RequestMapping("/dosen")
 class DosenController {
     @Autowired
-    private JadwalService jadwalService;
+    private final JadwalService jadwalService;
+    private final DosenService dosenService;
     
     @GetMapping({"/", ""})
     public String berandaDefault() {
@@ -32,7 +36,7 @@ class DosenController {
     
     @GetMapping("/beranda")
     public String beranda() {
-        return "dosen/DashboardDosen";
+        return "DashboardDosen";
     }
     
     @GetMapping("/jadwal")
@@ -66,7 +70,7 @@ class DosenController {
         model.addAttribute("timetable", timetableGrid);
 
 
-        return "dosen/DosenJadwal";
+        return "DosenJadwal";
     }
     
     private LocalDate hitungTanggalMulaiMinggu(int tahun, int minggu) {
@@ -76,7 +80,14 @@ class DosenController {
     }
 
     @GetMapping("/profil")
-    public String profil() {
-        return "dosen/ProfileDosen";
+    public String profil(Model model, HttpSession session) {
+        String idPengguna = (String)session.getAttribute("idPengguna");
+        ProfilDosen profilDosen = dosenService.ambilProfil(idPengguna);
+
+        model.addAttribute("namaDosen", profilDosen.getNama());
+        model.addAttribute("npmDosen", profilDosen.getNpm());
+        model.addAttribute("peranPengguna", profilDosen.getPeran());
+        model.addAttribute("usernameDosen", profilDosen.getUsername()); 
+        return "ProfileDosen";
     }
 }

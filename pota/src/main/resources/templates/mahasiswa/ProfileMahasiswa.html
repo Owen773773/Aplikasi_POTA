@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>POTA - Akun</title>
 
-    <link rel="stylesheet" href="../static/css/mahasiswa.css">
+    <link rel="stylesheet" href="/css/mahasiswa.css">
 </head>
 
 <body>
@@ -14,43 +14,60 @@
     <div class="main">
         <aside class="sidebar">
             <div class="logo-container">
-                <img src="../static/assets/icons/logo.svg">
+                <div class="logo-icon-slot">
+                    <img src="/assets/icons/logo.svg">
+                </div>
                 <span class="text-navbar">POTA</span>
             </div>
 
             <nav class="nav-menu">
+                <a href="#" class="nav-item active">
+                    <div class="active-indicator"></div>
 
-                <a href="DashboardMahasiswa.html" class="nav-item active">
-                    <img src="../static/assets/icons/ManajemenAkun.svg">
+                    <div class="icon-slot">
+                        <img src="/assets/icons/ManajemenAkun.svg">
+                    </div>
+
                     <span>Beranda</span>
                 </a>
 
-                <a href="MahasiswaJadwal.html" class="nav-item">
-                    <img src="../static/assets/icons/Jadwal.svg">
+                <a href="#" class="nav-item">
+                    <div class="icon-slot">
+                        <img src="/assets/icons/Jadwal.svg">
+                    </div>
                     <span>Jadwal</span>
                 </a>
 
-                <a href="MahasiswaBimbinganProses.html" class="nav-item">
-                    <img src="../static/assets/icons/Bimbingan.svg">
+                <a href="#" class="nav-item">
+                    <div class="icon-slot">
+                        <img src="/assets/icons/Bimbingan.svg">
+                    </div>
                     <span>Bimbingan</span>
                 </a>
 
-                <a href="MahasiswaNotifikasi.html" class="nav-item">
-                    <img src="../static/assets/icons/Notifikasi.svg">
+                <a href="#" class="nav-item">
+                    <div class="icon-slot">
+                        <img src="/assets/icons/Notifikasi.svg">
+                    </div>
                     <span>Notifikasi</span>
                 </a>
 
-                <a href="MahasiswaProfil.html" class="nav-item">
-                    <img src="../static/assets/icons/Profil.svg">
+                <a href="#" class="nav-item">
+                    <div class="icon-slot">
+                        <img src="/assets/icons/Profil.svg">
+                    </div>
                     <span>Profil</span>
                 </a>
-
             </nav>
 
-            <button class="btn-logout">
-                <img src="../static/assets/icons/LogOut.svg">
-                Log Out
-            </button>
+            <div class="logout-section">
+                <button class="btn-logout">
+                    <div class="logo-slot">
+                        <img src="/assets/icons/LogOut.svg">
+                    </div>
+                    Log Out
+                </button>
+            </div>
         </aside>
 
         <main class="main-content">

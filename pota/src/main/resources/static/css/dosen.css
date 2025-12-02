@@ -33,72 +33,6 @@ body {
   display: flex;
   height: 100vh;
 }
-
-/* SIDEBAR */
-.sidebar {
-  width: 180px;
-  background: var(--bg-white);
-  display: flex;
-  flex-direction: column;
-  padding: 25px;
-}
-
-.logo-container {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 35px;
-}
-
-.text-navbar {
-  font-size: 26px;
-  font-weight: bold;
-  color: var(--primary);
-}
-
-
-/* Navigation */
-.nav-menu {
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-  flex-grow: 1;
-}
-
-.nav-item {
-  display: flex;
-  gap: 14px;
-  align-items: center;
-  color: var(--primary);
-  font-size: 18px;
-  cursor: pointer;
-  padding: 10px 6px;
-  border-radius: 8px;
-  position: relative;
-}
-
-.nav-item.active {
-  font-weight: bold;
-  color: var(--primary);
-}
-
-.nav-item.active::before {
-  content: '';
-  position: absolute;
-  left: -10%;
-  top: 50%;
-  transform: translateY(-50%);
-  height: 30px;
-  width: 6px;
-  background-color: var(--primary);
-  border-top-right-radius: 6px;
-  border-bottom-right-radius: 6px;
-}
-
-a {
-  text-decoration: none;
-}
-
 /* Logout */
 .logout-section {
     padding: 20px 30px 20px;
@@ -493,4 +427,13 @@ a {
 
 .btn-password:hover {
     background: #043a75;
+}
+
+.ringkasan-info{
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+p{
+    font-weight: bold;
 }

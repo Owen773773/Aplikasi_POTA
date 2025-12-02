@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>POTA - Proses</title>
-    <link rel="stylesheet" href="/css/BimbinganProses.css">
+    <link rel="stylesheet" href="/css/BimbinganTerjadwalkan.css">
     <link rel="stylesheet" href="/css/style.css">
 </head>
 
@@ -61,8 +61,8 @@
             <h1 class="page-title">Bimbingan</h1>
 
             <div class="tab-menu">
-                <a class="tab active" th:href="@{/mahasiswa/bimbinganProses}">Proses</a>
-                <a class="tab" th:href="@{/mahasiswa/bimbinganTerjadwal}">Terjadwalkan</a>
+                <a class="tab" th:href="@{/mahasiswa/bimbinganProses}">Proses</a>
+                <a class="tab active" th:href="@{/mahasiswa/bimbinganTerjadwal}">Terjadwalkan</a>
                 <a class="tab" th:href="@{/mahasiswa/bimbinganSelesai}">Selesai</a>
                 <a class="tab" th:href="@{/mahasiswa/bimbinganGagal}">Gagal</a>
             </div>
@@ -70,11 +70,11 @@
             <div class="bimbingan-list">
 
                 <!-- Tempat buat nampilin Data -->
-                <div class="card" th:each="bimbingan : ${listBimbingan}" >
+                <div class="card">
                     <div class="card-header">
-                        <span th:text="${bimbingan.tanggal}">10/10/2025 </span>
-                        <span th:text="${bimbingan.jam}">10.00 - 11.00</span>
-                        <span th:text="${bimbingan.namaLokasi}">Ruang Tugas Akhir</span>
+                        <span>10/10/2025 </span> <!-- Ini masih contoh data -->
+                        <span>10.00 - 11.00</span>
+                        <span>Ruang Tugas Akhir</span>
                         <img src="/assets/icons/Arrow.svg" class="dropdown-btn">
                     </div>
 
@@ -84,31 +84,29 @@
                             <div class="containerItem">
                                 <div class="containerGrid">
                                     <p class="itemkiri">Tanggal</p>
-                                    <p class="itemkanan" th:text="${bimbingan.tanggal}">: 10/10/2025</p>
+                                    <p class="itemkanan">: 10/10/2025</p>
                                     <p class="itemkiri">Jam</p>
-                                    <p class="itemkanan" th:text="${bimbingan.jam}">: 10.00 - 11.00</p>
+                                    <p class="itemkanan">: 10.00 - 11.00</p>
                                     <p class="itemkiri">Durasi</p>
-                                    <p class="itemkanan" th:text="${bimbingan.durasi}">: 1 Jam</p>
+                                    <p class="itemkanan">: 1 Jam</p>
                                     <p class="itemkiri">Lokasi</p>
-                                    <p class="itemkanan" th:text="${bimbingan.namaLokasi}">: Ruang Tugas Akhir</p>
+                                    <p class="itemkanan">: Ruang Tugas Akhir</p>
                                     <p class="itemkiri">Dosen</p>
-                                    <p class="itemkanan" th:text="${bimbingan.dosen}">: Maria Veronica</p>
+                                    <p class="itemkanan">: Maria Veronica</p>
                                     <p class="itemkiri">Mahasiswa</p>
-                                    <p class="itemkanan" th:each="mahasiswa : ${bimbingan.mahasiswa}">
-                                        : <span th:text="${mahasiswa}">-</span>
-                                    </p>
+                                    <p class="itemkanan">: -</p>
                                 </div>
 
                                 <div class="containerGrid2">
                                     <p class="itemkiri">Topik</p>
-                                    <p class="itemkanan" th:text="${bimbingan.topik}">: Bimbingan Mingguan</p>
+                                    <p class="itemkanan">: Bimbingan Mingguan</p>
                                     <p class="itemkiri">Deskripsi Topik</p>
-                                    <p class="itemkanan" th:text="${bimbingan.deskripsi}">: -</p>
+                                    <p class="itemkanan">: -</p>
                                 </div>
                             </div>
                             <div class="card-actions">
-                                <button class="btn reject">Tolak</button>
-                                <button class="btn accept">Terima</button>
+                                <button class="btn accept"><div class="img"></div>Validasi</button>
+                                <button class="btn reject">Batalkan Bimbingan</button>
                             </div>
                         </div>
                     </div>

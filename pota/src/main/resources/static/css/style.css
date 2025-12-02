@@ -144,6 +144,12 @@ body {
     object-fit: contain;
 }
 
+.text-navbar {
+    font-size: 26px;
+    font-weight: bold;
+    color: var(--primary);
+}
+
 /* Logout */
 .logout-section {
     padding: 20px 30px 20px;

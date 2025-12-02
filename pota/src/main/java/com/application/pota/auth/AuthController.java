@@ -39,6 +39,7 @@ public class AuthController {
         if (pengguna != null) {
             String tipeAkun = pengguna.getTipeAkun();
             session.setAttribute("idPengguna", String.valueOf(pengguna.getIdPengguna()));
+            session.setAttribute("tipeAkun", String.valueOf(pengguna.getTipeAkun()));
             if (tipeAkun.equalsIgnoreCase("Mahasiswa")) {
                 return "redirect:/mahasiswa";
             } else if (tipeAkun.equalsIgnoreCase("Dosen")) {

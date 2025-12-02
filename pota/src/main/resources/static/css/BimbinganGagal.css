@@ -193,8 +193,8 @@ p {
   font-style: var(--font-base);
 }
 
-p#itemkiri {
-  font-weight: bold;
+.itemkiri {
+    font-weight: bold;
 }
 
 .containerutama {

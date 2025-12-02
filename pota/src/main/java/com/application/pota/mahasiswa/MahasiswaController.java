@@ -1,5 +1,7 @@
 package com.application.pota.mahasiswa;
 
+import com.application.pota.bimbingan.BimbinganService;
+import com.application.pota.bimbingan.BimbinganSiapKirim;
 import com.application.pota.jadwal.JadwalService;
 import com.application.pota.jadwal.SlotWaktu;
 import jakarta.servlet.http.HttpSession;
@@ -22,6 +24,8 @@ import java.util.Map;
 public class MahasiswaController {
     @Autowired
     private JadwalService jadwalService;
+    @Autowired
+    private BimbinganService bimbinganService;
 
     @GetMapping({"/", ""})
     public String berandaDefault() {
@@ -34,22 +38,50 @@ public class MahasiswaController {
     }
 
     @GetMapping({"/bimbingan", "/bimbinganProses"})
-    public String bimbinganDefault() {
+    public String bimbinganDefault(HttpSession session, Model model) {
+        String idPengguna = (String) session.getAttribute("idPengguna");
+        String tipeAkun = (String) session.getAttribute("tipeAkun"); // ✅ Ambil dari session
+
+        List<BimbinganSiapKirim> listBimbingan =
+                bimbinganService.dapatkanBimbinganProses(tipeAkun, idPengguna); // ✅ Kirim tipeAkun
+
+        model.addAttribute("listBimbingan", listBimbingan);
         return "mahasiswa/bimbingan/MahasiswaBimbinganProses";
     }
 
     @GetMapping("/bimbinganTerjadwal")
-    public String bimbinganTerjadwal() {
+    public String bimbinganTerjadwal(HttpSession session, Model model) {
+        String idPengguna = (String) session.getAttribute("idPengguna");
+        String tipeAkun = (String) session.getAttribute("tipeAkun");
+
+        List<BimbinganSiapKirim> listBimbingan =
+                bimbinganService.dapatkanBimbinganTerjadwal(tipeAkun, idPengguna);
+
+        model.addAttribute("listBimbingan", listBimbingan);
         return "mahasiswa/bimbingan/MahasiswaBimbinganTerjadwalkan";
     }
 
     @GetMapping("/bimbinganSelesai")
-    public String bimbinganSelesai() {
+    public String bimbinganSelesai(HttpSession session, Model model) {
+        String idPengguna = (String) session.getAttribute("idPengguna");
+        String tipeAkun = (String) session.getAttribute("tipeAkun");
+
+        List<BimbinganSiapKirim> listBimbingan =
+                bimbinganService.dapatkanBimbinganSelesai(tipeAkun, idPengguna); // ✅ Ganti ke Selesai
+
+        model.addAttribute("listBimbingan", listBimbingan);
         return "mahasiswa/bimbingan/MahasiswaBimbinganSelesai";
     }
 
     @GetMapping("/bimbinganGagal")
-    public String bimbinganGagal() {
+    public String bimbinganGagal(HttpSession session, Model model) {
+        String idPengguna = (String) session.getAttribute("idPengguna");
+        String tipeAkun = (String) session.getAttribute("tipeAkun");
+
+        List<BimbinganSiapKirim> listBimbingan =
+                bimbinganService.dapatkanBimbinganGagal(tipeAkun, idPengguna); // ✅ Ganti ke Gagal
+
+        model.addAttribute("listBimbingan", listBimbingan);
         return "mahasiswa/bimbingan/MahasiswaBimbinganGagal";
     }
 

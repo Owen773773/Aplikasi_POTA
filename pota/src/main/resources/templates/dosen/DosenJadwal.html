@@ -16,18 +16,18 @@
     <aside class="sidebar">
         <div class="logo-container">
             <div class="logo-icon-slot">
-                <img src="/assets/icons/Logo.svg" alt="logo_pota">
+                <img src="/assets/icons/logo.svg">
             </div>
             <span class="text-navbar">POTA</span>
         </div>
 
         <nav class="nav-menu">
-            <a th:href="@{/dosen/beranda}" class="nav-item ">
+            <a th:href="@{/dosen/beranda}" class="nav-item">
                 <img th:src="@{/assets/icons/ManajemenAkun.svg}" alt="" class="nav-icon"/>
                 <span>Beranda</span>
             </a>
 
-            <a th:href="@{/dosen/jadwal}" class="nav-item" active>
+            <a th:href="@{/dosen/jadwal}" class="nav-item active">
                 <img th:src="@{/assets/icons/Jadwal.svg}" alt="" class="nav-icon"/>
                 <span>Jadwal</span>
             </a>
@@ -50,12 +50,12 @@
         </nav>
 
         <div class="logout-section">
-            <button class="btn-logout">
-                <div class="logo-slot">
-                    <img src="/assets/icons/LogOut.svg">
-                </div>
-                Log Out
-            </button>
+            <form th:action="@{/logout}" method="post" style="margin: 0;">
+                <button type="submit" class="btn-logout">
+                    <img th:src="@{/assets/icons/LogOut.svg}" alt="" />
+                    Log Out
+                </button>
+            </form>
         </div>
     </aside>
 

@@ -4,7 +4,9 @@ import lombok.RequiredArgsConstructor;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -23,6 +25,8 @@ public class MahasiswaJdbc implements MahasiswaRepository {
             JOIN Mahasiswa m ON m.IdPengguna = p.IdPengguna
             WHERE p.IdPengguna = ?
         """;
+
+        System.out.println(id);
 
         ProfilMahasiswa profilMahasiswa = jdbcTemplate.queryForObject(query, this::mapRowToPengguna, id);
         
@@ -44,29 +48,36 @@ public class MahasiswaJdbc implements MahasiswaRepository {
 
         //ambil jumlah pra dan pasca
         query = """
-        SELECT 
-            SUM(CASE 
-                    WHEN tb.StatusBimbingan = 'Selesai' AND b.IdBim IS NOT NULL 
-                        AND ta.TanggalUTS > b.TanggalBimbingan 
-                    THEN 1 
-                    ELSE 0 
-                END) AS sebelum_uts,
-            SUM(CASE 
-                    WHEN tb.StatusBimbingan = 'Selesai' AND b.IdBim IS NOT NULL 
-                        AND ta.TanggalUTS <= b.TanggalBimbingan 
-                    THEN 1 
-                    ELSE 0 
-                END) AS sesudah_uts
+            SELECT 
+            SUM(
+                CASE 
+                    WHEN tb.StatusBimbingan = 'Selesai'
+                        AND j.tanggal < ta.TanggalUTS
+                    THEN 1 ELSE 0
+                END
+            ) AS sebelum_uts,
+
+            SUM(
+                CASE 
+                    WHEN tb.StatusBimbingan = 'Selesai'
+                        AND j.tanggal >= ta.TanggalUTS
+                    THEN 1 ELSE 0
+                END
+            ) AS sesudah_uts
+
         FROM TopikBimbingan tb
-        JOIN TugasAkhir ta ON tb.IdTA = ta.IdTa
+        JOIN TugasAkhir ta ON tb.IdTA = ta.IdTA
         JOIN Bimbingan b ON tb.IdBim = b.IdBim
+        JOIN PenjadwalanBimbingan pb ON b.IdBim = pb.IdBim
+        JOIN Jadwal j ON pb.IdJadwal = j.IdJadwal
+
         WHERE ta.IdMahasiswa = ?;
         """;
 
         List<Integer> praPasca = jdbcTemplate.queryForObject(query, this::mapRowToPraPasca, id);
 
         profilMahasiswa.setTotBimPra(praPasca.get(0));
-        profilMahasiswa.setTotBimPra(praPasca.get(1));
+        profilMahasiswa.setTotBimPas(praPasca.get(1));
 
         return profilMahasiswa;
     }
@@ -89,5 +100,20 @@ public class MahasiswaJdbc implements MahasiswaRepository {
         praPasca.add(rs.getInt("sebelum_uts"));
         praPasca.add(rs.getInt("sesudah_uts"));
         return praPasca;
+    }
+
+    @Override
+    public LocalDate getTanggalUtsByIdMahasiswa(String id) {
+        String query = """
+            SELECT TanggalUTS
+            FROM TugasAkhir
+            WHERE IdMahasiswa = ?;
+        """;
+
+        return jdbcTemplate.queryForObject(query, this::mapRowToTanggalUts, id);
+    }
+
+    public LocalDate mapRowToTanggalUts(ResultSet rs, int rowNum) throws SQLException {
+        return rs.getDate("TanggalUTS").toLocalDate();
     }
 }

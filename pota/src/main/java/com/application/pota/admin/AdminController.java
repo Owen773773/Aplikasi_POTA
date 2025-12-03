@@ -72,18 +72,22 @@ public class AdminController {
         return "redirect:/admin/akun";
     }
 
+    @GetMapping("/ruangan")
+    public String ruanganJadwal(@RequestParam(required = false) String week,
+                                @RequestParam(required = false) Integer ruanganId,
+                                HttpSession session,
+                                Model model) {
+        List<Ruangan> pilihan = ruanganService.getAllRuang();
+        model.addAttribute("listRuangan", pilihan);
 
-    @GetMapping("/jadwal")
-    public String mahasiswajadwal(@RequestParam(required = false) String week,
-                                  HttpSession session,
-                                  Model model) {
-        // Validasi session
-        String idPengguna = (String) session.getAttribute("idPengguna");
-//        if (idPengguna == null) {
-//            return "redirect:/login";
-//        }
+        // Set ruangan default jika null
+        if (ruanganId == null && !pilihan.isEmpty()) {
+            ruanganId = pilihan.get(0).getIdRuangan();
+        }
 
-        // Handle week parameter - SAMA SEPERTI ADMIN
+        model.addAttribute("selectedRuanganId", ruanganId);
+
+        // Handle week parameter
         if (week == null || week.isEmpty()) {
             LocalDate hariIni = LocalDate.now();
             int weekNum = hariIni.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR);
@@ -94,7 +98,7 @@ public class AdminController {
 
         model.addAttribute("weekParam", week);
 
-        // Parse week - SAMA SEPERTI ADMIN
+        // Parse week
         String tahun = week.substring(0, 4);
         String minggu = week.substring(6);
 
@@ -103,15 +107,17 @@ public class AdminController {
 
         model.addAttribute("tanggalMulaiMinggu", tanggalMulaiFormatted);
 
-        // Parameter terakhir FALSE karena ini untuk pengguna, bukan ruangan
-        JadwalService.DataJadwalMingguan temp = jadwalService.dapatkanJadwalMingguan(week, idPengguna, false);
+        // Kirim ruanganId sebagai String, atau null jika masih null
+        String ruanganIdStr = (ruanganId != null) ? String.valueOf(ruanganId) : null;
+        JadwalService.DataJadwalMingguan temp = jadwalService.dapatkanJadwalMingguan(week, ruanganIdStr, true);
+
         Map<DayOfWeek, String> HariTanggal = temp.getTanggalHeader();
         List<List<SlotWaktu>> timetableGrid = temp.getGridJadwal();
 
         model.addAttribute("listHari", HariTanggal);
         model.addAttribute("timetable", timetableGrid);
 
-        return "MahasiswaJadwal";
+        return "admin/Admin_Ruangan";
     }
 
     private LocalDate hitungTanggalMulaiMinggu(int tahun, int minggu) {

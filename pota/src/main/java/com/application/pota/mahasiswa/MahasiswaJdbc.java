@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Repository;
 public class MahasiswaJdbc implements MahasiswaRepository {
     private final JdbcTemplate jdbcTemplate;
     
+    //ambil nama, peran, dan bpm
     public ProfilMahasiswa makeProfileByIdPengguna (String id) {
         String query = """
             SELECT p.IdPengguna, p.username, p.nama, p.tipeAkun
@@ -24,6 +26,7 @@ public class MahasiswaJdbc implements MahasiswaRepository {
 
         ProfilMahasiswa profilMahasiswa = jdbcTemplate.queryForObject(query, this::mapRowToPengguna, id);
         
+        //ambil dospem 1 dan 2
         query = """
             SELECT d1.nama AS namaDosen
             FROM Mahasiswa m
@@ -39,7 +42,31 @@ public class MahasiswaJdbc implements MahasiswaRepository {
         profilMahasiswa.setDosen1(dospem.size() > 0 ? dospem.get(0) : null);
         profilMahasiswa.setDosen2(dospem.size() > 1 ? dospem.get(1) : null);
 
-        query = "";
+        //ambil jumlah pra dan pasca
+        query = """
+        SELECT 
+            SUM(CASE 
+                    WHEN tb.StatusBimbingan = 'Selesai' AND b.IdBim IS NOT NULL 
+                        AND ta.TanggalUTS > b.TanggalBimbingan 
+                    THEN 1 
+                    ELSE 0 
+                END) AS sebelum_uts,
+            SUM(CASE 
+                    WHEN tb.StatusBimbingan = 'Selesai' AND b.IdBim IS NOT NULL 
+                        AND ta.TanggalUTS <= b.TanggalBimbingan 
+                    THEN 1 
+                    ELSE 0 
+                END) AS sesudah_uts
+        FROM TopikBimbingan tb
+        JOIN TugasAkhir ta ON tb.IdTA = ta.IdTa
+        JOIN Bimbingan b ON tb.IdBim = b.IdBim
+        WHERE ta.IdMahasiswa = ?;
+        """;
+
+        List<Integer> praPasca = jdbcTemplate.queryForObject(query, this::mapRowToPraPasca, id);
+
+        profilMahasiswa.setTotBimPra(praPasca.get(0));
+        profilMahasiswa.setTotBimPra(praPasca.get(1));
 
         return profilMahasiswa;
     }
@@ -55,5 +82,12 @@ public class MahasiswaJdbc implements MahasiswaRepository {
 
     public String mapRowToDosenPembimbing(ResultSet rs, int rowNum) throws SQLException {
         return rs.getString("namaDosen");
+    }
+
+    public List<Integer> mapRowToPraPasca(ResultSet rs, int rowNum) throws SQLException {
+        List<Integer> praPasca = new ArrayList<>(); 
+        praPasca.add(rs.getInt("sebelum_uts"));
+        praPasca.add(rs.getInt("sesudah_uts"));
+        return praPasca;
     }
 }

@@ -74,7 +74,7 @@ class BimbinganServiceTest {
         when(bimbinganRepository.getBimbinganUserBertipe(tipeAkun, "Terjadwalkan", idPengguna))
                 .thenReturn(Arrays.asList(bimbinganTerjadwal));
 
-        // Act: panggil method yang mau ditest
+        // aksi: panggil method yang mau ditest
         List<BimbinganSiapKirim> result = bimbinganService.dapatkanBimbinganTerjadwal(tipeAkun, idPengguna);
 
         // Periksa hasil
@@ -99,7 +99,7 @@ class BimbinganServiceTest {
         when(bimbinganRepository.getBimbinganUserBertipe(tipeAkun, "Terjadwalkan", idPengguna))
                 .thenReturn(Arrays.asList(bimbinganTerjadwal));
 
-        // Act
+        // aksi
         List<BimbinganSiapKirim> result = bimbinganService.dapatkanBimbinganTerjadwal(tipeAkun, idPengguna);
 
         // Periksa hasil
@@ -123,7 +123,7 @@ class BimbinganServiceTest {
         when(bimbinganRepository.getBimbinganUserBertipe(tipeAkun, "Terjadwalkan", idPengguna))
                 .thenReturn(new ArrayList<>());
 
-        // Act
+        // aksi
         List<BimbinganSiapKirim> result = bimbinganService.dapatkanBimbinganTerjadwal(tipeAkun, idPengguna);
 
         // Periksa hasil
@@ -147,7 +147,7 @@ class BimbinganServiceTest {
         when(bimbinganRepository.getBimbinganUserBertipe(tipeAkun, "Selesai", idPengguna))
                 .thenReturn(Arrays.asList(bimbinganSelesai));
 
-        // Act: panggil method yang mau ditest
+        // aksi: panggil method yang mau ditest
         List<BimbinganSiapKirim> result = bimbinganService.dapatkanBimbinganSelesai(tipeAkun, idPengguna);
 
         // Assert: verifikasi hasilnya
@@ -172,7 +172,7 @@ class BimbinganServiceTest {
         when(bimbinganRepository.getBimbinganUserBertipe(tipeAkun, "Selesai", idPengguna))
                 .thenReturn(Arrays.asList(bimbinganSelesai));
 
-        // Act
+        // aksi
         List<BimbinganSiapKirim> result = bimbinganService.dapatkanBimbinganSelesai(tipeAkun, idPengguna);
 
         // Periksa hasil
@@ -195,7 +195,7 @@ class BimbinganServiceTest {
         when(bimbinganRepository.getBimbinganUserBertipe(tipeAkun, "Selesai", idPengguna))
                 .thenReturn(new ArrayList<>());
 
-        // Act
+        // aksi
         List<BimbinganSiapKirim> result = bimbinganService.dapatkanBimbinganSelesai(tipeAkun, idPengguna);
 
 // Periksa hasil

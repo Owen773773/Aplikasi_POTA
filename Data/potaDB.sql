@@ -344,20 +344,8 @@ INSERT INTO BimbinganNotifikasi VALUES
 (4, 4),
 (5, 5);
 
--- SELECT 
---                     j.tanggal, j.WaktuMulai, j.WaktuSelesai, r.namaRuangan, p_dosen.nama ,
---                     b.IdBim, b.TopikBim, b.DeskripsiBim
---                 FROM 
---                     Bimbingan b
---                     JOIN PenjadwalanBimbingan pb ON b.IdBim = pb.IdBim
---                     JOIN Jadwal j ON pb.IdJadwal = j.IdJadwal
---                     JOIN Ruangan r ON b.idRuangan = r.idRuangan
---                     JOIN TopikBimbingan tb ON b.IdBim = tb.IdBim
---                     JOIN TugasAkhir ta ON tb.IdTA = ta.IdTA
---                     JOIN Dosen_Pembimbing dp ON ta.IdTa = dp.idTA
---                     JOIN Pengguna p_dosen ON dp.IdDosen = p_dosen.IdPengguna
---                     WHERE ta.IdMahasiswa = 'U001' 
---                         AND (j.tanggal > CURRENT_DATE OR (j.tanggal = CURRENT_DATE AND j.WaktuMulai > CURRENT_TIME))
---                         ORDER BY j.tanggal ASC, j.WaktuMulai ASC
---                         LIMIT 1
+-- SELECT ta.IdTa, ta.TopikTA, ta.TanggalUTS, ta.TanggalUas, m.TahapTA
+--             FROM TugasAkhir ta
+--             JOIN Mahasiswa m ON ta.IdMahasiswa = m.IdPengguna
+--             WHERE ta.IdMahasiswa = 'U001'
 	

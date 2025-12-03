@@ -35,18 +35,14 @@ public class TugasAkhirJdbc implements TugasAkhirRepository {
         """;
         List<String> listDosen = jdbcTemplate.queryForList(sql2, String.class, profilMahasiswa.getIdTa());
         
-        if (listDosen.size() > 0) {
+        if (listDosen.size() > 1) {
             profilMahasiswa.setNamaDosen1(listDosen.get(0));
-        }
-        else {
-            profilMahasiswa.setNamaDosen1("-");
-        }
-        if (listDosen.size() > 1){
             profilMahasiswa.setNamaDosen2(listDosen.get(1));
-        } 
-        else {
-            profilMahasiswa.setNamaDosen2("-");
         }
+        else {
+            profilMahasiswa.setNamaDosen1(listDosen.get(0));
+            profilMahasiswa.setNamaDosen2("-");
+        }        
 
         String sql3 = """
             SELECT COUNT(*) 

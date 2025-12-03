@@ -3,5 +3,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface DosenRepository {
-    ProfilDosen findNamaByIdPengguna(String username);
+    ProfilDosen makeProfileByIdPengguna(String username);
 }

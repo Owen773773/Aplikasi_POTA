@@ -10,7 +10,7 @@ public class DosenService {
     private final DosenRepository dosenRepository;
 
     public ProfilDosen ambilProfil(String idPengguna) {
-        ProfilDosen profilDosen = dosenRepository.findNamaByIdPengguna(idPengguna);
+        ProfilDosen profilDosen = dosenRepository.makeProfileByIdPengguna(idPengguna);
 
         return profilDosen;
     }

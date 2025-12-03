@@ -228,7 +228,7 @@ INSERT INTO Akademik VALUES
 (20242, 2, 3),
 (20243, 2, 3),
 (20244, 2, 3),
-(20245, 2, 3);
+(20245, 2, 3); 
 
 INSERT INTO Ruangan VALUES
 (1, 'Ruang A'),

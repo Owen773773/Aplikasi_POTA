@@ -1,0 +1,68 @@
+@import url("https://fonts.googleapis.com/css?family=Quicksand");
+
+:root {
+  --primary: #054a91;
+  --bg-body: #f2f0ef;
+  --bg-white: #ffffff;
+  --text-primary: #000000;
+  --text-muted: #888888;
+  --border: #dddddd;
+  --border-light: #eeeeee;
+
+  --btn-add: #66d666;
+  --btn-filter: #7885ff;
+  --btn-green-bg: #eaffea;
+  --btn-green-border: #66d666;
+  --btn-red-bg: #ffeaea;
+  --btn-red-border: #fa7e7e;
+  --btn-grey-bg: #eeeeee;
+  --btn-grey-border: #aaaaaa;
+  --btn-accept: #019D03;
+  --btn-reject: #FF2C2C;
+
+  --font-base: "Quicksand", sans-serif;
+}
+
+body {
+    font-family: var(--font-base);
+    background-color: var(--bg-body);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+}
+
+.main-container {
+    width: 400px;
+    height: auto;
+    max-width: 90%;
+    background-color: var(--bg-white);
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    background-color: var(--primary);
+    color: var(--bg-white);
+    font-weight: bold;
+}
+
+.header h1 {
+    margin: 0;
+    font-size: 1.3em;
+}
+
+.close-btn {
+    font-size: 1.2em;
+    cursor: pointer;
+    font-weight: normal;
+}
+
+.main-content {
+    padding: 20px;
+}

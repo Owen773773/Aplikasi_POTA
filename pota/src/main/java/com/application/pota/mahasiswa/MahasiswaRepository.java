@@ -1,6 +1,7 @@
 package com.application.pota.mahasiswa;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import org.springframework.stereotype.Repository;
 
@@ -8,4 +9,5 @@ import org.springframework.stereotype.Repository;
 public interface MahasiswaRepository {
     ProfilMahasiswa makeProfileByIdPengguna(String id);
     LocalDate getTanggalUtsByIdMahasiswa(String id);
+    List<Integer> getBatasKelayakanPraPasca(String id);
 }

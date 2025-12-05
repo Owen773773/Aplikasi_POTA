@@ -2,6 +2,7 @@ package com.application.pota.mahasiswa;
 
 import java.sql.Date;
 import java.time.LocalDate;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,14 +18,24 @@ public class MahasiswaService {
         LocalDate tanggalUts = mahasiswaRepository.getTanggalUtsByIdMahasiswa(id);
         LocalDate timeSekarang = LocalDate.now();
 
+        List<Integer> batasPraPasca = mahasiswaRepository.getBatasKelayakanPraPasca(id);
+        int batasPra = batasPraPasca.get(0);
+        int batasPasca = batasPraPasca.get(1);
+
         if(timeSekarang.isAfter(tanggalUts)) {
             //pasca
-            int batasKelayakanPasca;
+            if (profilMahasiswa.getTotBimPas() >= batasPasca) {
+                kelayakan = "Layak";
+            }
         }
         else {
             //pra
-            int batasKelayakanPra;
+            if (profilMahasiswa.getTotBimPra() >= batasPra) {
+                kelayakan = "Layak";
+            }
         }
+
+        profilMahasiswa.setSyaratKelayakan(kelayakan);
 
         return profilMahasiswa;
     }

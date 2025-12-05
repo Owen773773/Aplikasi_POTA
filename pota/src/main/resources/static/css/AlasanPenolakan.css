@@ -1,0 +1,45 @@
+root{
+  --primary: #054a91;
+}
+
+#cancelReason {
+    width: 100%;
+    min-height: 200px;
+    padding: 15px;
+    box-sizing: border-box;
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    font-size: 1em;
+    font-family: var(--font-base); 
+    resize: none;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.08);
+    outline: none;
+}
+
+#cancelReason::placeholder {
+    color: var(--text-muted);
+}
+
+/* Footer specific to Cancel Reason */
+.cancel-footer {
+    display: flex;
+    justify-content: flex-end;
+    padding: 0 20px 20px;
+}
+
+.batal-btn {
+    background-color: var(--primary);
+    color: var(--bg-white);
+    border: none;
+    padding: 10px 30px;
+    border-radius: 25px;
+    font-size: 1.2em;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.2s;
+}
+
+.batal-btn:hover {
+    background-color: #cc0000;
+}

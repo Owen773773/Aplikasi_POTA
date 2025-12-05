@@ -5,49 +5,55 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>POTA - Notifikasi</title>
-    <link rel="stylesheet" href="../static/css/NotifikasiMahasiswa.css">
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/NotifikasiMahasiswa.css">
 </head>
 
 <body>
 
     <div class="main">
-        <!-- SIDEBAR -->
         <aside class="sidebar">
             <div class="logo-container">
-                <img src="../static/assets/icons/logo.svg">
-                <span class="text-navbar">POTA</span>
+                <img th:src="@{/assets/icons/logo.svg}" alt="Logo POTA" class="logo-icon"/>
+                <span class="logo-text">POTA</span>
             </div>
 
             <nav class="nav-menu">
-                <a href="#" class="nav-item">
-                    <img src="../static/assets/icons/ManajemenAkun.svg">
+                <a th:href="@{/mahasiswa/beranda}" class="nav-item">
+                    <img th:src="@{/assets/icons/ManajemenAkun.svg}" alt="" class="nav-icon"/>
                     <span>Beranda</span>
                 </a>
 
-                <a href="#" class="nav-item">
-                    <img src="../static/assets/icons/Jadwal.svg">
+                <a th:href="@{/mahasiswa/jadwal}" class="nav-item">
+                    <img th:src="@{/assets/icons/Jadwal.svg}" alt="" class="nav-icon"/>
                     <span>Jadwal</span>
                 </a>
 
-                <a href="#" class="nav-item">
-                    <img src="../static/assets/icons/Bimbingan.svg">
+                <a th:href="@{/mahasiswa/bimbingan}" class="nav-item">
+                    <img th:src="@{/assets/icons/Bimbingan.svg}" alt="" class="nav-icon"/>
                     <span>Bimbingan</span>
                 </a>
 
-                <a href="#" class="nav-item active">
-                    <img src="../static/assets/icons/Notifikasi.svg">
+                <a th:href="@{/mahasiswa/notifikasi}" class="nav-item active">
+                    <img th:src="@{/assets/icons/Notifikasi.svg}" alt="" class="nav-icon"/>
                     <span>Notifikasi</span>
                 </a>
 
-                <a href="#" class="nav-item">
-                    <img src="../static/assets/icons/Profil.svg">
+                <a th:href="@{/mahasiswa/profil}" class="nav-item">
+                    <img th:src="@{/assets/icons/Profil.svg}" alt="" class="nav-icon"/>
                     <span>Profil</span>
                 </a>
+
             </nav>
 
-            <button class="btn-logout">
-                <img src="../static/assets/icons/LogOut.svg"> Log Out
-            </button>
+            <div class="logout-section">
+                <form th:action="@{/logout}" method="post" style="margin: 0;">
+                    <button type="submit" class="btn-logout">
+                        <img th:src="@{/assets/icons/LogOut.svg}" alt=""/>
+                        Log Out
+                    </button>
+                </form>
+            </div>
         </aside>
 
         <!-- MAIN CONTENT -->
@@ -63,20 +69,19 @@
                         Bimbingan Anda disetujui untuk dilaksanakan pada 11 Oktober 2025, pukul 08:00 - 10:00,
                         bertempat di Ruang TA.
                     </p>
-                    <span class="notif-date"><img src="../static/assets/icons/JamBiru.svg" alt=""> 8 Oktober 2025,
+                    <span class="notif-date"><img src="../../static/assets/icons/JamBiru.svg" alt=""> 8 Oktober 2025,
                         21:34</span>
                 </div>
 
                 <hr>
 
-                <!-- MENUNGGU -->
                 <div class="notif-card">
                     <span class="status-badge yellow">Menunggu</span>
                     <p class="notif-text">
                         Pengajuan Bimbingan Anda pada 11 Oktober 2025, pukul 08:00 - 10:00, bertempat di Ruang TA,
                         dalam proses menunggu persetujuan dosen pembimbing.
                     </p>
-                    <span class="notif-date"><img src="../static/assets/icons/JamBiru.svg" alt=""> 6 Oktober 2025,
+                    <span class="notif-date"><img src="../../static/assets/icons/JamBiru.svg" alt=""> 6 Oktober 2025,
                         13:30</span>
                 </div>
 
@@ -89,7 +94,7 @@
                         Pengajuan Bimbingan Anda pada 30 November 2025, pukul 12:00 - 14:00 ditolak dengan alasan
                         “Saya sedang tidak ada di Indonesia”.
                     </p>
-                    <span class="notif-date"><img src="../static/assets/icons/JamBiru.svg" alt=""> 29 November 2025,
+                    <span class="notif-date"><img src="../../static/assets/icons/JamBiru.svg" alt=""> 29 November 2025,
                         08:13</span>
                 </div>
 
@@ -102,7 +107,7 @@
                         Pengajuan Bimbingan Anda pada 30 November 2025, pukul 12:00 - 14:00, bertempat di Ruang TA,
                         dalam proses menunggu persetujuan dosen pembimbing.
                     </p>
-                    <span class="notif-date"><img src="../static/assets/icons/JamBiru.svg" alt=""> 28 November 2025,
+                    <span class="notif-date"><img src="../../static/assets/icons/JamBiru.svg" alt=""> 28 November 2025,
                         13:30</span>
                 </div>
                 <hr>

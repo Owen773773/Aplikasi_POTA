@@ -7,6 +7,8 @@ import java.time.temporal.IsoFields;
 import java.util.List;
 import java.util.Map;
 
+import com.application.pota.bimbingan.BimbinganService;
+import com.application.pota.bimbingan.BimbinganSiapKirim;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -27,13 +29,62 @@ import lombok.RequiredArgsConstructor;
 class DosenController {
     @Autowired
     private final JadwalService jadwalService;
+    @Autowired
     private final DosenService dosenService;
+    @Autowired
+    private  final BimbinganService bimbinganService;
     
     @GetMapping({"/", ""})
     public String berandaDefault() {
         return beranda();
     }
-    
+    @GetMapping({"/bimbingan", "/bimbinganProses"})
+    public String bimbinganDefault(HttpSession session, Model model) {
+        String idPengguna = (String) session.getAttribute("idPengguna");
+        String tipeAkun = (String) session.getAttribute("tipeAkun");
+
+        List<BimbinganSiapKirim> listBimbingan =
+                bimbinganService.dapatkanBimbinganProses(tipeAkun, idPengguna);
+
+        model.addAttribute("listBimbingan", listBimbingan);
+        return "dosen/bimbingan/DosenBimbinganProses";
+    }
+
+    @GetMapping("/bimbinganTerjadwal")
+    public String bimbinganTerjadwal(HttpSession session, Model model) {
+        String idPengguna = (String) session.getAttribute("idPengguna");
+        String tipeAkun = (String) session.getAttribute("tipeAkun");
+
+        List<BimbinganSiapKirim> listBimbingan =
+                bimbinganService.dapatkanBimbinganTerjadwal(tipeAkun, idPengguna);
+
+        model.addAttribute("listBimbingan", listBimbingan);
+        return "dosen/bimbingan/DosenBimbinganTerjadwalkan";
+    }
+
+    @GetMapping("/bimbinganSelesai")
+    public String bimbinganSelesai(HttpSession session, Model model) {
+        String idPengguna = (String) session.getAttribute("idPengguna");
+        String tipeAkun = (String) session.getAttribute("tipeAkun");
+
+        List<BimbinganSiapKirim> listBimbingan =
+                bimbinganService.dapatkanBimbinganSelesai(tipeAkun, idPengguna);
+
+        model.addAttribute("listBimbingan", listBimbingan);
+        return "dosen/bimbingan/DosenBimbinganSelesai";
+    }
+
+    @GetMapping("/bimbinganGagal")
+    public String bimbinganGagal(HttpSession session, Model model) {
+        String idPengguna = (String) session.getAttribute("idPengguna");
+        String tipeAkun = (String) session.getAttribute("tipeAkun");
+
+        List<BimbinganSiapKirim> listBimbingan =
+                bimbinganService.dapatkanBimbinganGagal(tipeAkun, idPengguna);
+
+        model.addAttribute("listBimbingan", listBimbingan);
+        return "dosen/bimbingan/DosenBimbinganGagal";
+    }
     @GetMapping("/beranda")
     public String beranda() {
         return "dosen/DashboardDosen";
@@ -72,7 +123,7 @@ class DosenController {
 
         return "dosen/DosenJadwal";
     }
-    
+
     private LocalDate hitungTanggalMulaiMinggu(int tahun, int minggu) {
         return LocalDate.of(tahun, 1, 1)
         .with(IsoFields.WEEK_OF_WEEK_BASED_YEAR, minggu)
@@ -89,5 +140,12 @@ class DosenController {
         model.addAttribute("peranPengguna", profilDosen.getPeran());
         model.addAttribute("usernameDosen", profilDosen.getUsername()); 
         return "dosen/ProfileDosen";
+    }
+
+    @GetMapping("/notifikasi")
+    public String notifkasi(Model model, HttpSession session) {
+        String id = (String)session.getAttribute("idPengguna");
+
+        return "dosen/NotifikasiDosen";
     }
 }

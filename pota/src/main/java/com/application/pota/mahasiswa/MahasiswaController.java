@@ -143,4 +143,11 @@ public class MahasiswaController {
 
         return "mahasiswa/ProfileMahasiswa";
     }
+
+    @GetMapping("/notifikasi")
+    public String notifkasi(Model model, HttpSession session) {
+        String id = (String)session.getAttribute("idPengguna");
+
+        return "mahasiswa/NotifikasiMahasiswa";
+    }
 }

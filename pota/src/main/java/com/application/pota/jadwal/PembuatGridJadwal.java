@@ -58,14 +58,19 @@ public class PembuatGridJadwal {
             boolean jamTermasukDalamJadwal = waktuMulai.getHour() <= jam && waktuSelesai.getHour() > jam;
 
             if (jamTermasukDalamJadwal) {
-                slot.setIdBooking(jadwal.getIdJadwal());
-                slot.setTipeBooking(jadwalDenganTipe.getTipe());
-
                 // Tentukan status berdasarkan tipe jadwal
                 String status = tentukanStatus(jadwalDenganTipe);
+
+                // Jika status adalah available (bimbingan dibatalkan/gagal), skip jadwal ini
+                if ("available".equals(status)) {
+                    continue; // Lanjut cek jadwal berikutnya
+                }
+
+                slot.setIdBooking(jadwal.getIdJadwal());
+                slot.setTipeBooking(jadwalDenganTipe.getTipe());
                 slot.setStatus(status);
 
-                return slot; // Sudah ketemu jadwal, keluar dari loop
+                return slot; // Sudah ketemu jadwal yang valid, keluar dari loop
             }
         }
 
@@ -77,11 +82,11 @@ public class PembuatGridJadwal {
     private String tentukanStatus(JadwalService.JadwalDenganTipe jadwalDenganTipe) {
         String tipe = jadwalDenganTipe.getTipe();
 
-        if ("PEMBLOKIRAN".equals(tipe) || "PRIBADI".equals(tipe)) {
+        if ("PEMBLOKIRAN".equalsIgnoreCase(tipe) || "PRIBADI".equalsIgnoreCase(tipe)) {
             // Pemblokiran ruangan ATAU Jadwal pribadi pengguna = blocked
             return "blocked";
 
-        } else if ("BIMBINGAN".equals(tipe)) {
+        } else if ("BIMBINGAN".equalsIgnoreCase(tipe)) {
             // Untuk bimbingan, cek status dari database
             String statusBimbingan = jadwalDenganTipe.getStatus();
 
@@ -92,14 +97,24 @@ public class PembuatGridJadwal {
             // Normalisasi status (uppercase, trim whitespace)
             statusBimbingan = statusBimbingan.trim().toUpperCase();
 
-            // Cek apakah sudah terkonfirmasi
-            if (statusBimbingan.equals("CONFIRMED") ||
-                    statusBimbingan.equals("TERKONFIRMASI") ||
-                    statusBimbingan.equals("APPROVED")) {
+            // Cek apakah bimbingan dibatalkan atau gagal
+            if ("DIBATALKAN".equals(statusBimbingan) || "GAGAL".equals(statusBimbingan)) {
+                return "available"; // Slot tersedia karena bimbingan dibatalkan/gagal
+            }
+
+            // Cek apakah sudah selesai
+            if ("SELESAI".equals(statusBimbingan)) {
+                return "done"; // Bimbingan sudah selesai
+            }
+
+            // Cek apakah sudah terkonfirmasi/terjadwalkan
+            if ("TERJADWALKAN".equals(statusBimbingan) ||
+                    "TERKONFIRMASI".equals(statusBimbingan) ||
+                    "CONFIRMED".equals(statusBimbingan)) {
                 return "scheduled";
 
             } else {
-                // Status PENDING, MENUNGGU, DIBATALKAN, dll → pending
+                // Status PENDING, MENUNGGU, PROSES, dll → pending
                 return "pending";
             }
 

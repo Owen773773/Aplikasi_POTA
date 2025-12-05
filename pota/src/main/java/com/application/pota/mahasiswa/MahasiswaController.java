@@ -27,6 +27,9 @@ public class MahasiswaController {
     @Autowired
     private BimbinganService bimbinganService;
 
+    @Autowired
+    private MahasiswaService mahasiswaService;
+
     @GetMapping({"/", ""})
     public String berandaDefault() {
         return beranda();
@@ -40,10 +43,10 @@ public class MahasiswaController {
     @GetMapping({"/bimbingan", "/bimbinganProses"})
     public String bimbinganDefault(HttpSession session, Model model) {
         String idPengguna = (String) session.getAttribute("idPengguna");
-        String tipeAkun = (String) session.getAttribute("tipeAkun"); // ✅ Ambil dari session
+        String tipeAkun = (String) session.getAttribute("tipeAkun");
 
         List<BimbinganSiapKirim> listBimbingan =
-                bimbinganService.dapatkanBimbinganProses(tipeAkun, idPengguna); // ✅ Kirim tipeAkun
+                bimbinganService.dapatkanBimbinganProses(tipeAkun, idPengguna);
 
         model.addAttribute("listBimbingan", listBimbingan);
         return "mahasiswa/bimbingan/MahasiswaBimbinganProses";
@@ -67,7 +70,7 @@ public class MahasiswaController {
         String tipeAkun = (String) session.getAttribute("tipeAkun");
 
         List<BimbinganSiapKirim> listBimbingan =
-                bimbinganService.dapatkanBimbinganSelesai(tipeAkun, idPengguna); // ✅ Ganti ke Selesai
+                bimbinganService.dapatkanBimbinganSelesai(tipeAkun, idPengguna);
 
         model.addAttribute("listBimbingan", listBimbingan);
         return "mahasiswa/bimbingan/MahasiswaBimbinganSelesai";
@@ -79,15 +82,10 @@ public class MahasiswaController {
         String tipeAkun = (String) session.getAttribute("tipeAkun");
 
         List<BimbinganSiapKirim> listBimbingan =
-                bimbinganService.dapatkanBimbinganGagal(tipeAkun, idPengguna); // ✅ Ganti ke Gagal
+                bimbinganService.dapatkanBimbinganGagal(tipeAkun, idPengguna);
 
         model.addAttribute("listBimbingan", listBimbingan);
         return "mahasiswa/bimbingan/MahasiswaBimbinganGagal";
-    }
-
-    @GetMapping("/profil")
-    public String profil() {
-        return "mahasiswa/ProfileMahasiswa";
     }
 
     @GetMapping("/jadwal")
@@ -120,7 +118,6 @@ public class MahasiswaController {
         model.addAttribute("listHari", HariTanggal);
         model.addAttribute("timetable", timetableGrid);
 
-
         return "mahasiswa/MahasiswaJadwal";
     }
 
@@ -128,5 +125,22 @@ public class MahasiswaController {
         return LocalDate.of(tahun, 1, 1)
                 .with(IsoFields.WEEK_OF_WEEK_BASED_YEAR, minggu)
                 .with(DayOfWeek.MONDAY);
+    }
+
+    @GetMapping("/profil")
+    public String profil(Model model, HttpSession session) {
+        String id = (String)session.getAttribute("idPengguna");
+        ProfilMahasiswa profilMahasiswa = mahasiswaService.makeProfile(id);
+
+        model.addAttribute("nama", profilMahasiswa.getNama());
+        model.addAttribute("npm", profilMahasiswa.getNpm());
+        model.addAttribute("peran", profilMahasiswa.getPeran());
+        model.addAttribute("dospem1", profilMahasiswa.getDosen1());
+        model.addAttribute("dospem2 ", profilMahasiswa.getDosen2() == null? "-" : profilMahasiswa.getDosen2());
+        model.addAttribute("pra", profilMahasiswa.getTotBimPra());
+        model.addAttribute("pasca", profilMahasiswa.getTotBimPas());
+        model.addAttribute("syarat", profilMahasiswa.getSyaratKelayakan());
+
+        return "mahasiswa/ProfileMahasiswa";
     }
 }

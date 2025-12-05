@@ -7,6 +7,9 @@
     <title>POTA - Akun</title>
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="/css/mahasiswa.css">
+
+    <link rel="stylesheet" href="../static/css/mahasiswaGlobal.css">
+    <link rel="stylesheet" href="../static/css/ProfileMahasiswa.css">
 </head>
 
 <body>
@@ -68,17 +71,17 @@
                     <div class="profil-grid">
                         <div class="profil-item">
                             <h3>Nama</h3>
-                            <p><b>Kenneth Natanael</b></p>
+                            <p><b th:text="${nama}">Nama Placeholder</b></p>
                         </div>
 
                         <div class="profil-item">
                             <h3>NPM</h3>
-                            <p><b>6182301018</b></p>
+                            <p><b th:text="${npm}">NPM Placeholder</b></p>
                         </div>
 
                         <div class="profil-item">
                             <h3>Peran</h3>
-                            <p><b>Mahasiswa</b></p>
+                            <p><b th:text="${peran}">Peran Placeholder</b></p>
                         </div>
                     </div>
 
@@ -86,27 +89,27 @@
                     <div class="profil-grid">
                         <div class="profil-item">
                             <h3>Dosen Pembimbing 1</h3>
-                            <p><b>Vania Natali S.Kom., M.T.</b></p>
+                            <p><b th:text="${dospem1}">Dospem1 Placeholder</b></p>
                         </div>
 
                         <div class="profil-item">
                             <h3>Dosen Pembimbing 2</h3>
-                            <p><b>Raymond Chandra Putra, S.T., M.T.</b></p>
+                            <p><b th:text="${dospem2}">Dospem2 Placeholder</b></p>
                         </div>
 
                         <div class="profil-item">
                             <h3>Syarat Jumlah Kelayakan Sidang</h3>
-                            <p><b style="color: green;">Memenuhi</b></p>
+                            <p><b th:text="${syarat}">Kelayakan Placeholder</b></p>
                         </div>
 
                         <div class="profil-item" id="small-card">
                             <h3>Total Bimbingan Pra - UTS</h3>
-                            <p><b>2 Kali</b></p>
+                            <p><b th:text="${pra}">Pra Placeholder</b></p>
                         </div>
 
                         <div class="profil-item" id="small-card">
                             <h3>Total Bimbingan Pasca - UTS</h3>
-                            <p><b>2 Kali</b></p>
+                            <p><b th:text="${pasca}">Pasca Placeholder</b></p>
                         </div>
                     </div>
 

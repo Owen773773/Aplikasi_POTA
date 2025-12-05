@@ -87,8 +87,8 @@ body {
 }
 
 .logo-icon {
-    width: 40px;
-    height: 40px;
+    width: 80px;
+    height: 80px;
 }
 
 .logo-text {
@@ -763,7 +763,9 @@ body {
 .time-slot.pending {
     background-color: var(--status-pending); /* Kuning #FEB21A */
 }
-
+.time-slot.done {
+    background-color: var(--btn-green-border); /* done #FEB21A */
+}
 .time-slot.available {
     background-color: var(--bg-white); /* Putih - Tersedia */
 }

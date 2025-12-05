@@ -1,0 +1,125 @@
+/* Add this to ensure padding doesn't break width
+* {
+    box-sizing: border-box;
+} */
+
+.content-body{
+    box-sizing: border-box;
+}
+
+.profil-card {
+    background: var(--bg-white);
+    padding: 10px;
+    border-radius: 20px;
+    width: 100%;
+    box-shadow: 0px 4px 20px rgba(0,0,0,0.05); /* Softer shadow */
+}
+
+/* Moved from inline style="margin-top: 40px;" */
+.profil-card h2 {
+    color: var(--primary);
+    font-size: 24px;
+    margin-bottom: 20px;
+    font-weight: 500;
+}
+
+/* New class for the 'Data Tugas Akhir' title margin */
+.section-title-ta {
+    margin-top: 40px; 
+}
+
+
+/* GRID SYSTEM */
+.profil-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* 2 Equal Columns */
+    gap: 30px;
+    margin-top: 15px;
+}
+
+/* CARD STYLING (Looks like Input Field) */
+.profil-item {
+    background: var(--bg-white);
+    border: 2px solid #e0e0e0; /* Light grey border */
+    border-radius: 12px;
+    padding: 15px 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.02); /* Very subtle shadow */
+    min-height: 100px;
+}
+
+/* Typography for labels (e.g. "Nama", "NPM") */
+.profil-item h3 {
+    font-size: 14px;
+    color: #666; /* Grey text for labels */
+    margin: 0 0 8px 0;
+    font-weight: 600;
+}
+
+/* Typography for values (e.g. "Kenneth", "618...") */
+.profil-item p {
+    font-size: 18px;
+    color: #000;
+    margin: 0;
+    font-weight: bold;
+}
+
+/* Moved inline style="color: green;" to a class */
+.syarat-status {
+    color: #28a745 !important;
+}
+
+
+/* SPLIT COLUMN LOGIC (For the Bimbingan boxes) */
+.split-column {
+    display: flex;
+    gap: 20px;
+}
+
+.split-column .profil-item {
+    flex: 1; /* Each box takes 50% width */
+    text-align: center;
+    align-items: center;
+    padding: 15px 10px;
+}
+
+/* Specific styling for the small stats boxes */
+.small-box h3 {
+    margin-bottom: 5px;
+    font-size: 14px;
+    /* Ensure label is centered */
+    text-align: center;
+    width: 100%;
+}
+
+.small-box p {
+    font-size: 20px;
+    color: var(--primary); /* Primary Blue for the numbers */
+    margin: 5px 0 0 0;
+}
+
+
+/* BUTTON */
+.profil-footer {
+    margin-top: 40px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.btn-password {
+    background: #0056b3; /* Darker blue */
+    color: white;
+    padding: 12px 30px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    transition: background 0.3s;
+}
+
+.btn-password:hover {
+    background: #004494;
+}

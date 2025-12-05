@@ -34,7 +34,7 @@ body {
 }
 
 .main-container {
-    width: 400px;
+    width: 800px;
     height: auto;
     max-width: 90%;
     background-color: var(--bg-white);

@@ -7,23 +7,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Class untuk membuat grid timetable dari jadwal yang sudah dikelompokkan
- *
- * CARA KERJA:
- * 1. Buat grid 2D kosong (11 jam x 5 hari)
- * 2. Loop setiap jam (07:00 - 17:00) sebagai BARIS
- * 3. Loop setiap hari (Senin-Jumat) sebagai KOLOM
- * 4. Untuk setiap sel, cek apakah ada jadwal di jam tersebut
- * 5. Tentukan status slot berdasarkan tipe jadwal dan statusnya
- */
+
 public class PembuatGridJadwal {
 
-    /**
-     * Membuat grid timetable dari jadwal yang sudah dikelompokkan per hari
-     * @param jadwalPerHari Map yang berisi jadwal untuk setiap hari kerja
-     * @return Grid 2D berisi SlotWaktu (baris=jam, kolom=hari)
-     */
     public List<List<SlotWaktu>> buatGridJadwal(Map<DayOfWeek, List<JadwalService.JadwalDenganTipe>> jadwalPerHari) {
         List<List<SlotWaktu>> grid = new ArrayList<>();
 
@@ -49,21 +35,6 @@ public class PembuatGridJadwal {
         return grid;
     }
 
-    /**
-     * Mencari apakah ada jadwal pada jam tertentu dan menentukan statusnya
-     *
-     * LOGIKA STATUS:
-     * - PEMBLOKIRAN → blocked
-     * - BIMBINGAN CONFIRMED/APPROVED → scheduled
-     * - BIMBINGAN PENDING → pending
-     * - PRIBADI → occupied
-     * - Tidak ada jadwal → available
-     *
-     * @param daftarJadwal List jadwal pada hari tersebut
-     * @param jam Jam yang dicek (0-23)
-     * @param hari Hari yang dicek
-     * @return SlotWaktu dengan status yang sesuai
-     */
     private SlotWaktu cariSlotPadaJam(List<JadwalService.JadwalDenganTipe> daftarJadwal, int jam, DayOfWeek hari) {
         SlotWaktu slot = new SlotWaktu();
         slot.setJam(jam);
@@ -87,14 +58,19 @@ public class PembuatGridJadwal {
             boolean jamTermasukDalamJadwal = waktuMulai.getHour() <= jam && waktuSelesai.getHour() > jam;
 
             if (jamTermasukDalamJadwal) {
-                slot.setIdBooking(jadwal.getIdJadwal());
-                slot.setTipeBooking(jadwalDenganTipe.getTipe());
-
                 // Tentukan status berdasarkan tipe jadwal
                 String status = tentukanStatus(jadwalDenganTipe);
+
+                // Jika status adalah available (bimbingan dibatalkan/gagal), skip jadwal ini
+                if ("available".equals(status)) {
+                    continue; // Lanjut cek jadwal berikutnya
+                }
+
+                slot.setIdBooking(jadwal.getIdJadwal());
+                slot.setTipeBooking(jadwalDenganTipe.getTipe());
                 slot.setStatus(status);
 
-                return slot; // Sudah ketemu jadwal, keluar dari loop
+                return slot; // Sudah ketemu jadwal yang valid, keluar dari loop
             }
         }
 
@@ -103,28 +79,14 @@ public class PembuatGridJadwal {
         return slot;
     }
 
-    /**
-     * Menentukan status slot berdasarkan tipe dan status jadwal
-     *
-     * MAPPING STATUS UNTUK PENGGUNA:
-     * - PRIBADI → blocked (kelas/jadwal pribadi = tidak bisa diganggu)
-     * - BIMBINGAN CONFIRMED → scheduled (bimbingan terkonfirmasi)
-     * - BIMBINGAN PENDING → pending (bimbingan menunggu konfirmasi)
-     * - BIMBINGAN lainnya → pending
-     *
-     * MAPPING STATUS UNTUK RUANGAN:
-     * - PEMBLOKIRAN → blocked (ruangan diblokir)
-     * - BIMBINGAN CONFIRMED → scheduled
-     * - BIMBINGAN PENDING → pending
-     */
     private String tentukanStatus(JadwalService.JadwalDenganTipe jadwalDenganTipe) {
         String tipe = jadwalDenganTipe.getTipe();
 
-        if ("PEMBLOKIRAN".equals(tipe) || "PRIBADI".equals(tipe)) {
+        if ("PEMBLOKIRAN".equalsIgnoreCase(tipe) || "PRIBADI".equalsIgnoreCase(tipe)) {
             // Pemblokiran ruangan ATAU Jadwal pribadi pengguna = blocked
             return "blocked";
 
-        } else if ("BIMBINGAN".equals(tipe)) {
+        } else if ("BIMBINGAN".equalsIgnoreCase(tipe)) {
             // Untuk bimbingan, cek status dari database
             String statusBimbingan = jadwalDenganTipe.getStatus();
 
@@ -135,14 +97,24 @@ public class PembuatGridJadwal {
             // Normalisasi status (uppercase, trim whitespace)
             statusBimbingan = statusBimbingan.trim().toUpperCase();
 
-            // Cek apakah sudah terkonfirmasi
-            if (statusBimbingan.equals("CONFIRMED") ||
-                    statusBimbingan.equals("TERKONFIRMASI") ||
-                    statusBimbingan.equals("APPROVED")) {
+            // Cek apakah bimbingan dibatalkan atau gagal
+            if ("DIBATALKAN".equals(statusBimbingan) || "GAGAL".equals(statusBimbingan)) {
+                return "available"; // Slot tersedia karena bimbingan dibatalkan/gagal
+            }
+
+            // Cek apakah sudah selesai
+            if ("SELESAI".equals(statusBimbingan)) {
+                return "done"; // Bimbingan sudah selesai
+            }
+
+            // Cek apakah sudah terkonfirmasi/terjadwalkan
+            if ("TERJADWALKAN".equals(statusBimbingan) ||
+                    "TERKONFIRMASI".equals(statusBimbingan) ||
+                    "CONFIRMED".equals(statusBimbingan)) {
                 return "scheduled";
 
             } else {
-                // Status PENDING, MENUNGGU, DIBATALKAN, dll → pending
+                // Status PENDING, MENUNGGU, PROSES, dll → pending
                 return "pending";
             }
 

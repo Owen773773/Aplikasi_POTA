@@ -49,12 +49,12 @@
         </nav>
 
         <div class="logout-section">
-            <button class="btn-logout">
-                <div class="logo-slot">
-                    <img src="/assets/icons/LogOut.svg">
-                </div>
-                Log Out
-            </button>
+            <form th:action="@{/logout}" method="post" style="margin: 0;">
+                <button type="submit" class="btn-logout">
+                    <img th:src="@{/assets/icons/LogOut.svg}" alt="" />
+                    Log Out
+                </button>
+            </form>
         </div>
     </aside>
 
@@ -71,7 +71,7 @@
 
                 <div class="ringkasan-grid">
                     <div class="ringkasan-info">
-                        <p>Semester Aktif : <b>Ganjil 2025/2026</b></p>
+                        <p>Semester Aktif   : <b>Ganjil 2025/2026</b></p>
                         <p>Tahap Bimbingan : <b>Pra - UTS</b></p>
                         <p>Jumlah Mahasiswa : <b>9</b></p>
                     </div>

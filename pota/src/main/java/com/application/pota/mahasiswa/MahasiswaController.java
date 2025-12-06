@@ -1,7 +1,11 @@
 package com.application.pota.mahasiswa;
 
+
 import com.application.pota.bimbingan.Bimbingan;
+
 import com.application.pota.bimbingan.BimbinganService;
+import com.application.pota.bimbingan.BimbinganSiapKirim;
+
 import com.application.pota.jadwal.JadwalService;
 import com.application.pota.jadwal.SlotWaktu;
 import jakarta.servlet.http.HttpSession;
@@ -19,17 +23,22 @@ import java.time.temporal.IsoFields;
 import java.util.List;
 import java.util.Map;
 
+import com.application.pota.notifikasi.NotifikasiService;
+import com.application.pota.notifikasi.Notifikasi; 
+
 @Controller
 @RequestMapping("/mahasiswa")
 public class MahasiswaController {
     @Autowired
     private JadwalService jadwalService;
+    @Autowired
+    private BimbinganService bimbinganService;
 
     @Autowired
     private MahasiswaService mahasiswaService;
 
     @Autowired
-    private BimbinganService bimbinganService;
+    private NotifikasiService notifikasiService;
 
     @GetMapping({"/", ""})
     public String berandaDefault() {
@@ -53,28 +62,51 @@ public class MahasiswaController {
     
 
     @GetMapping({"/bimbingan", "/bimbinganProses"})
-    public String bimbinganDefault() {
+    public String bimbinganDefault(HttpSession session, Model model) {
+        String idPengguna = (String) session.getAttribute("idPengguna");
+        String tipeAkun = (String) session.getAttribute("tipeAkun");
+
+        List<BimbinganSiapKirim> listBimbingan =
+                bimbinganService.dapatkanBimbinganProses(tipeAkun, idPengguna);
+
+        model.addAttribute("listBimbingan", listBimbingan);
         return "mahasiswa/bimbingan/MahasiswaBimbinganProses";
     }
 
     @GetMapping("/bimbinganTerjadwal")
-    public String bimbinganTerjadwal() {
+    public String bimbinganTerjadwal(HttpSession session, Model model) {
+        String idPengguna = (String) session.getAttribute("idPengguna");
+        String tipeAkun = (String) session.getAttribute("tipeAkun");
+
+        List<BimbinganSiapKirim> listBimbingan =
+                bimbinganService.dapatkanBimbinganTerjadwal(tipeAkun, idPengguna);
+
+        model.addAttribute("listBimbingan", listBimbingan);
         return "mahasiswa/bimbingan/MahasiswaBimbinganTerjadwalkan";
     }
 
     @GetMapping("/bimbinganSelesai")
-    public String bimbinganSelesai() {
+    public String bimbinganSelesai(HttpSession session, Model model) {
+        String idPengguna = (String) session.getAttribute("idPengguna");
+        String tipeAkun = (String) session.getAttribute("tipeAkun");
+
+        List<BimbinganSiapKirim> listBimbingan =
+                bimbinganService.dapatkanBimbinganSelesai(tipeAkun, idPengguna);
+
+        model.addAttribute("listBimbingan", listBimbingan);
         return "mahasiswa/bimbingan/MahasiswaBimbinganSelesai";
     }
 
     @GetMapping("/bimbinganGagal")
-    public String bimbinganGagal() {
-        return "mahasiswa/bimbingan/MahasiswaBimbinganGagal";
-    }
+    public String bimbinganGagal(HttpSession session, Model model) {
+        String idPengguna = (String) session.getAttribute("idPengguna");
+        String tipeAkun = (String) session.getAttribute("tipeAkun");
 
-    @GetMapping("/profil")
-    public String profil() {
-        return "mahasiswa/ProfileMahasiswa";
+        List<BimbinganSiapKirim> listBimbingan =
+                bimbinganService.dapatkanBimbinganGagal(tipeAkun, idPengguna);
+
+        model.addAttribute("listBimbingan", listBimbingan);
+        return "mahasiswa/bimbingan/MahasiswaBimbinganGagal";
     }
 
     @GetMapping("/jadwal")
@@ -107,7 +139,6 @@ public class MahasiswaController {
         model.addAttribute("listHari", HariTanggal);
         model.addAttribute("timetable", timetableGrid);
 
-
         return "mahasiswa/MahasiswaJadwal";
     }
 
@@ -115,5 +146,31 @@ public class MahasiswaController {
         return LocalDate.of(tahun, 1, 1)
                 .with(IsoFields.WEEK_OF_WEEK_BASED_YEAR, minggu)
                 .with(DayOfWeek.MONDAY);
+    }
+
+    @GetMapping("/profil")
+    public String profil(Model model, HttpSession session) {
+        String id = (String)session.getAttribute("idPengguna");
+        ProfilMahasiswa profilMahasiswa = mahasiswaService.makeProfile(id);
+
+        model.addAttribute("nama", profilMahasiswa.getNama());
+        model.addAttribute("npm", profilMahasiswa.getNpm());
+        model.addAttribute("peran", profilMahasiswa.getPeran());
+        model.addAttribute("dospem1", profilMahasiswa.getDosen1());
+        model.addAttribute("dospem2 ", profilMahasiswa.getDosen2() == null? "-" : profilMahasiswa.getDosen2());
+        model.addAttribute("pra", profilMahasiswa.getTotBimPra());
+        model.addAttribute("pasca", profilMahasiswa.getTotBimPas());
+        model.addAttribute("syarat", profilMahasiswa.getSyaratKelayakan());
+
+        return "mahasiswa/ProfileMahasiswa";
+    }
+
+    @GetMapping("/notifikasi")
+    public String notifkasi(Model model, HttpSession session) {
+        String id = (String)session.getAttribute("idPengguna");
+        String idPengguna = (String) session.getAttribute("idPengguna");
+        List<Notifikasi> listNotif = notifikasiService.getNotifikasiInAppByIdUser(idPengguna);
+        model.addAttribute("daftarNotifikasi", listNotif);
+        return "mahasiswa/NotifikasiMahasiswa";
     }
 }

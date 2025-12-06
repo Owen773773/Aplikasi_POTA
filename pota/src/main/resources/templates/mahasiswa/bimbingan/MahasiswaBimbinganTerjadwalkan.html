@@ -12,7 +12,7 @@
 <body>
 
     <div class="main">
-        <!-- SIDEBAR -->
+
         <aside class="sidebar">
             <div class="logo-container">
                 <img src="/assets/icons/logo.svg">
@@ -70,11 +70,11 @@
             <div class="bimbingan-list">
 
                 <!-- Tempat buat nampilin Data -->
-                <div class="card">
+                <div class="card" th:each="bimbingan : ${listBimbingan}" >
                     <div class="card-header">
-                        <span>10/10/2025 </span> <!-- Ini masih contoh data -->
-                        <span>10.00 - 11.00</span>
-                        <span>Ruang Tugas Akhir</span>
+                        <span th:text="${bimbingan.tanggal}">10/10/2025 </span>
+                        <span th:text="${bimbingan.jam}">10.00 - 11.00</span>
+                        <span th:text="${bimbingan.namaLokasi}">Ruang Tugas Akhir</span>
                         <img src="/assets/icons/Arrow.svg" class="dropdown-btn">
                     </div>
 
@@ -83,25 +83,27 @@
                             <p class="item">Rincian Bimbingan</p>
                             <div class="containerItem">
                                 <div class="containerGrid">
-                                    <p id="itemkiri">Tanggal</p>
-                                    <p id="itemkanan">: 10/10/2025</p>
-                                    <p id="itemkiri">Jam</p>
-                                    <p id="itemkanan">: 10.00 - 11.00</p>
-                                    <p id="itemkiri">Durasi</p>
-                                    <p id="itemkanan">: 1 Jam</p>
-                                    <p id="itemkiri">Lokasi</p>
-                                    <p id="itemkanan">: Ruang Tugas Akhir</p>
-                                    <p id="itemkiri">Dosen</p>
-                                    <p id="itemkanan">: Maria Veronica</p>
-                                    <p id="itemkiri">Mahasiswa</p>
-                                    <p id="itemkanan">: -</p>
+                                    <p class="itemkiri">Tanggal</p>
+                                    <p class="itemkanan" th:text="${bimbingan.tanggal}">10/10/2025</p>
+                                    <p class="itemkiri">Jam</p>
+                                    <p class="itemkanan" th:text="${bimbingan.jam}">: 10.00 - 11.00</p>
+                                    <p class="itemkiri">Durasi</p>
+                                    <p class="itemkanan" th:text="${bimbingan.durasi}">: 1 Jam</p>
+                                    <p class="itemkiri">Lokasi</p>
+                                    <p class="itemkanan" th:text="${bimbingan.namaLokasi}">: Ruang Tugas Akhir</p>
+                                    <p class="itemkiri">Dosen</p>
+                                    <p class="itemkanan" th:text="${bimbingan.dosen}">: Maria Veronica</p>
+                                    <p class="itemkiri">Mahasiswa</p>
+                                    <p class="itemkanan" th:each="mahasiswa : ${bimbingan.mahasiswa}">
+                                        : <span th:text="${mahasiswa}">-</span>
+                                    </p>
                                 </div>
 
                                 <div class="containerGrid2">
-                                    <p id="itemkiri">Topik</p>
-                                    <p id="itemkanan">: Bimbingan Mingguan</p>
-                                    <p id="itemkiri">Deskripsi Topik</p>
-                                    <p id="itemkanan">: -</p>
+                                    <p class="itemkiri">Topik</p>
+                                    <p class="itemkanan" th:text="${bimbingan.topik}">: Bimbingan Mingguan</p>
+                                    <p class="itemkiri">Deskripsi Topik</p>
+                                    <p class="itemkanan" th:text="${bimbingan.deskripsi}">: -</p>
                                 </div>
                             </div>
                             <div class="card-actions">

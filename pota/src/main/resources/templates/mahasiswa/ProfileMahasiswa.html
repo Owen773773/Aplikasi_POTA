@@ -5,8 +5,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>POTA - Akun</title>
-
+    <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="/css/mahasiswa.css">
+
+    <link rel="stylesheet" href="../static/css/mahasiswaGlobal.css">
+    <link rel="stylesheet" href="../static/css/ProfileMahasiswa.css">
 </head>
 
 <body>
@@ -14,59 +17,45 @@
     <div class="main">
         <aside class="sidebar">
             <div class="logo-container">
-                <div class="logo-icon-slot">
-                    <img src="/assets/icons/logo.svg">
-                </div>
+                <img src="/assets/icons/logo.svg">
                 <span class="text-navbar">POTA</span>
             </div>
 
             <nav class="nav-menu">
-                <a href="#" class="nav-item active">
-                    <div class="active-indicator"></div>
-
-                    <div class="icon-slot">
-                        <img src="/assets/icons/ManajemenAkun.svg">
-                    </div>
-
+                <a th:href="@{/mahasiswa/beranda}" class="nav-item">
+                    <img th:src="@{/assets/icons/ManajemenAkun.svg}" alt="" class="nav-icon"/>
                     <span>Beranda</span>
                 </a>
 
-                <a href="#" class="nav-item">
-                    <div class="icon-slot">
-                        <img src="/assets/icons/Jadwal.svg">
-                    </div>
+                <a th:href="@{/mahasiswa/jadwal}" class="nav-item">
+                    <img th:src="@{/assets/icons/Jadwal.svg}" alt="" class="nav-icon"/>
                     <span>Jadwal</span>
                 </a>
 
-                <a href="#" class="nav-item">
-                    <div class="icon-slot">
-                        <img src="/assets/icons/Bimbingan.svg">
-                    </div>
+                <a th:href="@{/mahasiswa/bimbingan}" class="nav-item">
+                    <img th:src="@{/assets/icons/Bimbingan.svg}" alt="" class="nav-icon"/>
                     <span>Bimbingan</span>
                 </a>
 
-                <a href="#" class="nav-item">
-                    <div class="icon-slot">
-                        <img src="/assets/icons/Notifikasi.svg">
-                    </div>
+                <a th:href="@{/mahasiswa/notifikasi}" class="nav-item">
+                    <img th:src="@{/assets/icons/Notifikasi.svg}" alt="" class="nav-icon"/>
                     <span>Notifikasi</span>
                 </a>
 
-                <a href="#" class="nav-item">
-                    <div class="icon-slot">
-                        <img src="/assets/icons/Profil.svg">
-                    </div>
+                <a th:href="@{/mahasiswa/profil}" class="nav-item active">
+                    <img th:src="@{/assets/icons/Profil.svg}" alt="" class="nav-icon"/>
                     <span>Profil</span>
                 </a>
+
             </nav>
 
             <div class="logout-section">
-                <button class="btn-logout">
-                    <div class="logo-slot">
-                        <img src="/assets/icons/LogOut.svg">
-                    </div>
-                    Log Out
-                </button>
+                <form th:action="@{/logout}" method="post" style="margin: 0;">
+                    <button type="submit" class="btn-logout">
+                        <img th:src="@{/assets/icons/LogOut.svg}" alt=""/>
+                        Log Out
+                    </button>
+                </form>
             </div>
         </aside>
 
@@ -82,17 +71,17 @@
                     <div class="profil-grid">
                         <div class="profil-item">
                             <h3>Nama</h3>
-                            <p><b>Kenneth Natanael</b></p>
+                            <p><b th:text="${nama}">Nama Placeholder</b></p>
                         </div>
 
                         <div class="profil-item">
                             <h3>NPM</h3>
-                            <p><b>6182301018</b></p>
+                            <p><b th:text="${npm}">NPM Placeholder</b></p>
                         </div>
 
                         <div class="profil-item">
                             <h3>Peran</h3>
-                            <p><b>Mahasiswa</b></p>
+                            <p><b th:text="${peran}">Peran Placeholder</b></p>
                         </div>
                     </div>
 
@@ -100,27 +89,27 @@
                     <div class="profil-grid">
                         <div class="profil-item">
                             <h3>Dosen Pembimbing 1</h3>
-                            <p><b>Vania Natali S.Kom., M.T.</b></p>
+                            <p><b th:text="${dospem1}">Dospem1 Placeholder</b></p>
                         </div>
 
                         <div class="profil-item">
                             <h3>Dosen Pembimbing 2</h3>
-                            <p><b>Raymond Chandra Putra, S.T., M.T.</b></p>
+                            <p><b th:text="${dospem2}">Dospem2 Placeholder</b></p>
                         </div>
 
                         <div class="profil-item">
                             <h3>Syarat Jumlah Kelayakan Sidang</h3>
-                            <p><b style="color: green;">Memenuhi</b></p>
+                            <p><b th:text="${syarat}">Kelayakan Placeholder</b></p>
                         </div>
 
                         <div class="profil-item" id="small-card">
                             <h3>Total Bimbingan Pra - UTS</h3>
-                            <p><b>2 Kali</b></p>
+                            <p><b th:text="${pra}">Pra Placeholder</b></p>
                         </div>
 
                         <div class="profil-item" id="small-card">
                             <h3>Total Bimbingan Pasca - UTS</h3>
-                            <p><b>2 Kali</b></p>
+                            <p><b th:text="${pasca}">Pasca Placeholder</b></p>
                         </div>
                     </div>
 

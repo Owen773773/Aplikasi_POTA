@@ -56,6 +56,7 @@ body {
   color: var(--primary);
 }
 
+/* Navigation */
 .nav-menu {
   display: flex;
   flex-direction: column;
@@ -97,11 +98,7 @@ a {
   text-decoration: none;
 }
 
-.logout-section {
-  padding: 20px 30px 20px;
-  border-top: 1px solid var(--border-light);
-}
-
+/* Logout */
 .btn-logout {
   display: flex;
   align-items: center;
@@ -112,7 +109,6 @@ a {
   color: var(--primary);
   padding: 10px 20px;
   border-radius: 12px;
-  font-family: var(--font-base);
   font-weight: bold;
   font-size: 16px;
   cursor: pointer;
@@ -146,135 +142,6 @@ a {
   margin: 0;
 }
 
-.tab-menu {
-  display: flex;
-  gap: 25px;
-  padding: 14px 24px;
-  font-size: 18px;
-}
-
-.tab {
-  border: none;
-  background: none;
-  cursor: pointer;
-  padding-bottom: 6px;
-  font-size: 1.2em;
-}
-
-.tab.active {
-  font-weight: bold;
-  border-bottom: 3px solid var(--primary);
-}
-
-.bimbingan-list {
-  padding: 18px 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
-
-/* CARD */
-.card {
-  background: var(--bg-white);
-  border-radius: 10px;
-  border: 1.5px solid var(--border);
-  overflow: hidden;
-}
-
-.card-header {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr auto;
-  padding: 14px 18px;
-  background-color: #004BA8;
-  color: white;
-  font-weight: 600;
-}
-
-.dropdown-btn {
-  border: none;
-  /* background: none; */
-  width: 1.5em;
-  height: 1.5em;
-  cursor: pointer;
-}
-
-.card-body {
-  display: none;
-  padding: 18px;
-  color: #444;
-  font-size: 16px;
-  line-height: 28px;
-}
-
-p {
-  margin: 0;
-  font-size: 18px;
-  font-style: var(--font-base);
-}
-
-.itemkiri {
-  font-weight: bold;
-}
-
-.containerutama {
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-}
-
-
-.containerutama .containerGrid {
-  display: grid;
-  grid-template-columns: 0.3fr 0.5fr;
-}
-
-.containerutama .containerGrid2 {
-  display: grid;
-  grid-template-columns: 0.3fr 0.5fr;
-}
-
-.card.open .card-body {
-  display: block;
-}
-
-.containerItem {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-}
-
-/* BUTTONS */
-.card-actions {
-  margin-top: 16px;
-  display: flex;
-  gap: 10px;
-  justify-content: flex-end;
-}
-
-.btn {
-  border: none;
-  padding: 8px 22px;
-  border-radius: 8px;
-  color: white;
-  font-size: 15px;
-  cursor: pointer;
-}
-
-.card-actions .img {
-  background-image: url("/assets/icons/Jam.svg");
-  background-size: cover;
-  width: 16px;
-  height: 16px;
-  display: inline-block;
-  margin-right: 8px;
-}
-
-.btn.reject {
-  background: var(--btn-reject);
-}
-
-.btn.accept {
-  background: var(--btn-grey-border);
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.content-body {
+  padding: 20px;
 }

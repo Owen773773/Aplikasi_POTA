@@ -12,7 +12,7 @@
 <body>
 
     <div class="main">
-
+        <!-- SIDEBAR -->
         <aside class="sidebar">
             <div class="logo-container">
                 <img src="/assets/icons/logo.svg">
@@ -20,27 +20,27 @@
             </div>
 
             <nav class="nav-menu">
-                <a th:href="@{/mahasiswa/beranda}" class="nav-item">
+                <a th:href="@{/dosen/beranda}" class="nav-item">
                     <img th:src="@{/assets/icons/ManajemenAkun.svg}" alt="" class="nav-icon" />
                     <span>Beranda</span>
                 </a>
 
-                <a th:href="@{/mahasiswa/jadwal}" class="nav-item">
+                <a th:href="@{/dosen/jadwal}" class="nav-item">
                     <img th:src="@{/assets/icons/Jadwal.svg}" alt="" class="nav-icon" />
                     <span>Jadwal</span>
                 </a>
 
-                <a th:href="@{/templates/mahasiswa/bimbingan}" class="nav-item active">
+                <a th:href="@{/templates/dosen/bimbingan}" class="nav-item active">
                     <img th:src="@{/assets/icons/Bimbingan.svg}" alt="" class="nav-icon" />
                     <span>Bimbingan</span>
                 </a>
 
-                <a th:href="@{/mahasiswa/notifikasi}" class="nav-item">
+                <a th:href="@{/dosen/notifikasi}" class="nav-item">
                     <img th:src="@{/assets/icons/Notifikasi.svg}" alt="" class="nav-icon" />
                     <span>Notifikasi</span>
                 </a>
 
-                <a th:href="@{/mahasiswa/profil}" class="nav-item">
+                <a th:href="@{/dosen/profil}" class="nav-item">
                     <img th:src="@{/assets/icons/Profil.svg}" alt="" class="nav-icon" />
                     <span>Profil</span>
                 </a>
@@ -61,20 +61,20 @@
             <h1 class="page-title">Bimbingan</h1>
 
             <div class="tab-menu">
-                <a class="tab" th:href="@{/mahasiswa/bimbinganProses}">Proses</a>
-                <a class="tab" th:href="@{/mahasiswa/bimbinganTerjadwal}">Terjadwalkan</a>
-                <a class="tab active" th:href="@{/mahasiswa/bimbinganSelesai}">Selesai</a>
-                <a class="tab" th:href="@{/mahasiswa/bimbinganGagal}">Gagal</a>
+                <a class="tab" th:href="@{/dosen/bimbinganProses}">Proses</a>
+                <a class="tab" th:href="@{/dosen/bimbinganTerjadwal}">Terjadwalkan</a>
+                <a class="tab active" th:href="@{/dosen/bimbinganSelesai}">Selesai</a>
+                <a class="tab" th:href="@{/dosen/bimbinganGagal}">Gagal</a>
             </div>
 
             <div class="bimbingan-list">
 
                 <!-- Tempat buat nampilin Data -->
-                <div class="card" th:each="bimbingan : ${listBimbingan}" >
+                <div class="card">
                     <div class="card-header">
-                        <span th:text="${bimbingan.tanggal}">10/10/2025 </span>
-                        <span th:text="${bimbingan.jam}">10.00 - 11.00</span>
-                        <span th:text="${bimbingan.namaLokasi}">Ruang Tugas Akhir</span>
+                        <span>10/10/2025 </span> <!-- Ini masih contoh data -->
+                        <span>10.00 - 11.00</span>
+                        <span>Ruang Tugas Akhir</span>
                         <img src="/assets/icons/Arrow.svg" class="dropdown-btn">
                     </div>
 
@@ -84,28 +84,26 @@
                             <div class="containerItem">
                                 <div class="containerGrid">
                                     <p class="itemkiri">Tanggal</p>
-                                    <p class="itemkanan" th:text="${bimbingan.tanggal}">: 10/10/2025</p>
+                                    <p class="itemkanan">: 10/10/2025</p>
                                     <p class="itemkiri">Jam</p>
-                                    <p class="itemkanan" th:text="${bimbingan.jam}">: 10.00 - 11.00</p>
+                                    <p class="itemkanan">: 10.00 - 11.00</p>
                                     <p class="itemkiri">Durasi</p>
-                                    <p class="itemkanan" th:text="${bimbingan.durasi}">: 1 Jam</p>
+                                    <p class="itemkanan">: 1 Jam</p>
                                     <p class="itemkiri">Lokasi</p>
-                                    <p class="itemkanan" th:text="${bimbingan.namaLokasi}">: Ruang Tugas Akhir</p>
+                                    <p class="itemkanan">: Ruang Tugas Akhir</p>
                                     <p class="itemkiri">Dosen</p>
-                                    <p class="itemkanan" th:text="${bimbingan.dosen}">: Maria Veronica</p>
-                                    <p class="itemkiri">Mahasiswa</p>
-                                    <p class="itemkanan" th:each="mahasiswa : ${bimbingan.mahasiswa}">
-                                        : <span th:text="${mahasiswa}">-</span>
-                                    </p>
+                                    <p class="itemkanan">: Maria Veronica</p>
+                                    <p class="itemkiri">dosen</p>
+                                    <p class="itemkanan">: -</p>
                                 </div>
 
                                 <div class="containerGrid2">
-                                    <p class="itemkiri" style="grid-area: kiri1;">Topik</p>
-                                    <p class="itemkanan" style="grid-area: kanan1;" th:text="${bimbingan.topik}">: Bimbingan Mingguan</p>
-                                    <p class="itemkiri" style="grid-area: kiri2;">Deskripsi Topik</p>
-                                    <p class="itemkanan" style="grid-area: kanan2;" th:text="${bimbingan.deskripsi}">: -</p>
+                                    <p id="itemkiri" style="grid-area: kiri1;">Topik</p>
+                                    <p id="itemkanan" style="grid-area: kanan1;">: Bimbingan Mingguan</p>
+                                    <p id="itemkiri" style="grid-area: kiri2;">Deskripsi Topik</p>
+                                    <p id="itemkanan" style="grid-area: kanan2;">: -</p>
                                     <textarea id="catatan" name="catatan" rows="4" cols="50"
-                                              placeholder="Catatan Bimbingan..." disabled style="grid-area: note;">Catatan bimbingan selesai...</textarea>
+                                        placeholder="Catatan Bimbingan..." disabled style="grid-area: note;">Catatan bimbingan selesai...</textarea>
                                 </div>
                             </div>
                         </div>

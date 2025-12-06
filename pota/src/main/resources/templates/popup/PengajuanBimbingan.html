@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pengajuan Bimbingan</title>
+    <link rel="stylesheet" href="../../static/css/PengajuanBimbingan.css" />
+    <!-- <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet"> -->
+</head>
+
+<body>
+    <div class="main-container">
+        <div class="header">
+            <h2>Pengajuan Bimbingan</h2>
+            <span><img src="../../static/assets/icons/x.svg" alt=""></span>
+        </div>
+
+        <form class="form-container">
+            <div class="form-group">
+                <label for="dosen">Dosen *</label>
+                <div class="input-with-icon">
+                    <input type="text" id="dosen" name="dosen" readonly placeholder="" />
+                    <span> <img src="../../static/assets/icons/Drop.svg" alt=""></span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="tanggal">Tanggal *</label>
+                <div class="input-with-icon" id="mid">
+                    <input type="text" id="tanggal" name="tanggal" readonly placeholder="" />
+                    <span> <img src="../../static/assets/icons/Kalender.svg" alt=""></span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="waktu">Waktu *</label>
+                <div class="input-with-icon" id="mid">
+                    <select id="waktu" name="waktu">
+                        <option value="" disabled selected></option>
+                        </select>
+                    <span> <img src="../../static/assets/icons/Drop.svg" alt=""></span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="topik">Topik Bimbingan *</label>
+                <input type="text" id="topik" name="topik" />
+            </div>
+
+            <div class="form-group">
+                <label for="deskripsi">Deskripsi Topik (Opsional)</label>
+                <textarea id="deskripsi" name="deskripsi" rows="4"></textarea>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="submit-btn">Kirim Request</button>
+            </div>
+        </form>
+    </div>
+</body>
+
+</html>

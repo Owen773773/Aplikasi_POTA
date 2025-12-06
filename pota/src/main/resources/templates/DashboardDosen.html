@@ -6,8 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>POTA - Akun</title>
 
-    <link rel="stylesheet" href="../static/css/mahasiswaGlobal.css">
-    <link rel="stylesheet" href="../static/css/DashboardMahasiswa.css">
+    <link rel="stylesheet" href="../static/css/dosenGlobal.css">
+    <link rel="stylesheet" href="../static/css/DashboardDosen.css">
 </head>
 
 <body>
@@ -36,6 +36,11 @@
                     <span>Bimbingan</span>
                 </a>
 
+                <a href="#" class="nav-item">
+                    <img src="../static/assets/icons/Mahasiswa.svg">
+                    <span>Mahasiswa</span>
+                </a>
+
                 <a href="MahasiswaNotifikasi.html" class="nav-item">
                     <img src="../static/assets/icons/Notifikasi.svg">
                     <span>Notifikasi</span>
@@ -54,15 +59,16 @@
             </button>
         </aside>
 
-
         <main class="main-content">
             <header>
                 <h1 class="page-title">Beranda</h1>
             </header>
 
             <div class="content-body">
-                <section class="card card-full" id="progress.b">
-                    <h2>Progress Bimbingan</h2>
+
+                <!-- RINGKASAN BIMBINGAN -->
+                <section class="card card-full">
+                    <h2>Ringkasan Bimbingan</h2>
 
                     <div class="ringkasan-grid">
                         <div class="ringkasan-info">
@@ -72,25 +78,56 @@
                         </div>
 
                         <div class="target-box">
-                            <h3>Sesi Pra - UTS</h3>
+                            <h3>Pra - UTS</h3>
                             <div class="target-number">2</div>
-                            <p>Total Sesi</p>
-                            <span>Target: 7</span>
+                            <p>Memenuhi Target Pra - UTS</p>
+                            <span>Total Mahasiswa: 7</span>
                         </div>
 
                         <div class="target-box">
-                            <h3>Sesi Pasca - UTS</h3>
+                            <h3>Pasca - UTS</h3>
                             <div class="target-number">-</div>
-                            <p>Total Sesi</p>
-                            <span>Target: 7</span>
+                            <p>Memenuhi Target Pasca - UTS</p>
+                            <span>Total Mahasiswa: 7</span>
                         </div>
                     </div>
                 </section>
 
-                <!-- BIMBINGAN MENDATANG -->
-                <section class="card card-full" id="mendatang.b">
+                <!-- GRID TENGAH -->
+                <section class="mid-grid">
+
+                    <div class="card mid-card">
+                        <div class="mid-header">
+                            <h2>Banyak Pengajuan</h2>
+                            <button class="mid-btn">→</button>
+                        </div>
+
+                        <div class="mid-content">
+                            <div class="target-box">
+                                <span class="mid-number">2</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card mid-card">
+                        <div class="mid-header">
+                            <h2>Bimbingan Hari ini</h2>
+                            <button class="mid-btn">→</button>
+                        </div>
+
+                        <div class="mid-content">
+                            <div class="target-box">
+                                <span class="mid-number">4</span>
+                            </div>
+                        </div>
+                    </div>
+
+                </section>
+
+                <!-- BIMBINGAN SAAT INI -->
+                <section class="card card-full">
                     <div id="header-bottom">
-                        <h2>Bimbingan Mendatang</h2>
+                        <h2>Bimbingan Saat ini</h2>
                         <div class="clock">
                             <img src="../static/assets/icons/Jam.svg" alt=""> 12:00
                         </div>
@@ -116,6 +153,7 @@
                         </div>
                     </div>
                 </section>
+
             </div>
         </main>
     </div>

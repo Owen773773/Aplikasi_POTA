@@ -49,7 +49,6 @@
 
         <div class="content-body">
             <div class="schedule-header">
-                <!-- ✅ Room selector tanpa opsi kosong -->
                 <div class="room-selector-group">
                     <select class="room-selector" id="room-selector" onchange="handleRoomChange(this.value)">
                         <option th:each="ruang : ${listRuangan}"

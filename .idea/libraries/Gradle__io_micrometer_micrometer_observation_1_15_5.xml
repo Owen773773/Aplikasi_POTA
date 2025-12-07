@@ -4,7 +4,11 @@
     <CLASSES>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/io.micrometer/micrometer-observation/1.15.5/60956d6926392e0abef3d34dfcabdc4b013953c8/micrometer-observation-1.15.5.jar!/" />
     </CLASSES>
-    <JAVADOC />
-    <SOURCES />
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/io.micrometer/micrometer-observation/1.15.5/ca247612657cb5d37c750b6a37946d32db8f6c78/micrometer-observation-1.15.5-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/io.micrometer/micrometer-observation/1.15.5/a9dae139ecde777c2ceaee19732f8a79d9ef0bc8/micrometer-observation-1.15.5-sources.jar!/" />
+    </SOURCES>
   </library>
 </component>

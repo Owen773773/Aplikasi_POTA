@@ -113,30 +113,8 @@ public class MahasiswaJdbc implements MahasiswaRepository {
         return jdbcTemplate.queryForObject(query, this::mapRowToTanggalUts, id);
     }
 
-    public LocalDate mapRowToTanggalUts(ResultSet rs, int rowNum) throws SQLException {
-        return rs.getDate("TanggalUTS").toLocalDate();
-    }
 
-    public List<Integer> getBatasKelayakanPraPasca(String id) {
-        String query = """
-            SELECT a.minimumPra, a.minimumPasca
-            FROM Akademik a
-            JOIN TAtermasukAkademik ta ON a.idSemester = ta.idAkademik
-            JOIN TugasAkhir t ON t.IdTa = ta.IdTA
-            WHERE t.IdMahasiswa = ?;
-        """;
 
-        List<Integer> batasPraPasca = jdbcTemplate.queryForObject(query, this::mapRowToBatasPraPasca, id);
-
-        return  batasPraPasca;
-    }
-
-    public List<Integer> mapRowToBatasPraPasca(ResultSet rs, int rowNum) throws SQLException {
-        List<Integer> batasPraPasca = new ArrayList<>();
-        batasPraPasca.add(rs.getInt("minimumPra"));
-        batasPraPasca.add(rs.getInt("minimumPasca"));
-        return  batasPraPasca;
-    }
 
     public LocalDate mapRowToTanggalUts(ResultSet rs, int rowNum) throws SQLException {
         return rs.getDate("TanggalUTS").toLocalDate();

@@ -15,4 +15,11 @@ public class Bimbingan {
     private String Status;
     private int JumlahPeserta;
     private int idRuangan;
+
+    private String tanggal;
+    private String jam;
+    private String durasi;
+    private String namaRuangan;
+    private String namaDosen;
+    private String pesan;
 }

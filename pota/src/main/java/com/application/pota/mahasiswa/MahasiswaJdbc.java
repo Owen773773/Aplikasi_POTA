@@ -137,4 +137,5 @@ public class MahasiswaJdbc implements MahasiswaRepository {
         batasPraPasca.add(rs.getInt("minimumPasca"));
         return  batasPraPasca;
     }
+
 }

@@ -1,0 +1,99 @@
+@import url("https://fonts.googleapis.com/css?family=Quicksand");
+
+:root {
+  --primary: #054a91;
+  --bg-body: #f2f0ef;
+  --bg-white: #ffffff;
+  --text-primary: #000000;
+  --text-muted: #888888;
+  --border: #dddddd;
+  --border-light: #eeeeee;
+
+  --btn-add: #66d666;
+  --btn-filter: #7885ff;
+  --btn-green-bg: #eaffea;
+  --btn-green-border: #66d666;
+  --btn-red-bg: #ffeaea;
+  --btn-red-border: #fa7e7e;
+  --btn-grey-bg: #eeeeee;
+  --btn-grey-border: #aaaaaa;
+  --btn-accept: #019D03;
+  --btn-reject: #FF2C2C;
+
+  --font-base: "Quicksand", sans-serif;
+}
+
+body {
+  font-family: var(--font-base);
+  margin: 0;
+  background: var(--bg-body);
+}
+
+.main {
+  display: flex;
+  height: 100vh;
+}
+
+/* MAIN CONTENT */
+.main-content {
+  flex-grow: 1;
+  padding: 0;
+}
+
+.page-title {
+  padding: 18px;
+  font-size: 28px;
+  font-weight: bold;
+  background: var(--bg-white);
+  color: var(--primary);
+  margin: 0;
+  border-bottom: 1px solid var(--border-light);
+}
+
+/* CONTAINER BESAR - KOTAK PUTIH MELENGKUNG*/
+.notif-container {
+  margin: 30px auto;
+  width: 85%;
+  background: white;
+  padding: 40px 50px;
+  border-radius: 18px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+/* KARTU NOTIF */
+.notif-card {
+  position: relative;
+  margin-bottom: 25px;
+}
+
+.status-badge {
+  font-size: 15px;
+  padding: 6px 14px;
+  border-radius: 12px;
+  font-weight: bold;
+  color: white;
+}
+
+.status-badge.green { background: #02A302; }
+.status-badge.yellow { background: #CFC400; }
+.status-badge.red { background: #D03434; }
+
+.notif-text {
+  margin: 10px 0 5px 0;
+  font-size: 16px;
+  color: #333;
+}
+
+.notif-date {
+  position: absolute;
+  right: 0;
+  top: 0;
+  font-size: 14px;
+  color: #5b5b5b;
+}
+
+hr {
+  border: none;
+  border-top: 1px solid #e6e6e6;
+  margin: 25px 0;
+}

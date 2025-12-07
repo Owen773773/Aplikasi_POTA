@@ -5,4 +5,7 @@ import java.util.List;
 
 @Repository
 public interface BimbinganRepository {
-    List<BimbinganSiapKirim> getBimbinganUserBertipe(String tipeAkun, String tipeStatus, String idPengguna);}
+    Bimbingan bimbinganTerdekat(String idMahasiswa);
+    List<BimbinganSiapKirim> getBimbinganUserBertipe(String tipeAkun, String tipeStatus, String idPengguna);
+
+}

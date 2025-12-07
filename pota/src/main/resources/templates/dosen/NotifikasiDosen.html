@@ -6,10 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>POTA - Akun</title>
     <link rel="stylesheet" href="/css/style.css">
-    <link rel="stylesheet" href="/css/dosen.css">
-
-    <link rel="stylesheet" href="../static/css/dosenGlobal.css">
-    <link rel="stylesheet" href="../static/css/ProfileDosen.css">
+    <link rel="stylesheet" href="/css/NotifikasiDosen.css">
 </head>
 
 <body>
@@ -39,12 +36,12 @@
                     <span>Bimbingan</span>
                 </a>
 
-                <a th:href="@{/dosen/notifikasi}" class="nav-item">
+                <a th:href="@{/dosen/notifikasi}" class="nav-item active">
                     <img th:src="@{/assets/icons/Notifikasi.svg}" alt="" class="nav-icon"/>
                     <span>Notifikasi</span>
                 </a>
 
-                <a th:href="@{/dosen/profil}" class="nav-item active">
+                <a th:href="@{/dosen/profil}" class="nav-item">
                     <img th:src="@{/assets/icons/Profil.svg}" alt="" class="nav-icon"/>
                     <span>Profil</span>
                 </a>
@@ -61,45 +58,43 @@
             </div>
         </aside>
 
+        <!-- MAIN CONTENT -->
         <main class="main-content">
-            <header>
-                <h1 class="page-title">Profil</h1>
-            </header>
+            <h1 class="page-title">Notifikasi</h1>
 
-            <div class="content-body">
-                <div class="profil-card">
-                    <h2 class="profil-title">Data Pribadi</h2>
+            <div class="notif-container">
 
-                    <div class="profil-icon">
-                        <img src="/assets/icons/Profil.svg" />
+                <!-- LOOPING NOTIFIKASI DARI DATABASE -->
+                <div th:each="notif : ${daftarNotifikasi}">
+                    
+                    <div class="notif-card">
+                        
+                        <span class="status-badge"
+                              th:classappend="${notif.tipeNotif == 'Diterima' ? 'green' : 
+                                               (notif.tipeNotif == 'Menunggu' ? 'yellow' : 'red')}"
+                              th:text="${notif.tipeNotif == 'Diterima' ? 'Disetujui' : notif.tipeNotif}">
+                        </span>
+
+                        <p class="notif-text" th:text="${notif.pesanDiFrontend}">
+                            Isi notifikasi...
+                        </p>
+
+                        <span class="notif-date">
+                            <img th:src="@{/assets/icons/JamBiru.svg}" alt=""> 
+                            <span th:text="${#temporals.format(notif.waktuAcara, 'd MMMM yyyy, HH:mm')}"></span>
+                        </span>
+
                     </div>
-
-                    <div class="profil-grid">
-                        <div class="profil-item">
-                            <h3>Nama</h3>
-                            <p><b th:text="${namaDosen}">Nama Placeholdler</b></p>
-                        </div>
-
-                        <div class="profil-item">
-                            <h3>NPM</h3>
-                            <p><b th:text="${npmDosen}">NPM Placeholder</b></p>
-                        </div>
-
-                        <div class="profil-item">
-                            <h3>Peran</h3>
-                            <p><b th:text="${peranPengguna}">Peran Placeholder</b></p>
-                        </div>
-
-                        <div class="profil-item">
-                            <h3>Username</h3>
-                            <p><b th:text="${usernameDosen}">Username Placeholder</b></p>
-                        </div>
-                    </div>
-
-                    <div class="profil-footer">
-                        <button class="btn-password"><b>Ubah Password</b></button>
-                    </div>
+                    
+                    <hr>
                 </div>
+
+                <!-- JIKA TIDAK ADA NOTIFIKASI -->
+                <div th:if="${#lists.isEmpty(daftarNotifikasi)}" 
+                     style="text-align: center; padding: 20px; color: #888;">
+                    <p>Belum ada notifikasi terbaru.</p>
+                </div>
+
             </div>
         </main>
     </div>

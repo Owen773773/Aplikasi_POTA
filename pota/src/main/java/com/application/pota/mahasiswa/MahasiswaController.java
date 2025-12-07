@@ -49,7 +49,7 @@ public class MahasiswaController {
     // public String beranda() {
     //     return "mahasiswa/DashboardMahasiswa";
     // }
-      @GetMapping("/beranda")
+    @GetMapping("/beranda")
     public String beranda(HttpSession session, Model model) {        
         String idPengguna = (String) session.getAttribute("idPengguna");
         if (idPengguna == null) {
@@ -57,6 +57,8 @@ public class MahasiswaController {
         }
         // Bimbingan bimbinganTerdekat = bimbinganService.getJadwalTerdekat(idPengguna);
         // model.addAttribute("bimbinganTerdekat", bimbinganTerdekat);
+        DashboardDataMhs dashboardData = mahasiswaService.getDashboardData(idPengguna);
+        model.addAttribute("dashboard", dashboardData);
         return "mahasiswa/DashboardMahasiswa";    
     }
     

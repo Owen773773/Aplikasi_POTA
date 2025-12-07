@@ -12,6 +12,8 @@ import java.util.List;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import com.application.pota.bimbingan.BimbinganSiapKirim;
+
 @Repository
 @RequiredArgsConstructor
 public class MahasiswaJdbc implements MahasiswaRepository {
@@ -107,7 +109,8 @@ public class MahasiswaJdbc implements MahasiswaRepository {
         String query = """
             SELECT TanggalUTS
             FROM TugasAkhir
-            WHERE IdMahasiswa = ?;
+            WHERE IdMahasiswa = ?
+            LIMIT 1;
         """;
 
         return jdbcTemplate.queryForObject(query, this::mapRowToTanggalUts, id);
@@ -138,4 +141,89 @@ public class MahasiswaJdbc implements MahasiswaRepository {
         return  batasPraPasca;
     }
 
+    
+    private String getJudulSkripsi(String idMhs) {
+        String sql = """
+                SELECT TopikTA
+                FROM TugasAkhir
+                WHERE IdMahasiswa = ?
+                LIMIT 1 
+                """;
+        return jdbcTemplate.queryForObject(sql, String.class, idMhs);
+    }
+
+    private String getTahapSkripsi(String idMhs) {
+            String sql = """
+                SELECT TahapTA
+                FROM Mahasiswa
+                WHERE IdPengguna = ?
+            """;
+        int tahap = jdbcTemplate.queryForObject(sql, Integer.class, idMhs);
+        if(tahap == 1){
+            return "Tugas Akhir I (TA 1)";
+        } else{
+            return "Tugas Akhir II (TA 2)";
+        }
+    }
+
+    public DashboardDataMhs getDashboardDataMhs(String idMhs){
+        DashboardDataMhs dashboardDataMhs = new DashboardDataMhs();
+        ProfilMahasiswa profil = makeProfileByIdPengguna(idMhs);
+        dashboardDataMhs.setDosenPembimbing1(profil.getDosen1() != null ? profil.getDosen1() : "-");
+        dashboardDataMhs.setDosenPembimbing2(profil.getDosen2() != null ? profil.getDosen2() : "-");
+        dashboardDataMhs.setSesiPraUTS(profil.getTotBimPra());
+        dashboardDataMhs.setSesiPascaUTS(profil.getTotBimPas());
+        List<Integer> batas = getBatasKelayakanPraPasca(idMhs);
+        dashboardDataMhs.setTargetPraUTS(batas.get(0));
+        dashboardDataMhs.setTargetPascaUTS(batas.get(1));
+        dashboardDataMhs.setSemesterAktif("Ganjil 2025/2026");
+        dashboardDataMhs.setTahapSkripsi(getTahapSkripsi(idMhs));
+        dashboardDataMhs.setJudulSkripsi(getJudulSkripsi(idMhs));
+        
+        return dashboardDataMhs;
+    }
+
+    public BimbinganSiapKirim getBimbinganMendatang(String idMhs){
+        String query = """
+            SELECT 
+                b.IdBim, b.TopikBim, b.DeskripsiBim, b.Catatan,
+                j.tanggal, j.WaktuMulai, j.WaktuSelesai,
+                r.namaRuangan
+            FROM Bimbingan b
+            JOIN TopikBimbingan tb ON b.IdBim = tb.IdBim
+            JOIN TugasAkhir ta ON tb.IdTA = ta.IdTa
+            JOIN PenjadwalanBimbingan pb ON b.IdBim = pb.IdBim
+            JOIN Jadwal j ON pb.IdJadwal = j.IdJadwal
+            JOIN Ruangan r ON b.idRuangan = r.idRuangan
+            WHERE ta.IdMahasiswa = ?
+            AND tb.StatusBimbingan = 'Terjadwalkan'
+            AND j.tanggal >= CURRENT_DATE
+            ORDER BY j.tanggal, j.WaktuMulai
+            LIMIT 1
+            """;
+        
+        try {
+            BimbinganSiapKirim bim = jdbcTemplate.queryForObject(query,this::mapRowToBimbinganSiapKirim, idMhs);
+            ProfilMahasiswa profil = makeProfileByIdPengguna(idMhs);
+            bim.setDosenBimbingan1(profil.getDosen1());
+            bim.setDosenBimbingan2(profil.getDosen2());
+            
+            return bim;
+        } catch (Exception e) {
+            return null; // Tidak ada bimbingan mendatang
+        }
+    }
+
+    public BimbinganSiapKirim mapRowToBimbinganSiapKirim(ResultSet rs, int rowNum) throws SQLException {
+        BimbinganSiapKirim bimbinganSiapKirim = new BimbinganSiapKirim();
+        bimbinganSiapKirim.setIdBimbingan(rs.getInt("IdBim"));
+        bimbinganSiapKirim.setTopikBimbingan(rs.getString("TopikBim"));
+        bimbinganSiapKirim.setDeskripsiBimbingan(rs.getString("DeskripsiBim"));
+        bimbinganSiapKirim.setTanggalBimbingan(rs.getDate("tanggal"));
+        bimbinganSiapKirim.setWaktuMulai(rs.getTime("WaktuMulai"));
+        bimbinganSiapKirim.setWaktuSelesai(rs.getTime("WaktuSelesai"));
+        bimbinganSiapKirim.setNamaRuangan(rs.getString("namaRuangan"));
+        bimbinganSiapKirim.setStatusBimbingan("Terjadwalkan");
+        return bimbinganSiapKirim;
+    }
 }

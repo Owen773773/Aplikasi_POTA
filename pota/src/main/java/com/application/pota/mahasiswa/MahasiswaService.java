@@ -7,6 +7,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.application.pota.bimbingan.BimbinganSiapKirim;
+
 @Service
 public class MahasiswaService {
     @Autowired
@@ -38,5 +40,12 @@ public class MahasiswaService {
         profilMahasiswa.setSyaratKelayakan(kelayakan);
 
         return profilMahasiswa;
+    }
+
+    public DashboardDataMhs getDashboardData(String idPengguna) {
+        DashboardDataMhs data = mahasiswaRepository.getDashboardDataMhs(idPengguna);
+        BimbinganSiapKirim bimbingan = mahasiswaRepository.getBimbinganMendatang(idPengguna);
+        data.setBimbinganMendatang(bimbingan);
+        return data;
     }
 }

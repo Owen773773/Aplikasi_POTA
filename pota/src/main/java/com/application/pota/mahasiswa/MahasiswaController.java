@@ -1,7 +1,11 @@
 package com.application.pota.mahasiswa;
 
+
+import com.application.pota.bimbingan.Bimbingan;
+
 import com.application.pota.bimbingan.BimbinganService;
 import com.application.pota.bimbingan.BimbinganSiapKirim;
+
 import com.application.pota.jadwal.JadwalService;
 import com.application.pota.jadwal.SlotWaktu;
 import jakarta.servlet.http.HttpSession;
@@ -19,6 +23,9 @@ import java.time.temporal.IsoFields;
 import java.util.List;
 import java.util.Map;
 
+import com.application.pota.notifikasi.NotifikasiService;
+import com.application.pota.notifikasi.Notifikasi; 
+
 @Controller
 @RequestMapping("/mahasiswa")
 public class MahasiswaController {
@@ -30,15 +37,29 @@ public class MahasiswaController {
     @Autowired
     private MahasiswaService mahasiswaService;
 
+    @Autowired
+    private NotifikasiService notifikasiService;
+
     @GetMapping({"/", ""})
     public String berandaDefault() {
-        return beranda();
+        return "redirect:/mahasiswa/beranda";
     }
 
-    @GetMapping("/beranda")
-    public String beranda() {
-        return "mahasiswa/DashboardMahasiswa";
+    // @GetMapping("/beranda")
+    // public String beranda() {
+    //     return "mahasiswa/DashboardMahasiswa";
+    // }
+      @GetMapping("/beranda")
+    public String beranda(HttpSession session, Model model) {        
+        String idPengguna = (String) session.getAttribute("idPengguna");
+        if (idPengguna == null) {
+            return "redirect:/login"; 
+        }
+        // Bimbingan bimbinganTerdekat = bimbinganService.getJadwalTerdekat(idPengguna);
+        // model.addAttribute("bimbinganTerdekat", bimbinganTerdekat);
+        return "mahasiswa/DashboardMahasiswa";    
     }
+    
 
     @GetMapping({"/bimbingan", "/bimbinganProses"})
     public String bimbinganDefault(HttpSession session, Model model) {
@@ -147,7 +168,9 @@ public class MahasiswaController {
     @GetMapping("/notifikasi")
     public String notifkasi(Model model, HttpSession session) {
         String id = (String)session.getAttribute("idPengguna");
-
+        String idPengguna = (String) session.getAttribute("idPengguna");
+        List<Notifikasi> listNotif = notifikasiService.getNotifikasiInAppByIdUser(idPengguna);
+        model.addAttribute("daftarNotifikasi", listNotif);
         return "mahasiswa/NotifikasiMahasiswa";
     }
 }

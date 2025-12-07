@@ -64,63 +64,37 @@
 
             <div class="notif-container">
 
-                <!-- SETUJU -->
-                <div class="notif-card">
-                    <span class="status-badge green">Disetujui</span>
-                    <p class="notif-text">
-                        Bimbingan Anda disetujui untuk dilaksanakan pada 11 Oktober 2025, pukul 08:00 - 10:00,
-                        bertempat di Ruang TA.
-                    </p>
-                    <span class="notif-date"><img src="../../static/assets/icons/JamBiru.svg" alt=""> 8 Oktober 2025,
-                        21:34</span>
+                <!-- LOOPING NOTIFIKASI DARI DATABASE -->
+                <div th:each="notif : ${daftarNotifikasi}">
+                    
+                    <div class="notif-card">
+                        
+                        <span class="status-badge"
+                              th:classappend="${notif.tipeNotif == 'Diterima' ? 'green' : 
+                                               (notif.tipeNotif == 'Menunggu' ? 'yellow' : 'red')}"
+                              th:text="${notif.tipeNotif == 'Diterima' ? 'Disetujui' : notif.tipeNotif}">
+                        </span>
+
+                        <p class="notif-text" th:text="${notif.pesanDiFrontend}">
+                            Isi notifikasi...
+                        </p>
+
+                        <span class="notif-date">
+                            <img th:src="@{/assets/icons/JamBiru.svg}" alt=""> 
+                            <span th:text="${#temporals.format(notif.waktuAcara, 'd MMMM yyyy, HH:mm')}"></span>
+                        </span>
+
+                    </div>
+                    
+                    <hr>
                 </div>
 
-                <hr>
-
-                <!-- MENUNGGU -->
-                <div class="notif-card">
-                    <span class="status-badge yellow">Menunggu</span>
-                    <p class="notif-text">
-                        Pengajuan Bimbingan Anda pada 11 Oktober 2025, pukul 08:00 - 10:00, bertempat di Ruang TA,
-                        dalam proses menunggu persetujuan dosen pembimbing.
-                    </p>
-                    <span class="notif-date"><img src="../../static/assets/icons/JamBiru.svg" alt=""> 6 Oktober 2025,
-                        13:30</span>
+                <!-- JIKA TIDAK ADA NOTIFIKASI -->
+                <div th:if="${#lists.isEmpty(daftarNotifikasi)}" 
+                     style="text-align: center; padding: 20px; color: #888;">
+                    <p>Belum ada notifikasi terbaru.</p>
                 </div>
 
-                <hr>
-
-                <!-- TOLAK -->
-                <div class="notif-card">
-                    <span class="status-badge red">Ditolak</span>
-                    <p class="notif-text">
-                        Pengajuan Bimbingan Anda pada 30 November 2025, pukul 12:00 - 14:00 ditolak dengan alasan
-                        “Saya sedang tidak ada di Indonesia”.
-                    </p>
-                    <span class="notif-date"><img src="../../static/assets/icons/JamBiru.svg" alt=""> 29 November 2025,
-                        08:13</span>
-                </div>
-
-                <hr>
-
-                <!-- MENUNGGU -->
-                <div class="notif-card">
-                    <span class="status-badge yellow">Menunggu</span>
-                    <p class="notif-text">
-                        Pengajuan Bimbingan Anda pada 30 November 2025, pukul 12:00 - 14:00, bertempat di Ruang TA,
-                        dalam proses menunggu persetujuan dosen pembimbing.
-                    </p>
-                    <span class="notif-date"><img src="../../static/assets/icons/JamBiru.svg" alt=""> 28 November 2025,
-                        13:30</span>
-                </div>
-                <hr>
-                <!-- <div class="notif-card">
-                    <span class="status-badge green">Disetujui</span>
-                    <p class="notif-text">
-                        Notifikasi tambahan untuk testing apakah box memanjang.
-                    </p>
-                    <span class="notif-date"><img src="../static/assets/icons/JamBiru.svg"> 1 Januari 2026, 12:00</span>
-                </div> -->
             </div>
         </main>
     </div>

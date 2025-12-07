@@ -15,4 +15,11 @@ public class TugasAkhir {
     private String TopikTA ;
     private Date TanggalUTS;
     private Date TanggalUas;
+
+    private String semesterAktif;
+    private String tahapSkripsi;
+    private String namaDosen1;
+    private String namaDosen2;
+    private int jumlahSesiPraUts;
+    private int jumlahSesiPascaUts;
 }

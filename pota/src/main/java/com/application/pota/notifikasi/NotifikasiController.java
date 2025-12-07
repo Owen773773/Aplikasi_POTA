@@ -27,5 +27,5 @@ public class NotifikasiController {
         model.addAttribute("daftarNotifikasi", listNotif); //th each
         return "notifikasi"; 
     }
-
+    
 }

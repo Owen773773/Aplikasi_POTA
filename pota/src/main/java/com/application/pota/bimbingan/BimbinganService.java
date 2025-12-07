@@ -63,4 +63,20 @@ public class BimbinganService {
     public List<BimbinganSiapKirim> dapatkanBimbinganProses(String tipeAkun, String idPengguna) {
         return dapatkanBimbingan(tipeAkun, "Proses", idPengguna);
     }
+    
+    public Bimbingan getJadwalTerdekat(String idMahasiswa) {
+        Bimbingan hasil = bimbinganRepository.bimbinganTerdekat(idMahasiswa);
+        if (hasil == null) {
+            Bimbingan kosong = new Bimbingan();
+            kosong.setPesan("Tidak ada jadwal bimbingan terdekat.");
+            kosong.setTopikBim("-");
+            kosong.setNamaDosen("-");
+            kosong.setTanggal("-");
+            kosong.setJam("-");
+            kosong.setNamaRuangan("-");
+            return kosong;
+        }
+
+        return hasil;
+    }
 }

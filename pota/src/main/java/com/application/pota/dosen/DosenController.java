@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.application.pota.jadwal.JadwalService;
 import com.application.pota.jadwal.SlotWaktu;
+import com.application.pota.notifikasi.Notifikasi;
+import com.application.pota.notifikasi.NotifikasiService;
 import com.fasterxml.jackson.annotation.JsonCreator.Mode;
 
 import jakarta.servlet.http.HttpSession;
@@ -33,6 +35,8 @@ class DosenController {
     private final DosenService dosenService;
     @Autowired
     private  final BimbinganService bimbinganService;
+    @Autowired
+    private final NotifikasiService notifikasiService;
     
     @GetMapping({"/", ""})
     public String berandaDefault() {
@@ -144,8 +148,9 @@ class DosenController {
 
     @GetMapping("/notifikasi")
     public String notifkasi(Model model, HttpSession session) {
-        String id = (String)session.getAttribute("idPengguna");
-
+        String idPengguna = (String) session.getAttribute("idPengguna");
+        List<Notifikasi> listNotif = notifikasiService.getNotifikasiInAppByIdUser(idPengguna);
+        model.addAttribute("daftarNotifikasi", listNotif);
         return "dosen/NotifikasiDosen";
     }
 }

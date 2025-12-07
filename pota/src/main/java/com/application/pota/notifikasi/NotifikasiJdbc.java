@@ -30,26 +30,24 @@ public class NotifikasiJdbc implements NotifikasiRepository {
     @Override
     public List<Notifikasi> getNotifikasiLengkapByUsername(String username) {
         String querySql = """
-            SELECT 
-                n.idNotifikasi, n.tipeNotif, n.waktuAcara, b.catatan,
-                j.tanggal, j.WaktuMulai, j.WaktuSelesai,
-                r.namaRuangan
-            FROM Bimbingan b
-            JOIN PenjadwalanBimbingan pb ON b.IdBim = pb.IdBim
-            JOIN Jadwal j ON pb.IdJadwal = j.IdJadwal
-            JOIN Ruangan r ON b.idRuangan = r.idRuangan
-
-            JOIN BimbinganNotifikasi bn ON b.IdBim = bn.IdBim
-            JOIN Notifikasi n ON bn.IdNotifikasi = n.idNotifikasi
-
-            JOIN MahasiswaNotifikasi mn ON n.idNotifikasi = mn.IdNotifikasi
-            JOIN DosenNotifikasi dn ON n.idNotifikasi = dn.IdNotifikasi
-            JOIN Pengguna p ON (
-                p.IdPengguna = mn.IdPengguna
-                OR 
-                p.IdPengguna = dn.IdPengguna
-            )
-            WHERE p.username = ?
+            SELECT DISTINCT
+            n.idNotifikasi, n.tipeNotif, n.waktuAcara, b.catatan,
+            j.tanggal, j.WaktuMulai, j.WaktuSelesai,
+            r.namaRuangan
+        FROM Notifikasi n
+        JOIN BimbinganNotifikasi bn ON n.idNotifikasi = bn.IdNotifikasi
+        JOIN Bimbingan b ON bn.IdBim = b.IdBim
+        LEFT JOIN PenjadwalanBimbingan pb ON b.IdBim = pb.IdBim
+        LEFT JOIN Jadwal j ON pb.IdJadwal = j.IdJadwal
+        LEFT JOIN Ruangan r ON b.idRuangan = r.idRuangan
+        LEFT JOIN MahasiswaNotifikasi mn ON n.idNotifikasi = mn.IdNotifikasi
+        LEFT JOIN DosenNotifikasi dn ON n.idNotifikasi = dn.IdNotifikasi
+        WHERE EXISTS (
+            SELECT 1 FROM Pengguna p 
+            WHERE p.username = ? 
+            AND (p.IdPengguna = mn.IdPengguna OR p.IdPengguna = dn.IdPengguna)
+        )
+        ORDER BY n.waktuAcara DESC
             """
         ;
         return jdbcTemplate.query(querySql, this::mapRowToNotifikasi, username);
@@ -58,29 +56,25 @@ public class NotifikasiJdbc implements NotifikasiRepository {
     @Override
     public List<Notifikasi> getNotifikasiLengkapByIdPengguna(String idPengguna) {
         String querySql = """
-            SELECT 
-                n.idNotifikasi, n.tipeNotif, n.waktuAcara, b.catatan,
-                j.tanggal, j.WaktuMulai, j.WaktuSelesai,
-                r.namaRuangan
-            FROM Bimbingan b
-            JOIN PenjadwalanBimbingan pb ON b.IdBim = pb.IdBim
-            JOIN Jadwal j ON pb.IdJadwal = j.IdJadwal
-            JOIN Ruangan r ON b.idRuangan = r.idRuangan
-
-            JOIN BimbinganNotifikasi bn ON b.IdBim = bn.IdBim
-            JOIN Notifikasi n ON bn.IdNotifikasi = n.idNotifikasi
-
-            JOIN MahasiswaNotifikasi mn ON n.idNotifikasi = mn.IdNotifikasi
-            JOIN DosenNotifikasi dn ON n.idNotifikasi = dn.IdNotifikasi
-            JOIN Pengguna p ON (
-                p.IdPengguna = mn.IdPengguna
-                OR 
-                p.IdPengguna = dn.IdPengguna
-            )
-            WHERE p.idPengguna = ?
+            SELECT DISTINCT
+            n.idNotifikasi, n.tipeNotif, n.waktuAcara, b.catatan,
+            j.tanggal, j.WaktuMulai, j.WaktuSelesai,
+            r.namaRuangan
+        FROM Notifikasi n
+        JOIN BimbinganNotifikasi bn ON n.idNotifikasi = bn.IdNotifikasi
+        JOIN Bimbingan b ON bn.IdBim = b.IdBim
+        LEFT JOIN PenjadwalanBimbingan pb ON b.IdBim = pb.IdBim
+        LEFT JOIN Jadwal j ON pb.IdJadwal = j.IdJadwal
+        LEFT JOIN Ruangan r ON b.idRuangan = r.idRuangan
+        WHERE n.idNotifikasi IN (
+            SELECT IdNotifikasi FROM MahasiswaNotifikasi WHERE IdPengguna = ?
+            UNION
+            SELECT IdNotifikasi FROM DosenNotifikasi WHERE IdPengguna = ?
+        )
+        ORDER BY n.waktuAcara DESC
             """
         ;
-        return jdbcTemplate.query(querySql, this::mapRowToNotifikasi, idPengguna);
+        return jdbcTemplate.query(querySql, this::mapRowToNotifikasi, idPengguna, idPengguna);
     }
 
     private Notifikasi mapRowToNotifikasi(ResultSet rs, int rowNum) throws SQLException {

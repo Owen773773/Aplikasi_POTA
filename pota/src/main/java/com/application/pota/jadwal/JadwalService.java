@@ -164,8 +164,8 @@ public class JadwalService {
         return mapJadwal;
     }
 
-    public List<String> cariSlotGabungan(List<String> listIdDosen, String idMahasiswa, LocalDate tanggal) {
-        List<String> slotTersedia = new ArrayList<>();
+    public List<JamDTO> cariSlotGabungan(List<String> listIdDosen, String idMahasiswa, LocalDate tanggal) {
+        List<JamDTO> slotTersedia = new ArrayList<>();
         int jamMulaiKerja = 7;
         int jamSelesaiKerja = 17;
 
@@ -203,8 +203,9 @@ public class JadwalService {
 
             // Jika semua aman, masukkan ke list
             if (semuaDosenBisa) {
-                slotTersedia.add(String.format("%02d:00", jam));
-            }
+                String jamMulai = String.format("%02d:00", jam);
+                String jamSelesai = String.format("%02d:00", jam + 1);
+                slotTersedia.add(new JamDTO(jamMulai, jamMulai + " - " + jamSelesai));}
         }
 
         return slotTersedia;

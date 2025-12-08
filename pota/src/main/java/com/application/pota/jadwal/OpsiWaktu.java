@@ -13,4 +13,5 @@ public class OpsiWaktu {
     private int jamMulai;
     private int jamSelesai;
     private boolean bisa;
+    private String tampilan;
 }

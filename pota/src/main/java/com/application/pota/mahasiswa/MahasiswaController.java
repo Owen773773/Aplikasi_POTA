@@ -8,6 +8,7 @@ import com.application.pota.bimbingan.BimbinganSiapKirim;
 
 import com.application.pota.bimbingan.PilihanPengguna;
 import com.application.pota.jadwal.JadwalService;
+import com.application.pota.jadwal.JamDTO;
 import com.application.pota.jadwal.SlotWaktu;
 import com.application.pota.tugasakhir.TugasAkhirService;
 import jakarta.servlet.http.HttpSession;
@@ -154,7 +155,7 @@ public class MahasiswaController {
     }
     @GetMapping("/cek-slot-tersedia")
     @ResponseBody
-    public List<String> getAvailableSlots(
+    public List<JamDTO> getAvailableSlots(
             @RequestParam("ids") List<String> listIdDosen, // List String
             @RequestParam @org.springframework.format.annotation.DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate tanggal,
             HttpSession session) {

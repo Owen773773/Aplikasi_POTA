@@ -366,8 +366,8 @@
                     } else {
                         data.forEach(waktu => {
                             const option = document.createElement('option');
-                            option.value = waktu;
-                            option.text = waktu;
+                            option.value = waktu.jam;
+                            option.text = waktu.tampilan;
                             waktuSelect.appendChild(option);
                         });
                     }

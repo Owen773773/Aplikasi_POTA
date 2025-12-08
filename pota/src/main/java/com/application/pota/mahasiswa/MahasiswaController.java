@@ -14,20 +14,20 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.IsoFields;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import com.application.pota.notifikasi.NotifikasiService;
 import com.application.pota.notifikasi.Notifikasi;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 @RequestMapping("/mahasiswa")
@@ -172,6 +172,73 @@ public class MahasiswaController {
                 .collect(java.util.stream.Collectors.toList());
 
         return jadwalService.cariSlotGabungan(dosenFixed, idPengguna, tanggal);
+    }
+
+    @PostMapping("/ajukan-bimbingan")
+    @ResponseBody
+    public Map<String, Object> ajukanBimbingan(
+            @RequestBody BimbinganRequest request,
+            HttpSession session) {
+
+        Map<String, Object> response = new HashMap<>();
+
+        String idPengguna = (String) session.getAttribute("idPengguna");
+
+        if (idPengguna == null) {
+            response.put("success", false);
+            response.put("message", "Sesi berakhir. Silakan login kembali.");
+            return response;
+        }
+
+        // Validasi input
+        if (request.getDosenIds() == null || request.getDosenIds().isEmpty()) {
+            response.put("success", false);
+            response.put("message", "Minimal pilih satu dosen pembimbing");
+            return response;
+        }
+
+        if (request.getTanggal() == null || request.getTanggal().isEmpty()) {
+            response.put("success", false);
+            response.put("message", "Tanggal harus diisi");
+            return response;
+        }
+
+        if (request.getWaktu() == null || request.getWaktu().isEmpty()) {
+            response.put("success", false);
+            response.put("message", "Waktu harus diisi");
+            return response;
+        }
+
+        if (request.getTopik() == null || request.getTopik().trim().isEmpty()) {
+            response.put("success", false);
+            response.put("message", "Topik bimbingan harus diisi");
+            return response;
+        }
+
+        // Parse tanggal dan waktu
+        LocalDate tanggal = LocalDate.parse(request.getTanggal());
+        LocalTime waktu = LocalTime.parse(request.getWaktu());
+
+        //Todo : sedang dibuat
+        // Panggil service untuk menyimpan bimbingan
+//        boolean berhasil = bimbinganService.ajukanBimbinganMahasiswa(
+//                idPengguna,
+//                request.getDosenIds(),
+//                tanggal,
+//                waktu,
+//                request.getTopik(),
+//                request.getDeskripsi()
+//        );
+
+        if (berhasil) {
+            response.put("success", true);
+            response.put("message", "Request bimbingan berhasil dikirim!");
+        } else {
+            response.put("success", false);
+            response.put("message", "Gagal mengirim request bimbingan");
+        }
+
+        return response;
     }
     private LocalDate hitungTanggalMulaiMinggu(int tahun, int minggu) {
         return LocalDate.of(tahun, 1, 1)

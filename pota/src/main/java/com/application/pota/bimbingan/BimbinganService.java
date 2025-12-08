@@ -21,6 +21,7 @@ public class BimbinganService {
     @Autowired
     private final BimbinganRepository bimbinganRepository;
     private PenggunaService penggunaService;
+    @Autowired
     private JadwalService jadwalService;
     private TugasAkhirService tugasAkhirService;
     private DosenService dosenService;
@@ -81,4 +82,12 @@ public class BimbinganService {
 
         return hasil;
     }
+    //Todo:query bimbingan, jadwal,notifikasi
+//    public boolean ajukanBimbinganMahasiswa(String idPengguna, List<String> dosenIds, LocalDate tanggal, LocalTime waktu, String topik, String deskripsi) {
+//        bimbinganRepository.bikinBimbingan();
+//        jadwalService.tambahJadwalBimbingna();
+//        notifikasiService.bikinNotifikasi();
+//
+//
+//    }
 }

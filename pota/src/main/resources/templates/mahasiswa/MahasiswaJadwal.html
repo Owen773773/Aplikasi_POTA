@@ -304,21 +304,29 @@
         console.log('Form submitted:', formData);
 
         // TODO: Kirim data ke backend
-        // fetch('/mahasiswa/ajukan-bimbingan', {
-        //     method: 'POST',
-        //     headers: {'Content-Type': 'application/json'},
-        //     body: JSON.stringify(formData)
-        // })
-        // .then(response => response.json())
-        // .then(data => {
-        //     alert('Request bimbingan berhasil dikirim!');
-        //     closePopup();
-        //     document.querySelector('.popup-form').reset();
-        //     location.reload();
-        // })
-        // .catch(error => {
-        //     showNotification('Gagal mengirim request: ' + error.message);
-        // });
+        // Kirim data ke backend
+        fetch('/mahasiswa/ajukan-bimbingan', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData)
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert(data.message);
+                    closePopup();
+                    document.querySelector('.popup-form').reset();
+                    location.reload();
+                } else {
+                    showNotification(data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showNotification('Gagal mengirim request. Silakan coba lagi.');
+            });
 
         alert('Request bimbingan berhasil dikirim!');
         closePopup();
@@ -338,7 +346,7 @@
         if ((dosen1Checked || dosen2Checked) && tanggal) {
             waktuSelect.innerHTML = '<option value="" disabled selected>Loading...</option>';
 
-            // Bangun URL dengan parameter list
+
             let url = `/mahasiswa/cek-slot-tersedia?tanggal=${tanggal}`;
 
             if (dosen1Checked) {

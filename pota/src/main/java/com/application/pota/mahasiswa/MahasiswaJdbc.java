@@ -107,7 +107,8 @@ public class MahasiswaJdbc implements MahasiswaRepository {
         String query = """
             SELECT TanggalUTS
             FROM TugasAkhir
-            WHERE IdMahasiswa = ?;
+            WHERE IdMahasiswa = ?
+            LIMIT 1;
         """;
 
         return jdbcTemplate.queryForObject(query, this::mapRowToTanggalUts, id);

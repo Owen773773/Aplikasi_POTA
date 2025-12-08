@@ -11,7 +11,11 @@
         <module name="com.application.pota.test" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel target="21" />
+    <bytecodeTargetLevel target="21">
+      <module name="com.application.pota.main" target="17" />
+      <module name="com.application.pota.test" target="17" />
+      <module name="pota" target="17" />
+    </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_STRING" value="-parameters" />

@@ -55,4 +55,17 @@ public class DosenService {
     public int getBanyakBimbinganHariIni(String idPengguna) {
         return dosenRepository.getBanyakBimbinganHariIniByIdPengguna(idPengguna);
     }
+
+    public int getJumlahMahasiswaMemenuhiTarget(String idPengguna, String tahapBimb) {
+        LocalDate tanggalUts = dosenRepository.getTanggalUtsByIdPengguna(idPengguna);
+        LocalDate tanggalUas = dosenRepository.getTanggalUasByIdPengguna(idPengguna);
+        LocalDate tanggalAwalMasuk = LocalDate.of(LocalDate.now().getYear(), 8, 1);
+
+        if (LocalDate.now().isAfter(tanggalUts)) {
+            return dosenRepository.getJumlahMahasiswaMemenuhiTargetPascaUTS(idPengguna, tanggalUts, tanggalUas);
+        }
+        else {
+            return dosenRepository.getJumlahMahasiswaMemenuhiTargetPraUTS(idPengguna, tanggalAwalMasuk, tanggalUts);
+        }
+    }
 }

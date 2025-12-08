@@ -5,14 +5,9 @@ import lombok.RequiredArgsConstructor;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
-import java.util.Date;
-import java.util.List;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
-
-import com.application.pota.pengguna.Pengguna;
-import com.application.pota.pengguna.PenggunaJdbc;
 
 @Repository
 @RequiredArgsConstructor
@@ -42,6 +37,18 @@ public class DosenJdbc implements DosenRepository {
     public LocalDate getTanggalUtsByIdPengguna(String idPengguna) {
         String query = """
             SELECT ta.TanggalUTS
+            FROM TugasAkhir ta
+            JOIN Dosen_Pembimbing dp ON dp.idTA = ta.IdTa
+            WHERE dp.IdDosen = ?;
+        """;
+
+        return jdbcTemplate.queryForObject(query, LocalDate.class, idPengguna);
+    }
+
+    @Override
+    public LocalDate getTanggalUasByIdPengguna(String idPengguna) {
+        String query = """
+            SELECT ta.TanggalUAS
             FROM TugasAkhir ta
             JOIN Dosen_Pembimbing dp ON dp.idTA = ta.IdTa
             WHERE dp.IdDosen = ?;
@@ -80,10 +87,39 @@ public class DosenJdbc implements DosenRepository {
             JOIN TopikBimbingan tb ON tb.IdTA = dp.idTA
             JOIN PenjadwalanBimbingan pb ON pb.IdBim = tb.IdBim
             JOIN Jadwal j ON j.IdJadwal = pb.IdJadwal
-            WHERE dp.IdDosen = ?
-              AND j.tanggal = CURRENT_DATE;
+            WHERE dp.IdDosen = ? AND j.tanggal = CURRENT_DATE;
         """;
 
         return jdbcTemplate.queryForObject(query, Integer.class, idPengguna);
+    }
+
+    @Override
+    public int getJumlahMahasiswaMemenuhiTargetPascaUTS(String idPengguna, LocalDate tanggalUts, LocalDate tanggalUas) {
+        String query = """
+            SELECT COUNT(DISTINCT ta.IdMahasiswa) AS jumlah
+            FROM Dosen_Pembimbing dp
+            JOIN TugasAkhir ta ON ta.IdTa = dp.idTA
+            JOIN TopikBimbingan tb ON tb.IdTA = ta.IdTa
+            JOIN PenjadwalanBimbingan pb ON pb.IdBim = tb.IdBim
+            JOIN Jadwal j ON j.IdJadwal = pb.IdJadwal
+            WHERE dp.IdDosen = ? AND j.tanggal BETWEEN ? AND ?
+        """;
+
+        return jdbcTemplate.queryForObject(query, Integer.class, idPengguna, tanggalUts, tanggalUas);
+    }
+
+    @Override
+    public int getJumlahMahasiswaMemenuhiTargetPraUTS(String idPengguna, LocalDate tanggalAwalMasuk, LocalDate tanggalUts) {
+        String query = """
+            SELECT COUNT(DISTINCT ta.IdMahasiswa) AS jumlah
+            FROM Dosen_Pembimbing dp
+            JOIN TugasAkhir ta ON ta.IdTa = dp.idTA
+            JOIN TopikBimbingan tb ON tb.IdTA = ta.IdTa
+            JOIN PenjadwalanBimbingan pb ON pb.IdBim = tb.IdBim
+            JOIN Jadwal j ON j.IdJadwal = pb.IdJadwal
+            WHERE dp.IdDosen = ? AND j.tanggal BETWEEN ? AND ?
+        """;
+
+        return jdbcTemplate.queryForObject(query, Integer.class, idPengguna, tanggalAwalMasuk, tanggalUts);
     }
 }

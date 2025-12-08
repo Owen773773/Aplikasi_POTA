@@ -90,6 +90,7 @@ class DosenController {
         model.addAttribute("listBimbingan", listBimbingan);
         return "dosen/bimbingan/DosenBimbinganGagal";
     }
+
     @GetMapping("/beranda")
     public String beranda(Model model, HttpSession session) {
         String idPengguna = (String) session.getAttribute("idPengguna");
@@ -98,12 +99,15 @@ class DosenController {
         int nMH = dosenService.getBanyakMHDibimbing(idPengguna);
         int nPengajuan = dosenService.getBanyakPengajuan(idPengguna);
         int currentBimbingan = dosenService.getBanyakBimbinganHariIni(idPengguna);
+        int jumlahMHMemenuhi = dosenService.getJumlahMahasiswaMemenuhiTarget(idPengguna, tahapBimb);
 
         model.addAttribute("semesterAktif", semesterAktif);
         model.addAttribute("tahapBimb", tahapBimb);
         model.addAttribute("nMH", nMH);
         model.addAttribute("nPengajuan", nPengajuan);
         model.addAttribute("currentBimbingan", currentBimbingan);
+        model.addAttribute("jumlahMHMemenuhi", jumlahMHMemenuhi);
+
         return "dosen/DashboardDosen";
     }
     

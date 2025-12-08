@@ -78,16 +78,18 @@
 
                     <div class="target-box">
                         <h3>Pra - UTS</h3>
-                        <div class="target-number">2</div>
+                        <div class="target-number" th:if="${tahapBimb == 'Pra - UTS'}" th:text="${jumlahMHMemenuhi}">jumlah Mahasiswa Memenuhi Placeholder</div>
+                        <div class="target-number" th:unless="${tahapBimb == 'Pra - UTS'}">-</div>
                         <p>Memenuhi Target Pra - UTS</p>
-                        <span>Total Mahasiswa: 7</span>
+                        <span>Total Mahasiswa: <span th:text="${nMH}">Total Mahasiswa Placeholder</span></span>
                     </div>
 
                     <div class="target-box">
                         <h3>Pasca - UTS</h3>
-                        <div class="target-number">-</div>
+                        <div class="target-number" th:if="${tahapBimb == 'Pasca - UTS'}" th:text="${jumlahMHMemenuhi}">jumlah Mahasiswa Memenuhi Placeholder</div>
+                        <div class="target-number" th:unless="${tahapBimb == 'Pasca - UTS'}">-</div>
                         <p>Memenuhi Target Pasca - UTS</p>
-                        <span>Total Mahasiswa: 7</span>
+                        <span>Total Mahasiswa: <span th:text="${nMH}">Total Mahasiswa Placeholder</span></span>
                     </div>
                 </div>
             </section>

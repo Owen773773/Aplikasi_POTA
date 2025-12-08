@@ -230,13 +230,13 @@ public class MahasiswaController {
 //                request.getDeskripsi()
 //        );
 
-        if (berhasil) {
-            response.put("success", true);
-            response.put("message", "Request bimbingan berhasil dikirim!");
-        } else {
-            response.put("success", false);
-            response.put("message", "Gagal mengirim request bimbingan");
-        }
+//        if (berhasil) {
+//            response.put("success", true);
+//            response.put("message", "Request bimbingan berhasil dikirim!");
+//        } else {
+//            response.put("success", false);
+//            response.put("message", "Gagal mengirim request bimbingan");
+//        }
 
         return response;
     }

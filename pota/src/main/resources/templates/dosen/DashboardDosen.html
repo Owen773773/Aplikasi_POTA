@@ -71,9 +71,9 @@
 
                 <div class="ringkasan-grid">
                     <div class="ringkasan-info">
-                        <p>Semester Aktif   : <b>Ganjil 2025/2026</b></p>
-                        <p>Tahap Bimbingan : <b>Pra - UTS</b></p>
-                        <p>Jumlah Mahasiswa : <b>9</b></p>
+                        <p>Semester Aktif   : <b th:text="${semesterAktif}">Semester Aktif Placeholder</b></p>
+                        <p>Tahap Bimbingan : <b th:text="${tahapBimb}">Tahap Bimbingan Placeholder</b></p>
+                        <p>Jumlah Mahasiswa : <b th:text="${nMH}">Jumlah Mahasiswa Placeholder</b></p>
                     </div>
 
                     <div class="target-box">
@@ -112,7 +112,7 @@
                     </div>
 
                     <div class="mid-content">
-                        <span class="target-number">4</span>
+                        <span class="target-number" th:text="${currentBimbingan}">Bimbingan Hari Ini Placeholder</span>
                         <button class="mid-btn">Lihat Detail</button>
                     </div>
                 </div>

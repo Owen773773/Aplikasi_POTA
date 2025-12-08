@@ -39,8 +39,8 @@ class DosenController {
     private final NotifikasiService notifikasiService;
     
     @GetMapping({"/", ""})
-    public String berandaDefault() {
-        return beranda();
+    public String berandaDefault(Model model, HttpSession session) {
+        return beranda(model, session);
     }
 
     @GetMapping({"/bimbingan", "/bimbinganProses"})
@@ -91,10 +91,18 @@ class DosenController {
         return "dosen/bimbingan/DosenBimbinganGagal";
     }
     @GetMapping("/beranda")
-    public String beranda(Model model) {
+    public String beranda(Model model, HttpSession session) {
         String idPengguna = (String) session.getAttribute("idPengguna");
         String semesterAktif = dosenService.getSemesterAktif(idPengguna);
+        String tahapBimb = dosenService.getTahapBimbingan(idPengguna);
+        int nMH = dosenService.getBanyakMHDibimbing(idPengguna);
+        int nPengajuan;
+        int currentBimbingan = dosenService.getBanyakBimbinganHariIni(idPengguna);
 
+        model.addAttribute("semesterAktif", semesterAktif);
+        model.addAttribute("tahapBimb", tahapBimb);
+        model.addAttribute("nMH", nMH);
+        model.addAttribute("currentBimbingan", currentBimbingan);
         return "dosen/DashboardDosen";
     }
     

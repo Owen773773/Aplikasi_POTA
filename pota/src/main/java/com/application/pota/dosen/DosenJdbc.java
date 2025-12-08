@@ -4,6 +4,8 @@ import lombok.RequiredArgsConstructor;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -37,9 +39,40 @@ public class DosenJdbc implements DosenRepository {
         return profilDosen;
     }
 
-    public int getTahunDanSemester(String idPengguna) {
+    public LocalDate getTanggalUtsByIdPengguna(String idPengguna) {
         String query = """
-            
+            SELECT ta.TanggalUTS
+            FROM TugasAkhir ta
+            JOIN Dosen_Pembimbing dp ON dp.idTA = ta.IdTa
+            WHERE dp.IdDosen = ?;
         """;
+
+        return jdbcTemplate.queryForObject(query, LocalDate.class, idPengguna);
+    }
+
+    public int getBanyakMahasiswaByIdPengguna(String idPengguna) {
+        String query = """
+            SELECT COUNT(*)
+            FROM Dosen_Pembimbing dp
+            JOIN TugasAkhir ta ON ta.IdTa = dp.idTA
+            JOIN Pengguna p ON p.IdPengguna = ta.IdMahasiswa
+            WHERE dp.IdDosen = ?;
+        """;
+
+        return jdbcTemplate.queryForObject(query, Integer.class, idPengguna);
+    }
+
+    public int getBanyakBimbinganHariIniByIdPengguna(String idPengguna) {
+        String query = """
+            SELECT COUNT(*)
+            FROM Dosen_Pembimbing dp
+            JOIN TopikBimbingan tb ON tb.IdTA = dp.idTA
+            JOIN PenjadwalanBimbingan pb ON pb.IdBim = tb.IdBim
+            JOIN Jadwal j ON j.IdJadwal = pb.IdJadwal
+            WHERE dp.IdDosen = ?
+              AND j.tanggal = CURRENT_DATE;
+        """;
+
+        return jdbcTemplate.queryForObject(query, Integer.class, idPengguna);
     }
 }

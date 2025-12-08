@@ -244,11 +244,11 @@ VALUES ('U004'),
        ('U015');
 
 INSERT INTO Akademik
-VALUES (20241, 2, 3),
-       (20242, 2, 3),
-       (20243, 2, 3),
-       (20244, 2, 3),
-       (20245, 2, 3);
+VALUES (20251, 2, 3),
+       (20252, 2, 3),
+       (20253, 2, 3),
+       (20254, 2, 3),
+       (20255, 2, 3);
 
 INSERT INTO Ruangan
 VALUES (1, 'Ruang A'),
@@ -268,11 +268,11 @@ VALUES (101, 'Topik A', '2025-03-01', '2025-06-01', 'U001'),
 	  
 
 INSERT INTO TAtermasukAkademik
-VALUES (101, 20241),
-       (102, 20241),
-       (103, 20242),
-       (104, 20242),
-       (105, 20243);
+VALUES (101, 20251),
+       (102, 20251),
+       (103, 20252),
+       (104, 20252),
+       (105, 20251); --2025 1: 2025 semester ganjil
 
 INSERT INTO Dosen_Pembimbing
 VALUES ('U003', 101),

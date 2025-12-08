@@ -14,4 +14,8 @@ public class DosenService {
 
         return profilDosen;
     }
+
+    public int getSemesterAktif(String idPengguna) {
+        return dosenRepository.getTahunAktifByIdPengguna(idPengguna);
+    }
 }

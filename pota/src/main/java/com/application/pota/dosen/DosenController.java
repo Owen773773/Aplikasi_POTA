@@ -42,6 +42,7 @@ class DosenController {
     public String berandaDefault() {
         return beranda();
     }
+
     @GetMapping({"/bimbingan", "/bimbinganProses"})
     public String bimbinganDefault(HttpSession session, Model model) {
         String idPengguna = (String) session.getAttribute("idPengguna");
@@ -90,7 +91,10 @@ class DosenController {
         return "dosen/bimbingan/DosenBimbinganGagal";
     }
     @GetMapping("/beranda")
-    public String beranda() {
+    public String beranda(Model model) {
+        String idPengguna = (String) session.getAttribute("idPengguna");
+        String semesterAktif = dosenService.getSemesterAktif(idPengguna);
+
         return "dosen/DashboardDosen";
     }
     

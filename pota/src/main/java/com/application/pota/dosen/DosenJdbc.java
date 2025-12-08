@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -34,5 +35,11 @@ public class DosenJdbc implements DosenRepository {
         profilDosen.setPeran(rs.getString("tipeAkun"));
         profilDosen.setNpm(rs.getString("IdPengguna"));
         return profilDosen;
+    }
+
+    public int getTahunDanSemester(String idPengguna) {
+        String query = """
+            
+        """;
     }
 }

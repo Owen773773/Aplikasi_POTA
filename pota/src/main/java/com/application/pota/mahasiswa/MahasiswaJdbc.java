@@ -90,7 +90,7 @@ public class MahasiswaJdbc implements MahasiswaRepository {
 
         return profilMahasiswa;
     }
-
+  
     public String mapRowToDosenPembimbing(ResultSet rs, int rowNum) throws SQLException {
         return rs.getString("namaDosen");
     }
@@ -112,6 +112,9 @@ public class MahasiswaJdbc implements MahasiswaRepository {
 
         return jdbcTemplate.queryForObject(query, this::mapRowToTanggalUts, id);
     }
+
+
+
 
     public LocalDate mapRowToTanggalUts(ResultSet rs, int rowNum) throws SQLException {
         return rs.getDate("TanggalUTS").toLocalDate();

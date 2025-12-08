@@ -7,5 +7,6 @@ import java.util.List;
 public interface BimbinganRepository {
     Bimbingan bimbinganTerdekat(String idMahasiswa);
     List<BimbinganSiapKirim> getBimbinganUserBertipe(String tipeAkun, String tipeStatus, String idPengguna);
-
+    List<PilihanPengguna> getDosenPembimbingPilihan(int idTa);
+    List<PilihanPengguna> getMahasiswaPilihan(String idDosen);
 }

@@ -45,7 +45,9 @@ public class BimbinganService {
     public List<BimbinganSiapKirim> dapatkanBimbinganTerjadwal(String tipeAkun, String idPengguna) {
         return dapatkanBimbingan(tipeAkun, "Terjadwalkan", idPengguna);
     }
-
+    public List<PilihanPengguna> getDosenPembimbingPilihan(int idTa){
+        return bimbinganRepository.getDosenPembimbingPilihan(idTa);
+    }
     /**
      * Mendapatkan bimbingan yang selesai
      */

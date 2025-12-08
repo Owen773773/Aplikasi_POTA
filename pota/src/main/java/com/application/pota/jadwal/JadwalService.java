@@ -164,9 +164,86 @@ public class JadwalService {
         return mapJadwal;
     }
 
+    public List<String> cariSlotGabungan(List<String> listIdDosen, String idMahasiswa, LocalDate tanggal) {
+        List<String> slotTersedia = new ArrayList<>();
+        int jamMulaiKerja = 7;
+        int jamSelesaiKerja = 17;
+
+        // 1. Ambil jadwal Mahasiswa (Pribadi + Bimbingan) hari itu
+        // Menggunakan method findByWeekRange... dengan start & end date yang sama
+        List<Jadwal> mhsPribadi = jadwalRepository.findByWeekRangePengguna(tanggal, tanggal, idMahasiswa);
+        List<JadwalJdbc.JadwalWithStatus> mhsBimbingan = jadwalRepository.findBimbinganByWeekRangePengguna(tanggal, tanggal, idMahasiswa);
+
+        // 2. Ambil jadwal Dosen (Pribadi + Bimbingan) hari itu
+        List<List<Jadwal>> listDosenPribadi = new ArrayList<>();
+        List<List<JadwalJdbc.JadwalWithStatus>> listDosenBimbingan = new ArrayList<>();
+
+        for (String idDosen : listIdDosen) {
+            listDosenPribadi.add(jadwalRepository.findByWeekRangePengguna(tanggal, tanggal, idDosen));
+            listDosenBimbingan.add(jadwalRepository.findBimbinganByWeekRangePengguna(tanggal, tanggal, idDosen));
+        }
+
+        // 3. Loop per jam (07:00 - 16:00)
+        for (int jam = jamMulaiKerja; jam < jamSelesaiKerja; jam++) {
+
+            // Cek apakah Mahasiswa sibuk?
+            if (isSibuk(jam, mhsPribadi, mhsBimbingan)) {
+                continue; // Skip, mahasiswa sibuk
+            }
+
+            // Cek apakah SEMUA Dosen bisa?
+            boolean semuaDosenBisa = true;
+            for (int i = 0; i < listIdDosen.size(); i++) {
+                // Cek dosen ke-i
+                if (isSibuk(jam, listDosenPribadi.get(i), listDosenBimbingan.get(i))) {
+                    semuaDosenBisa = false;
+                    break; // Salah satu dosen sibuk, jam ini hangus
+                }
+            }
+
+            // Jika semua aman, masukkan ke list
+            if (semuaDosenBisa) {
+                slotTersedia.add(String.format("%02d:00", jam));
+            }
+        }
+
+        return slotTersedia;
+    }
+
     /**
-     * Buat header tanggal untuk setiap hari kerja (format: d/M/yyyy)
+     * Helper untuk mengecek tabrakan jadwal
      */
+    private boolean isSibuk(int jamCek, List<Jadwal> jadwalPribadi, List<JadwalJdbc.JadwalWithStatus> jadwalBimbingan) {
+        // Cek Jadwal Pribadi/Pemblokiran
+        for (Jadwal j : jadwalPribadi) {
+            // Konversi SQL Time ke LocalTime lalu ambil jam-nya
+            int jamMulai = j.getWaktuMulai().toLocalTime().getHour();
+            int jamSelesai = j.getWaktuSelesai().toLocalTime().getHour();
+
+            // Logic: jamCek ada di antara jamMulai (inklusif) dan jamSelesai (eksklusif)
+            if (jamCek >= jamMulai && jamCek < jamSelesai) {
+                return true;
+            }
+        }
+
+        // Cek Jadwal Bimbingan
+        for (JadwalJdbc.JadwalWithStatus js : jadwalBimbingan) {
+            String status = js.getStatus();
+            // Abaikan jadwal yang batal/gagal
+            if (status != null && (status.equalsIgnoreCase("DIBATALKAN") || status.equalsIgnoreCase("GAGAL"))) {
+                continue;
+            }
+
+            int jamMulai = js.getJadwal().getWaktuMulai().toLocalTime().getHour();
+            int jamSelesai = js.getJadwal().getWaktuSelesai().toLocalTime().getHour();
+
+            if (jamCek >= jamMulai && jamCek < jamSelesai) {
+                return true;
+            }
+        }
+
+        return false;
+    }
     private Map<DayOfWeek, String> buatHeaderTanggal(LocalDate hariSenin) {
         Map<DayOfWeek, String> headerMap = new LinkedHashMap<>();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy");

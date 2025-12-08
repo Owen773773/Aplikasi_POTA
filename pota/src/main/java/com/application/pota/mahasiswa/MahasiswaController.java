@@ -6,8 +6,10 @@ import com.application.pota.bimbingan.Bimbingan;
 import com.application.pota.bimbingan.BimbinganService;
 import com.application.pota.bimbingan.BimbinganSiapKirim;
 
+import com.application.pota.bimbingan.PilihanPengguna;
 import com.application.pota.jadwal.JadwalService;
 import com.application.pota.jadwal.SlotWaktu;
+import com.application.pota.tugasakhir.TugasAkhirService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -24,7 +26,8 @@ import java.util.List;
 import java.util.Map;
 
 import com.application.pota.notifikasi.NotifikasiService;
-import com.application.pota.notifikasi.Notifikasi; 
+import com.application.pota.notifikasi.Notifikasi;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 @RequestMapping("/mahasiswa")
@@ -39,6 +42,8 @@ public class MahasiswaController {
 
     @Autowired
     private NotifikasiService notifikasiService;
+    @Autowired
+    private TugasAkhirService tugasAkhirService;
 
     @GetMapping({"/", ""})
     public String berandaDefault() {
@@ -139,9 +144,34 @@ public class MahasiswaController {
         model.addAttribute("listHari", HariTanggal);
         model.addAttribute("timetable", timetableGrid);
 
+        int idTA = tugasAkhirService.getIdTugasAkhir(idPengguna);
+
+        List<PilihanPengguna> pilihanDosen = bimbinganService.getDosenPembimbingPilihan(idTA);
+        model.addAttribute("pilihanDosen", pilihanDosen);
+
         return "mahasiswa/MahasiswaJadwal";
     }
+    @GetMapping("/cek-slot-tersedia")
+    @ResponseBody
+    public List<String> getAvailableSlots(
+            @RequestParam("ids") List<String> listIdDosen, // List String
+            @RequestParam @org.springframework.format.annotation.DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate tanggal,
+            HttpSession session) {
 
+        String idPengguna = (String) session.getAttribute("idPengguna");
+
+        if (idPengguna == null) {
+            return java.util.Collections.emptyList();
+        }
+
+        // Filter null dan duplikat
+        List<String> dosenFixed = listIdDosen.stream()
+                .filter(java.util.Objects::nonNull)
+                .distinct()
+                .collect(java.util.stream.Collectors.toList());
+
+        return jadwalService.cariSlotGabungan(dosenFixed, idPengguna, tanggal);
+    }
     private LocalDate hitungTanggalMulaiMinggu(int tahun, int minggu) {
         return LocalDate.of(tahun, 1, 1)
                 .with(IsoFields.WEEK_OF_WEEK_BASED_YEAR, minggu)

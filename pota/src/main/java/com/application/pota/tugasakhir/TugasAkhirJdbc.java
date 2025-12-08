@@ -15,6 +15,19 @@ public class TugasAkhirJdbc implements TugasAkhirRepository {
     private final JdbcTemplate jdbcTemplate;
 
     @Override
+    public int getIdTugasAkhir(String idPengguna) {
+        String sql = """
+        SELECT IdTa
+        FROM TugasAkhir
+        WHERE IdMahasiswa = ?
+        ORDER BY IdTa DESC
+        LIMIT 1
+        """;
+
+        return (int)jdbcTemplate.queryForObject(sql, Integer.class, idPengguna);
+    }
+
+    @Override
     public TugasAkhir getProfilMahasiswa(String idMahasiswa) {
         String sql1 = """
             SELECT ta.IdTa, ta.TopikTA, ta.TanggalUTS, ta.TanggalUas, m.TahapTA

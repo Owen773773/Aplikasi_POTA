@@ -1,5 +1,7 @@
  package com.application.pota.bimbingan;
 
+ import com.application.pota.dosen.Dosen;
+ import com.application.pota.pengguna.Pengguna;
  import lombok.RequiredArgsConstructor;
 
  import java.sql.ResultSet;
@@ -176,7 +178,7 @@
                      .build();
          }
      }
-     private List<String> getDosenPembimbing(Integer idTa) {
+     private List<String> getDosenPembimbing(int idTa) {
          String sql = """
             SELECT p.nama
             FROM Dosen_Pembimbing dp
@@ -185,6 +187,40 @@
             ORDER BY dp.IdDosen
             """;
          return jdbcTemplate.queryForList(sql, String.class, idTa);
+     }
+     // Get dosen pembimbing untuk satu TA tertentu
+     @Override
+     public List<PilihanPengguna> getDosenPembimbingPilihan(int idTa) {
+         String sql = """
+       SELECT p.IdPengguna, p.nama
+       FROM Dosen_Pembimbing dp
+       JOIN Pengguna p ON dp.IdDosen = p.IdPengguna
+       WHERE dp.idTA = ?
+       ORDER BY dp.IdDosen
+       """;
+         return jdbcTemplate.query(sql, this::mapRowToPilihanPengguna, idTa);
+     }
+
+     // Get semua mahasiswa yang dibimbing oleh dosen tertentu
+     @Override
+     public List<PilihanPengguna> getMahasiswaPilihan(String idDosen) {
+         String sql = """
+       SELECT DISTINCT p.IdPengguna, p.nama
+       FROM Dosen_Pembimbing dp
+       JOIN TugasAkhir ta ON dp.idTA = ta.IdTa
+       JOIN Pengguna p ON ta.IdMahasiswa = p.IdPengguna
+       WHERE dp.IdDosen = ?
+       ORDER BY p.nama
+       """;
+         return jdbcTemplate.query(sql, this::mapRowToPilihanPengguna, idDosen);
+     }
+
+     // RowMapper untuk PilihanPengguna
+     private PilihanPengguna mapRowToPilihanPengguna(ResultSet rs, int rowNum) throws SQLException {
+         return new PilihanPengguna(
+                 rs.getString("IdPengguna"),
+                 rs.getString("nama")
+         );
      }
 
      private List<String> getMahasiswaBimbingan(Integer idBim) {

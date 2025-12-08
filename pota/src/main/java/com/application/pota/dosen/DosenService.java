@@ -48,6 +48,10 @@ public class DosenService {
         return dosenRepository.getBanyakMahasiswaByIdPengguna(idPengguna);
     }
 
+    public int getBanyakPengajuan(String idPengguna) {
+        return dosenRepository.getBanyakPengajuanByIdPengguna(idPengguna);
+    }
+
     public int getBanyakBimbinganHariIni(String idPengguna) {
         return dosenRepository.getBanyakBimbinganHariIniByIdPengguna(idPengguna);
     }

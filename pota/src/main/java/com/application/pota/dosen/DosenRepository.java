@@ -9,4 +9,5 @@ public interface DosenRepository {
     LocalDate getTanggalUtsByIdPengguna(String idPengguna);
     int getBanyakMahasiswaByIdPengguna(String idPengguna);
     int getBanyakBimbinganHariIniByIdPengguna(String idPengguna);
+    int getBanyakPengajuanByIdPengguna(String idPengguna);
 }

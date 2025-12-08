@@ -96,12 +96,13 @@ class DosenController {
         String semesterAktif = dosenService.getSemesterAktif(idPengguna);
         String tahapBimb = dosenService.getTahapBimbingan(idPengguna);
         int nMH = dosenService.getBanyakMHDibimbing(idPengguna);
-        int nPengajuan;
+        int nPengajuan = dosenService.getBanyakPengajuan(idPengguna);
         int currentBimbingan = dosenService.getBanyakBimbinganHariIni(idPengguna);
 
         model.addAttribute("semesterAktif", semesterAktif);
         model.addAttribute("tahapBimb", tahapBimb);
         model.addAttribute("nMH", nMH);
+        model.addAttribute("nPengajuan", nPengajuan);
         model.addAttribute("currentBimbingan", currentBimbingan);
         return "dosen/DashboardDosen";
     }

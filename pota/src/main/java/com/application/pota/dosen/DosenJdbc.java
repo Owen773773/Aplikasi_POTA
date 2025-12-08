@@ -62,6 +62,17 @@ public class DosenJdbc implements DosenRepository {
         return jdbcTemplate.queryForObject(query, Integer.class, idPengguna);
     }
 
+    public int getBanyakPengajuanByIdPengguna(String idPengguna) {
+        String query = """
+            SELECT COUNT(*)
+            FROM Dosen_Pembimbing dp
+            JOIN TopikBimbingan tb ON tb.IdTA = dp.idTA
+            WHERE dp.IdDosen = ? AND tb.StatusMhs = 'Menunggu';
+        """;
+
+        return jdbcTemplate.queryForObject(query, Integer.class, idPengguna);
+    }
+
     public int getBanyakBimbinganHariIniByIdPengguna(String idPengguna) {
         String query = """
             SELECT COUNT(*)

@@ -131,28 +131,21 @@
             </button>
         </div>
         <div class="popup-body">
+            <div id="form-notification" class="form-notification hidden"></div>
             <form class="popup-form" onsubmit="handleSubmit(event)">
                 <div class="form-group">
-                    <label for="dosen1" class="form-label">Dosen Pembimbing 1 *</label>
-                    <div class="input-with-icon">
-                        <select id="dosen1" name="idDosen1" class="form-input trigger-check" required>
-                            <option value="" disabled selected>Pilih Pembimbing 1</option>
-                            <option th:each="dosen : ${pilihanDosen}"
-                                    th:value="${dosen.idPengguna}"
-                                    th:text="${dosen.nama}"></option>
-                        </select>
+                    <label for="dosenSatu" class="form-label">Dosen Pembimbing *</label>
+                    <div class="input-with-icon" style="display: flex">
+                        <input style="width: 20px; height: 20px" type="checkbox" id="dosenSatu" th:value="${dosenSatu.idPengguna}" name="dosenSatu">
+                        <label for="dosenSatu" th:text="${dosenSatu.nama}" style="padding-left: 12px">Test</label>
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <label for="dosen2" class="form-label">Dosen Pembimbing 2 (Opsional)</label>
-                    <div class="input-with-icon">
-                        <select id="dosen2" name="idDosen2" class="form-input trigger-check">
-                            <option value="" selected>Tidak ada / Kosongkan</option>
-                            <option th:each="dosen : ${pilihanDosen}"
-                                    th:value="${dosen.idPengguna}"
-                                    th:text="${dosen.nama}"></option>
-                        </select>
+                <div class="form-group" th:if="${dosenDua != null}">
+                    <label for="dosenDua" class="form-label">Dosen Pembimbing 2</label>
+                    <div class="input-with-icon" style="display: flex">
+                        <input type="checkbox" id="dosenDua" th:value="${dosenDua.idPengguna}" name="dosenDua">
+                        <label for="dosenDua" ><span th:text="${dosenDua.nama}"></span></label>
                     </div>
                 </div>
 
@@ -164,7 +157,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="waktu" class="form-label">Waktu *</label>
+                    <label for="waktu" class="form-label">Waktu (1 Jam) *</label>
                     <div class="input-with-icon">
                         <select id="waktu" name="waktu" class="form-input" required>
                             <option value="" disabled selected>Pilih waktu</option>
@@ -192,18 +185,38 @@
 
 
 <script>
-    // Show popup
+    function showNotification(message) {
+        const notification = document.getElementById('form-notification');
+
+        if (notification) {
+            notification.textContent = message;
+            notification.classList.remove('hidden');
+
+            // Auto hide setelah 5 detik
+            setTimeout(() => {
+                notification.classList.add('hidden');
+            }, 5000);
+        }
+    }
+
+    function hideNotification() {
+        const notification = document.getElementById('form-notification');
+        if (notification) {
+            notification.classList.add('hidden');
+        }
+    }
+
+    // ===== POPUP FUNCTIONS =====
     function showPopup() {
         document.getElementById('popup-form').classList.remove('hidden');
         document.body.style.overflow = 'hidden';
     }
 
-    // Close popup
     function closePopup() {
         document.getElementById('popup-form').classList.add('hidden');
         document.body.style.overflow = '';
+        hideNotification();
     }
-
 
     // Close popup when clicking outside
     document.getElementById('popup-form').addEventListener('click', function(e) {
@@ -219,54 +232,120 @@
         }
     });
 
-    // Handle form submit
+    // ===== FORM VALIDATION & SUBMIT =====
     function handleSubmit(event) {
         event.preventDefault();
 
-        // Get form data
+        // Hide notifikasi sebelumnya
+        hideNotification();
+
+        // Cek checkbox dosen pembimbing
+        const dosenSatu = document.getElementById('dosenSatu');
+        const dosenDua = document.getElementById('dosenDua');
+        const isDosen1Checked = dosenSatu ? dosenSatu.checked : false;
+        const isDosen2Checked = dosenDua ? dosenDua.checked : false;
+
+        // Get form values
+        const tanggal = document.getElementById('tanggal').value.trim();
+        const waktu = document.getElementById('waktu').value.trim();
+        const topik = document.getElementById('topik').value.trim();
+
+        // Array untuk menampung field yang kosong
+        const missingFields = [];
+
+        // Validasi setiap field
+        if (!isDosen1Checked && !isDosen2Checked) {
+            missingFields.push('Dosen Pembimbing');
+        }
+
+        if (!tanggal) {
+            missingFields.push('Tanggal');
+        }
+
+        if (!waktu) {
+            missingFields.push('Waktu');
+        }
+
+        if (!topik) {
+            missingFields.push('Topik Bimbingan');
+        }
+
+        if (missingFields.length > 0) {
+            const message = `Mohon isi semua field penting: ${missingFields.join(', ')}`;
+            showNotification(message);
+
+            // Focus ke field pertama yang kosong
+            if (!isDosen1Checked && !isDosen2Checked) {
+                dosenSatu.focus();
+            } else if (!tanggal) {
+                document.getElementById('tanggal').focus();
+            } else if (!waktu) {
+                document.getElementById('waktu').focus();
+            } else if (!topik) {
+                document.getElementById('topik').focus();
+            }
+
+            return false;
+        }
+
+        // Get form data lengkap
+        const dosenIds = [];
+        if (isDosen1Checked) dosenIds.push(dosenSatu.value);
+        if (isDosen2Checked) dosenIds.push(dosenDua.value);
+
         const formData = {
-            dosen: document.getElementById('dosen').value,
-            tanggal: document.getElementById('tanggal').value,
-            waktu: document.getElementById('waktu').value,
-            topik: document.getElementById('topik').value,
-            deskripsi: document.getElementById('deskripsi').value
+            dosenIds: dosenIds,
+            tanggal: tanggal,
+            waktu: waktu,
+            topik: topik,
+            deskripsi: document.getElementById('deskripsi').value.trim()
         };
 
         console.log('Form submitted:', formData);
 
-        // Here you would normally send data to backend
-        // For now, just show alert and close popup
+        // TODO: Kirim data ke backend
+        // fetch('/mahasiswa/ajukan-bimbingan', {
+        //     method: 'POST',
+        //     headers: {'Content-Type': 'application/json'},
+        //     body: JSON.stringify(formData)
+        // })
+        // .then(response => response.json())
+        // .then(data => {
+        //     alert('Request bimbingan berhasil dikirim!');
+        //     closePopup();
+        //     document.querySelector('.popup-form').reset();
+        //     location.reload();
+        // })
+        // .catch(error => {
+        //     showNotification('Gagal mengirim request: ' + error.message);
+        // });
+
         alert('Request bimbingan berhasil dikirim!');
         closePopup();
-
-        // Reset form
         document.querySelector('.popup-form').reset();
     }
 
-    // Week change handler
-    function submitWeekChange() {
-        const weekInput = document.getElementById('week-input');
-        const currentUrl = new URL(window.location.href);
-        currentUrl.searchParams.set('week', weekInput.value);
-        window.location.href = currentUrl.toString();
-    }
-
-    // Function untuk mengecek ketersediaan (dipanggil saat Dosen ATAU Tanggal berubah)
     function checkAvailability() {
-        const dosen1 = document.getElementById('dosen1').value;
-        const dosen2 = document.getElementById('dosen2').value;
+        const dosenSatu = document.getElementById('dosenSatu');
+        const dosenDua = document.getElementById('dosenDua');
         const tanggal = document.getElementById('tanggal').value;
         const waktuSelect = document.getElementById('waktu');
 
-        // Minimal harus ada Dosen 1 dan Tanggal
-        if (dosen1 && tanggal) {
+        // Cek apakah minimal ada 1 dosen yang dipilih DAN tanggal sudah diisi
+        const dosen1Checked = dosenSatu && dosenSatu.checked;
+        const dosen2Checked = dosenDua && dosenDua.checked;
+
+        if ((dosen1Checked || dosen2Checked) && tanggal) {
             waktuSelect.innerHTML = '<option value="" disabled selected>Loading...</option>';
 
             // Bangun URL dengan parameter list
             let url = `/mahasiswa/cek-slot-tersedia?tanggal=${tanggal}`;
-            url += `&ids=${dosen1}`; // Tambah Dosen 1
-            if (dosen2) {
-                url += `&ids=${dosen2}`; // Tambah Dosen 2 (jika ada)
+
+            if (dosen1Checked) {
+                url += `&ids=${dosenSatu.value}`;
+            }
+            if (dosen2Checked) {
+                url += `&ids=${dosenDua.value}`;
             }
 
             fetch(url)
@@ -289,14 +368,40 @@
                     console.error('Error:', error);
                     waktuSelect.innerHTML = '<option value="" disabled selected>Error memuat</option>';
                 });
+        } else {
+            waktuSelect.innerHTML = '<option value="" disabled selected>Pilih waktu</option>';
         }
     }
 
-    // Event listener untuk semua input yang mempengaruhi jadwal
-    document.getElementById('tanggal').addEventListener('change', checkAvailability);
-    document.getElementById('dosen1').addEventListener('change', checkAvailability);
-    document.getElementById('dosen2').addEventListener('change', checkAvailability);
+    function submitWeekChange() {
+        const weekInput = document.getElementById('week-input');
+        const currentUrl = new URL(window.location.href);
+        currentUrl.searchParams.set('week', weekInput.value);
+        window.location.href = currentUrl.toString();
+    }
 
+    const tanggalInput = document.getElementById('tanggal');
+    const dosenSatuInput = document.getElementById('dosenSatu');
+    const dosenDuaInput = document.getElementById('dosenDua');
+
+    if (tanggalInput) {
+        tanggalInput.addEventListener('change', checkAvailability);
+    }
+    if (dosenSatuInput) {
+        dosenSatuInput.addEventListener('change', checkAvailability);
+    }
+    if (dosenDuaInput) {
+        dosenDuaInput.addEventListener('change', checkAvailability);
+    }
+
+    const formInputs = ['dosenSatu', 'dosenDua', 'tanggal', 'waktu', 'topik'];
+    formInputs.forEach(inputId => {
+        const input = document.getElementById(inputId);
+        if (input) {
+            input.addEventListener('input', hideNotification);
+            input.addEventListener('change', hideNotification);
+        }
+    });
 </script>
 
 </body>

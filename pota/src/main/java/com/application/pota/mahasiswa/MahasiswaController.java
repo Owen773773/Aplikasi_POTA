@@ -147,7 +147,8 @@ public class MahasiswaController {
         int idTA = tugasAkhirService.getIdTugasAkhir(idPengguna);
 
         List<PilihanPengguna> pilihanDosen = bimbinganService.getDosenPembimbingPilihan(idTA);
-        model.addAttribute("pilihanDosen", pilihanDosen);
+        model.addAttribute("dosenSatu", pilihanDosen.get(0));
+        model.addAttribute("dosenDua", pilihanDosen.size()>1?pilihanDosen.get(1):null);
 
         return "mahasiswa/MahasiswaJadwal";
     }

@@ -1,0 +1,184 @@
+/* ===========================================
+   CONSOLIDATED BIMBINGAN CSS
+   Untuk halaman: Gagal, Proses, Selesai, Terjadwalkan
+   Note: Import style.css terlebih dahulu sebelum file ini
+   =========================================== */
+
+/* === MAIN CONTENT OVERRIDES === */
+.main-content {
+    overflow-y: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+/* === TAB MENU === */
+.tab-menu {
+    display: flex;
+    gap: 25px;
+    padding: 14px 24px;
+    font-size: 18px;
+}
+
+.tab {
+    border: none;
+    background: none;
+    cursor: pointer;
+    padding-bottom: 6px;
+    font-size: 1.2em;
+    text-decoration: none;
+    color: var(--text-muted);
+    transition: all 0.2s;
+}
+
+.tab:hover {
+    color: var(--primary);
+}
+
+.tab.active {
+    font-weight: bold;
+    color: var(--primary);
+    border-bottom: 3px solid var(--primary);
+}
+
+/* === BIMBINGAN LIST === */
+.bimbingan-list {
+    padding: 18px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    height: calc(100vh - 140px); /* Adjust based on header + tab height */
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+/* === CARD STYLES === */
+.card {
+    background: var(--bg-white);
+    border-radius: 10px;
+    border: 1.5px solid var(--border);
+    overflow: visible; /* Changed from hidden to visible */
+    flex-shrink: 0; /* Prevent cards from shrinking */
+}
+
+.card-header {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr auto;
+    padding: 14px 18px;
+    background-color: #004BA8;
+    color: white;
+    font-weight: 600;
+    border-radius: 10px 10px 0 0; /* Add border radius to match card */
+}
+
+.dropdown-btn {
+    border: none;
+    width: 1.5em;
+    height: 1.5em;
+    cursor: pointer;
+}
+
+.card-body {
+    display: none;
+    padding: 18px;
+    color: #444;
+    font-size: 16px;
+    line-height: 28px;
+    border-radius: 0 0 10px 10px; /* Add border radius to match card */
+}
+
+.card.open .card-body {
+    display: block;
+}
+
+/* === CARD CONTENT LAYOUT === */
+.containerutama {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.containerutama .containerGrid {
+    display: grid;
+    grid-template-columns: 0.3fr 0.5fr;
+}
+
+.containerutama .containerGrid2 {
+    display: grid;
+    grid-template-columns: 0.3fr 0.5fr;
+}
+
+/* Khusus untuk BimbinganGagal dan BimbinganSelesai */
+.containerutama .containerGrid2.with-note {
+    grid-template-areas:
+        "kiri1 kanan1"
+        "kiri2 kanan2"
+        "note note";
+}
+
+.containerItem {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+.itemkiri {
+    font-weight: bold;
+}
+
+/* === TEXTAREA === */
+textarea#catatan {
+    resize: none;
+    border: 2px solid #000000;
+}
+
+/* === CARD ACTIONS === */
+.card-actions {
+    margin-top: 16px;
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+}
+
+.card-actions .btn {
+    border: none;
+    padding: 8px 22px;
+    border-radius: 8px;
+    color: white;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+.card-actions .btn.reject {
+    background: var(--btn-reject);
+}
+
+.card-actions .btn.accept {
+    background: var(--btn-accept);
+}
+
+/* Khusus untuk BimbinganTerjadwalkan */
+.card-actions .btn.accept.grey {
+    background: var(--btn-grey-border);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.card-actions .img {
+    background-image: url("/assets/icons/Jam.svg");
+    background-size: cover;
+    width: 16px;
+    height: 16px;
+    display: inline-block;
+    margin-right: 8px;
+}
+
+:root {
+    --btn-accept: #019D03;
+    --btn-reject: #FF2C2C;
+}
+
+button{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

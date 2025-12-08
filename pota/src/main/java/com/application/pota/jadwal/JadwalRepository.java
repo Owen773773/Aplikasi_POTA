@@ -2,6 +2,7 @@ package com.application.pota.jadwal;
 
 import java.time.LocalDate;
 import java.sql.Date;
+import java.time.LocalTime;
 import java.util.List;
 
 public interface JadwalRepository {
@@ -11,6 +12,8 @@ public interface JadwalRepository {
 
     // Mencari Jadwal Berdasarkan idRuangan
     List<Jadwal> findByDateByidRuangan(int idRuangan, Date date);
+
+    int insertJadwal(LocalDate tanggal, LocalTime mulai, LocalTime selesai);
 
     // Mencari Jadwal Berdasarkan idBimbingan
     List<Jadwal> findByIdbimbingan(String idBim, Date date);

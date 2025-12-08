@@ -1,15 +1,14 @@
 package com.application.pota.mahasiswa;
 
 
-import com.application.pota.bimbingan.Bimbingan;
-
 import com.application.pota.bimbingan.BimbinganService;
 import com.application.pota.bimbingan.BimbinganSiapKirim;
-
+import com.application.pota.bimbingan.DTOBimbinganMahasiswa;
 import com.application.pota.bimbingan.PilihanPengguna;
 import com.application.pota.jadwal.JadwalService;
-import com.application.pota.jadwal.JamDTO;
 import com.application.pota.jadwal.SlotWaktu;
+import com.application.pota.notifikasi.Notifikasi;
+import com.application.pota.notifikasi.NotifikasiService;
 import com.application.pota.tugasakhir.TugasAkhirService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,10 +24,6 @@ import java.time.temporal.IsoFields;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
-
-import com.application.pota.notifikasi.NotifikasiService;
-import com.application.pota.notifikasi.Notifikasi;
 
 @Controller
 @RequestMapping("/mahasiswa")
@@ -55,17 +50,17 @@ public class MahasiswaController {
     // public String beranda() {
     //     return "mahasiswa/DashboardMahasiswa";
     // }
-      @GetMapping("/beranda")
-    public String beranda(HttpSession session, Model model) {        
+    @GetMapping("/beranda")
+    public String beranda(HttpSession session, Model model) {
         String idPengguna = (String) session.getAttribute("idPengguna");
         if (idPengguna == null) {
-            return "redirect:/login"; 
+            return "redirect:/login";
         }
         // Bimbingan bimbinganTerdekat = bimbinganService.getJadwalTerdekat(idPengguna);
         // model.addAttribute("bimbinganTerdekat", bimbinganTerdekat);
-        return "mahasiswa/DashboardMahasiswa";    
+        return "mahasiswa/DashboardMahasiswa";
     }
-    
+
 
     @GetMapping({"/bimbingan", "/bimbinganProses"})
     public String bimbinganDefault(HttpSession session, Model model) {
@@ -146,16 +141,16 @@ public class MahasiswaController {
         model.addAttribute("timetable", timetableGrid);
 
         int idTA = tugasAkhirService.getIdTugasAkhir(idPengguna);
-
         List<PilihanPengguna> pilihanDosen = bimbinganService.getDosenPembimbingPilihan(idTA);
         model.addAttribute("dosenSatu", pilihanDosen.get(0));
-        model.addAttribute("dosenDua", pilihanDosen.size()>1?pilihanDosen.get(1):null);
+        model.addAttribute("dosenDua", pilihanDosen.size() > 1 ? pilihanDosen.get(1) : null);
 
         return "mahasiswa/MahasiswaJadwal";
     }
+
     @GetMapping("/cek-slot-tersedia")
     @ResponseBody
-    public List<JamDTO> getAvailableSlots(
+    public List<String> getAvailableSlots(
             @RequestParam("ids") List<String> listIdDosen, // List String
             @RequestParam @org.springframework.format.annotation.DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate tanggal,
             HttpSession session) {
@@ -178,69 +173,27 @@ public class MahasiswaController {
     @PostMapping("/ajukan-bimbingan")
     @ResponseBody
     public Map<String, Object> ajukanBimbingan(
-            @RequestBody BimbinganRequest request,
+            @RequestBody DTOBimbinganMahasiswa request,
             HttpSession session) {
 
-        Map<String, Object> response = new HashMap<>();
 
         String idPengguna = (String) session.getAttribute("idPengguna");
 
-        if (idPengguna == null) {
-            response.put("success", false);
-            response.put("message", "Sesi berakhir. Silakan login kembali.");
-            return response;
-        }
 
-        // Validasi input
-        if (request.getDosenIds() == null || request.getDosenIds().isEmpty()) {
-            response.put("success", false);
-            response.put("message", "Minimal pilih satu dosen pembimbing");
-            return response;
-        }
-
-        if (request.getTanggal() == null || request.getTanggal().isEmpty()) {
-            response.put("success", false);
-            response.put("message", "Tanggal harus diisi");
-            return response;
-        }
-
-        if (request.getWaktu() == null || request.getWaktu().isEmpty()) {
-            response.put("success", false);
-            response.put("message", "Waktu harus diisi");
-            return response;
-        }
-
-        if (request.getTopik() == null || request.getTopik().trim().isEmpty()) {
-            response.put("success", false);
-            response.put("message", "Topik bimbingan harus diisi");
-            return response;
-        }
-
-        // Parse tanggal dan waktu
+        // Parse input
         LocalDate tanggal = LocalDate.parse(request.getTanggal());
-        LocalTime waktu = LocalTime.parse(request.getWaktu());
+        LocalTime mulai = LocalTime.parse(request.getWaktuMulai());
+        LocalTime selesai = LocalTime.parse(request.getWaktuSelesai());
 
-        //Todo : sedang dibuat
-        // Panggil service untuk menyimpan bimbingan
-//        boolean berhasil = bimbinganService.ajukanBimbinganMahasiswa(
-//                idPengguna,
-//                request.getDosenIds(),
-//                tanggal,
-//                waktu,
-//                request.getTopik(),
-//                request.getDeskripsi()
-//        );
+        bimbinganService.ajukanBimbinganMahasiswa(idPengguna, request.getDosenIds(), request.getTopik(), request.getDeskripsi(), tanggal, mulai, selesai);
 
-//        if (berhasil) {
-//            response.put("success", true);
-//            response.put("message", "Request bimbingan berhasil dikirim!");
-//        } else {
-//            response.put("success", false);
-//            response.put("message", "Gagal mengirim request bimbingan");
-//        }
+        Map<String, Object> response = new HashMap<>();
+        response.put("success", true);
+        response.put("message", "Pengajuan bimbingan berhasil!");
 
         return response;
     }
+
     private LocalDate hitungTanggalMulaiMinggu(int tahun, int minggu) {
         return LocalDate.of(tahun, 1, 1)
                 .with(IsoFields.WEEK_OF_WEEK_BASED_YEAR, minggu)
@@ -249,14 +202,14 @@ public class MahasiswaController {
 
     @GetMapping("/profil")
     public String profil(Model model, HttpSession session) {
-        String id = (String)session.getAttribute("idPengguna");
+        String id = (String) session.getAttribute("idPengguna");
         ProfilMahasiswa profilMahasiswa = mahasiswaService.makeProfile(id);
 
         model.addAttribute("nama", profilMahasiswa.getNama());
         model.addAttribute("npm", profilMahasiswa.getNpm());
         model.addAttribute("peran", profilMahasiswa.getPeran());
         model.addAttribute("dospem1", profilMahasiswa.getDosen1());
-        model.addAttribute("dospem2 ", profilMahasiswa.getDosen2() == null? "-" : profilMahasiswa.getDosen2());
+        model.addAttribute("dospem2 ", profilMahasiswa.getDosen2() == null ? "-" : profilMahasiswa.getDosen2());
         model.addAttribute("pra", profilMahasiswa.getTotBimPra());
         model.addAttribute("pasca", profilMahasiswa.getTotBimPas());
         model.addAttribute("syarat", profilMahasiswa.getSyaratKelayakan());
@@ -266,7 +219,7 @@ public class MahasiswaController {
 
     @GetMapping("/notifikasi")
     public String notifkasi(Model model, HttpSession session) {
-        String id = (String)session.getAttribute("idPengguna");
+        String id = (String) session.getAttribute("idPengguna");
         String idPengguna = (String) session.getAttribute("idPengguna");
         List<Notifikasi> listNotif = notifikasiService.getNotifikasiInAppByIdUser(idPengguna);
         model.addAttribute("daftarNotifikasi", listNotif);

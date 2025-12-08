@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="id" xmlns:th="http://www.thymeleaf.org">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,44 +7,35 @@
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="/css/PengajuanBimbingan.css">
 </head>
-
 <body>
-
 <div class="main">
     <aside class="sidebar">
         <div class="logo-container">
             <img src="/assets/icons/logo.svg">
             <span class="text-navbar">POTA</span>
         </div>
-
         <nav class="nav-menu">
             <a th:href="@{/mahasiswa/beranda}" class="nav-item">
                 <img th:src="@{/assets/icons/ManajemenAkun.svg}" alt="" class="nav-icon"/>
                 <span>Beranda</span>
             </a>
-
             <a th:href="@{/mahasiswa/jadwal}" class="nav-item active">
                 <img th:src="@{/assets/icons/Jadwal.svg}" alt="" class="nav-icon"/>
                 <span>Jadwal</span>
             </a>
-
             <a th:href="@{/mahasiswa/bimbingan}" class="nav-item">
                 <img th:src="@{/assets/icons/Bimbingan.svg}" alt="" class="nav-icon"/>
                 <span>Bimbingan</span>
             </a>
-
             <a th:href="@{/mahasiswa/notifikasi}" class="nav-item">
                 <img th:src="@{/assets/icons/Notifikasi.svg}" alt="" class="nav-icon"/>
                 <span>Notifikasi</span>
             </a>
-
             <a th:href="@{/mahasiswa/profil}" class="nav-item">
                 <img th:src="@{/assets/icons/Profil.svg}" alt="" class="nav-icon"/>
                 <span>Profil</span>
             </a>
-
         </nav>
-
         <div class="logout-section">
             <form th:action="@{/logout}" method="post" style="margin: 0;">
                 <button type="submit" class="btn-logout">
@@ -55,7 +45,6 @@
             </form>
         </div>
     </aside>
-
     <main class="main-content">
         <div class="content-body">
             <div class="schedule-header">
@@ -63,21 +52,18 @@
                     <span class="date-display-text">
                         <span th:text="${tanggalMulaiMinggu}">24/11/2025</span>
                     </span>
-
                     <input type="week"
                            name="week"
                            th:value="${weekParam}"
                            id="week-input"
                            onchange="submitWeekChange()"
                            class="hidden-functional-input"/>
-
                     <img th:src="@{/assets/icons/Jadwal.svg}"
                          alt="Pilih Tanggal"
                          class="calendar-icon"
                          onclick="event.stopPropagation(); document.getElementById('week-input').showPicker()"/>
                 </div>
             </div>
-
             <div class="schedule-container">
                 <table class="schedule-grid">
                     <thead>
@@ -95,12 +81,10 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <!-- Loop untuk setiap jam (07.00 - 17.00) -->
                     <tr th:each="hourSlots, iterStat : ${timetable}">
                         <td class="time-column">
                             <span th:text="${#numbers.formatInteger(iterStat.index + 7, 2)} + '.00'">07.00</span>
                         </td>
-                        <!-- Loop untuk setiap hari dalam satu jam -->
                         <td th:each="slot : ${hourSlots}"
                             th:class="${'time-slot ' + (slot.status != null ? slot.status : 'available')}"
                             th:data-hour="${slot.jam}"
@@ -111,7 +95,6 @@
                     </tbody>
                 </table>
             </div>
-
             <div class="schedule-legend">
                 <button onclick="showPopup()" class="btn-ajukan-bimbingan">Ajukan Bimbingan</button>
                 <div class="legend-item"><span class="legend-box status-unavailable"></span> Tidak Tersedia</div>
@@ -122,77 +105,130 @@
     </main>
 </div>
 
-<form id="popup-form" class="popup-overlay hidden">
+<!-- POPUP FORM -->
+<div id="popup-form" class="popup-overlay hidden">
     <div class="popup-content">
         <div class="popup-header">
             <h2 class="popup-title">Pengajuan Bimbingan</h2>
-            <button class="btn-close" onclick="closePopup()">
+            <button type="button" class="btn-close" onclick="closePopup()">
                 <span style="font-size: 24px;">&times;</span>
             </button>
         </div>
-        <div class="popup-body">
+        <form id="bimbingan-form" class="popup-body" onsubmit="handleSubmit(event)">
             <div id="form-notification" class="form-notification hidden"></div>
-            <form class="popup-form" onsubmit="handleSubmit(event)">
-                <div class="form-group">
-                    <label for="dosenSatu" class="form-label">Dosen Pembimbing *</label>
-                    <div class="input-with-icon" style="display: flex">
-                        <input style="width: 20px; height: 20px" type="checkbox" id="dosenSatu" th:value="${dosenSatu.idPengguna}" name="dosenSatu">
-                        <label for="dosenSatu" th:text="${dosenSatu.nama}" style="padding-left: 12px">Test</label>
+
+            <div class="form-group">
+                <label for="dosenSatu" class="form-label">Dosen Pembimbing *</label>
+                <div class="input-with-icon" style="display: flex; align-items: center;">
+                    <input style="width: 20px; height: 20px; margin: 0;"
+                           type="checkbox"
+                           id="dosenSatu"
+                           th:value="${dosenSatu.idPengguna}"
+                           name="dosenSatu">
+                    <label for="dosenSatu" th:text="${dosenSatu.nama}"
+                           style="padding-left: 12px; margin: 0; cursor: pointer;">Test</label>
+                </div>
+            </div>
+
+            <div class="form-group" th:if="${dosenDua != null}">
+                <label for="dosenDua" class="form-label">Dosen Pembimbing 2</label>
+                <div class="input-with-icon" style="display: flex; align-items: center;">
+                    <input style="width: 20px; height: 20px; margin: 0;"
+                           type="checkbox"
+                           id="dosenDua"
+                           th:value="${dosenDua.idPengguna}"
+                           name="dosenDua">
+                    <label for="dosenDua" style="padding-left: 12px; margin: 0; cursor: pointer;">
+                        <span th:text="${dosenDua.nama}"></span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="tanggal" class="form-label">Tanggal *</label>
+                <div class="input-with-icon" onclick="openDatePicker()">
+                    <input type="date"
+                           id="tanggal"
+                           name="tanggal"
+                           class="form-input"
+                           placeholder="Pilih tanggal"
+                           required/>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label">Waktu Bimbingan *</label>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                    <div>
+                        <label for="waktuMulai"
+                               style="font-size: 12px; color: #666; margin-bottom: 4px; display: block;">
+                            Jam Mulai
+                        </label>
+                        <div class="input-with-icon">
+                            <select id="waktuMulai" name="waktuMulai" class="form-input" required>
+                                <option value="" disabled selected>Pilih jam mulai</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div>
+                        <label for="waktuSelesai"
+                               style="font-size: 12px; color: #666; margin-bottom: 4px; display: block;">
+                            Jam Selesai
+                        </label>
+                        <div class="input-with-icon">
+                            <select id="waktuSelesai" name="waktuSelesai" class="form-input" required disabled>
+                                <option value="" disabled selected>Pilih jam selesai</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
+            </div>
 
-                <div class="form-group" th:if="${dosenDua != null}">
-                    <label for="dosenDua" class="form-label">Dosen Pembimbing 2</label>
-                    <div class="input-with-icon" style="display: flex">
-                        <input type="checkbox" id="dosenDua" th:value="${dosenDua.idPengguna}" name="dosenDua">
-                        <label for="dosenDua" ><span th:text="${dosenDua.nama}"></span></label>
-                    </div>
-                </div>
+            <div class="form-group">
+                <label for="topik" class="form-label">Topik Bimbingan *</label>
+                <input type="text"
+                       id="topik"
+                       name="topik"
+                       class="form-input"
+                       placeholder="Masukkan topik bimbingan"
+                       required/>
+            </div>
 
-                <div class="form-group">
-                    <label for="tanggal" class="form-label">Tanggal *</label>
-                    <div class="input-with-icon">
-                        <input type="date" id="tanggal" name="tanggal" class="form-input" placeholder="Pilih tanggal" />
-                    </div>
-                </div>
+            <div class="form-group">
+                <label for="deskripsi" class="form-label">Deskripsi Topik (Opsional)</label>
+                <textarea id="deskripsi"
+                          name="deskripsi"
+                          class="form-input"
+                          rows="4"
+                          placeholder="Masukkan deskripsi topik"
+                          style="resize: none"></textarea>
+            </div>
 
-                <div class="form-group">
-                    <label for="waktu" class="form-label">Waktu (1 Jam) *</label>
-                    <div class="input-with-icon">
-                        <select id="waktu" name="waktu" class="form-input" required>
-                            <option value="" disabled selected>Pilih waktu</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label for="topik" class="form-label">Topik Bimbingan *</label>
-                    <input type="text" id="topik" name="topik" class="form-input" placeholder="Masukkan topik bimbingan" required />
-                </div>
-
-                <div class="form-group">
-                    <label for="deskripsi" class="form-label">Deskripsi Topik (Opsional)</label>
-                    <textarea id="deskripsi" name="deskripsi" class="form-input" rows="4" placeholder="Masukkan deskripsi topik"></textarea>
-                </div>
-
-                <div class="form-actions" style="padding: 20px 0 0 0; border-top: 1px solid var(--border-light); display: flex; justify-content: center;">
-                    <button type="submit" class="btn-submit primary" style="width: 100%; max-width: 300px;">Kirim Request</button>
-                </div>
-            </form>
-        </div>
+            <div class="form-actions"
+                 style="padding: 20px 0 0 0; border-top: 1px solid var(--border-light); display: flex; justify-content: center;">
+                <button type="submit" class="btn-submit primary" style="width: 100%; max-width: 300px;">
+                    Kirim Request
+                </button>
+            </div>
+        </form>
     </div>
-</form>
-
+</div>
 
 <script>
-    function showNotification(message) {
-        const notification = document.getElementById('form-notification');
+    let availableSlots = [];
 
+    function showNotification(message, isError = true) {
+        const notification = document.getElementById('form-notification');
         if (notification) {
             notification.textContent = message;
             notification.classList.remove('hidden');
+            notification.style.backgroundColor = isError ? '#fee' : '#efe';
+            notification.style.color = isError ? '#c33' : '#3c3';
+            notification.style.border = isError ? '1px solid #fcc' : '1px solid #cfc';
+            notification.style.padding = '12px';
+            notification.style.borderRadius = '8px';
+            notification.style.marginBottom = '16px';
 
-            // Auto hide setelah 5 detik
             setTimeout(() => {
                 notification.classList.add('hidden');
             }, 5000);
@@ -206,7 +242,6 @@
         }
     }
 
-    // ===== POPUP FUNCTIONS =====
     function showPopup() {
         document.getElementById('popup-form').classList.remove('hidden');
         document.body.style.overflow = 'hidden';
@@ -216,139 +251,129 @@
         document.getElementById('popup-form').classList.add('hidden');
         document.body.style.overflow = '';
         hideNotification();
+
+        // Reset form dengan benar
+        const form = document.getElementById('bimbingan-form');
+        if (form) {
+            form.reset();
+        }
+        availableSlots = [];
+        document.getElementById('waktuSelesai').disabled = true;
     }
 
     // Close popup when clicking outside
-    document.getElementById('popup-form').addEventListener('click', function(e) {
+    document.getElementById('popup-form').addEventListener('click', function (e) {
         if (e.target === this) {
             closePopup();
         }
     });
 
     // Close popup with ESC key
-    document.addEventListener('keydown', function(e) {
+    document.addEventListener('keydown', function (e) {
         if (e.key === 'Escape') {
             closePopup();
         }
     });
 
-    // ===== FORM VALIDATION & SUBMIT =====
     function handleSubmit(event) {
         event.preventDefault();
-
-        // Hide notifikasi sebelumnya
         hideNotification();
 
-        // Cek checkbox dosen pembimbing
         const dosenSatu = document.getElementById('dosenSatu');
         const dosenDua = document.getElementById('dosenDua');
         const isDosen1Checked = dosenSatu ? dosenSatu.checked : false;
         const isDosen2Checked = dosenDua ? dosenDua.checked : false;
 
-        // Get form values
         const tanggal = document.getElementById('tanggal').value.trim();
-        const waktu = document.getElementById('waktu').value.trim();
+        const waktuMulai = document.getElementById('waktuMulai').value.trim();
+        const waktuSelesai = document.getElementById('waktuSelesai').value.trim();
         const topik = document.getElementById('topik').value.trim();
 
-        // Array untuk menampung field yang kosong
         const missingFields = [];
 
-        // Validasi setiap field
         if (!isDosen1Checked && !isDosen2Checked) {
             missingFields.push('Dosen Pembimbing');
         }
-
-        if (!tanggal) {
-            missingFields.push('Tanggal');
-        }
-
-        if (!waktu) {
-            missingFields.push('Waktu');
-        }
-
-        if (!topik) {
-            missingFields.push('Topik Bimbingan');
-        }
+        if (!tanggal) missingFields.push('Tanggal');
+        if (!waktuMulai) missingFields.push('Waktu Mulai');
+        if (!waktuSelesai) missingFields.push('Waktu Selesai');
+        if (!topik) missingFields.push('Topik Bimbingan');
 
         if (missingFields.length > 0) {
-            const message = `Mohon isi semua field penting: ${missingFields.join(', ')}`;
-            showNotification(message);
-
-            // Focus ke field pertama yang kosong
-            if (!isDosen1Checked && !isDosen2Checked) {
-                dosenSatu.focus();
-            } else if (!tanggal) {
-                document.getElementById('tanggal').focus();
-            } else if (!waktu) {
-                document.getElementById('waktu').focus();
-            } else if (!topik) {
-                document.getElementById('topik').focus();
-            }
-
+            const message = `Mohon isi semua field yang wajib: ${missingFields.join(', ')}`;
+            showNotification(message, true);
             return false;
         }
 
-        // Get form data lengkap
         const dosenIds = [];
-        if (isDosen1Checked) dosenIds.push(dosenSatu.value);
-        if (isDosen2Checked) dosenIds.push(dosenDua.value);
+        if (isDosen1Checked && dosenSatu) {
+            dosenIds.push(dosenSatu.value);
+        }
+        if (isDosen2Checked && dosenDua) {
+            dosenIds.push(dosenDua.value);
+        }
 
         const formData = {
             dosenIds: dosenIds,
             tanggal: tanggal,
-            waktu: waktu,
+            waktuMulai: waktuMulai,
+            waktuSelesai: waktuSelesai,
             topik: topik,
             deskripsi: document.getElementById('deskripsi').value.trim()
         };
 
-        console.log('Form submitted:', formData);
+        console.log('Mengirim data:', formData);
 
-        // TODO: Kirim data ke backend
-        // Kirim data ke backend
+        // Disable button saat mengirim
+        const submitBtn = event.target.querySelector('button[type="submit"]');
+        const originalText = submitBtn.textContent;
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Mengirim...';
+
         fetch('/mahasiswa/ajukan-bimbingan', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(formData)
         })
             .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert(data.message);
+            .then(response => {
+                if (response.success) {
+                    alert(response.message || 'Pengajuan bimbingan berhasil!');
                     closePopup();
-                    document.querySelector('.popup-form').reset();
                     location.reload();
                 } else {
-                    showNotification(data.message);
+                    showNotification(response.message || 'Gagal mengirim request', true);
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = originalText;
                 }
             })
-            .catch(error => {
-                console.error('Error:', error);
-                showNotification('Gagal mengirim request. Silakan coba lagi.');
+            .catch(err => {
+                console.error('Error:', err);
+                showNotification('Gagal mengirim request. Silakan coba lagi.', true);
+                submitBtn.disabled = false;
+                submitBtn.textContent = originalText;
             });
 
-        alert('Request bimbingan berhasil dikirim!');
-        closePopup();
-        document.querySelector('.popup-form').reset();
+
+        return false;
     }
 
     function checkAvailability() {
         const dosenSatu = document.getElementById('dosenSatu');
         const dosenDua = document.getElementById('dosenDua');
         const tanggal = document.getElementById('tanggal').value;
-        const waktuSelect = document.getElementById('waktu');
+        const waktuMulaiSelect = document.getElementById('waktuMulai');
+        const waktuSelesaiSelect = document.getElementById('waktuSelesai');
 
-        // Cek apakah minimal ada 1 dosen yang dipilih DAN tanggal sudah diisi
         const dosen1Checked = dosenSatu && dosenSatu.checked;
         const dosen2Checked = dosenDua && dosenDua.checked;
 
         if ((dosen1Checked || dosen2Checked) && tanggal) {
-            waktuSelect.innerHTML = '<option value="" disabled selected>Loading...</option>';
-
+            waktuMulaiSelect.innerHTML = '<option value="" disabled selected>Loading...</option>';
+            waktuSelesaiSelect.innerHTML = '<option value="" disabled selected>Pilih jam selesai</option>';
+            waktuSelesaiSelect.disabled = true;
 
             let url = `/mahasiswa/cek-slot-tersedia?tanggal=${tanggal}`;
-
             if (dosen1Checked) {
                 url += `&ids=${dosenSatu.value}`;
             }
@@ -359,26 +384,78 @@
             fetch(url)
                 .then(response => response.json())
                 .then(data => {
-                    waktuSelect.innerHTML = '<option value="" disabled selected>Pilih waktu</option>';
+                    data.sort();
+                    availableSlots = data;
+
+                    waktuMulaiSelect.innerHTML = '<option value="" disabled selected>Pilih jam mulai</option>';
+                    waktuMulaiSelect.value = "";
+                    waktuSelesaiSelect.innerHTML = '<option value="" disabled selected>Pilih jam selesai</option>';
+                    waktuSelesaiSelect.disabled = true;
 
                     if (data.length === 0) {
-                        waktuSelect.innerHTML = '<option value="" disabled>Jadwal Bentrok / Penuh</option>';
+                        waktuMulaiSelect.innerHTML = '<option value="" disabled>Jadwal Bentrok / Penuh</option>';
+                        showNotification('Tidak ada slot waktu yang tersedia untuk tanggal dan dosen yang dipilih', true);
                     } else {
                         data.forEach(waktu => {
                             const option = document.createElement('option');
-                            option.value = waktu.jam;
-                            option.text = waktu.tampilan;
-                            waktuSelect.appendChild(option);
+                            option.value = waktu;
+                            option.text = waktu;
+                            waktuMulaiSelect.appendChild(option);
                         });
                     }
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    waktuSelect.innerHTML = '<option value="" disabled selected>Error memuat</option>';
+                    waktuMulaiSelect.innerHTML = '<option value="" disabled>Error loading slots</option>';
+                    showNotification('Gagal memuat slot waktu. Silakan coba lagi.', true);
                 });
         } else {
-            waktuSelect.innerHTML = '<option value="" disabled selected>Pilih waktu</option>';
+            waktuMulaiSelect.innerHTML = '<option value="" disabled selected>Pilih jam mulai</option>';
+            waktuSelesaiSelect.innerHTML = '<option value="" disabled selected>Pilih jam selesai</option>';
+            waktuSelesaiSelect.disabled = true;
+            availableSlots = [];
         }
+    }
+
+    function updateWaktuSelesai() {
+        const waktuMulaiSelect = document.getElementById('waktuMulai');
+        const waktuSelesaiSelect = document.getElementById('waktuSelesai');
+        const selectedStartTime = waktuMulaiSelect.value;
+
+        waktuSelesaiSelect.innerHTML = '<option value="" disabled selected>Pilih jam selesai</option>';
+        waktuSelesaiSelect.disabled = true;
+
+        if (!selectedStartTime) return;
+
+        const startIndex = availableSlots.indexOf(selectedStartTime);
+        if (startIndex === -1) return;
+
+        const startHour = parseInt(selectedStartTime.split(":")[0]);
+
+        let clusterSize = 1;
+        let lastHour = startHour;
+
+        for (let i = startIndex + 1; i < availableSlots.length; i++) {
+            const slotHour = parseInt(availableSlots[i].split(":")[0]);
+            if (slotHour === lastHour + 1) {
+                clusterSize++;
+                lastHour = slotHour;
+            } else {
+                break;
+            }
+        }
+
+        const maxEndHour = startHour + clusterSize;
+
+        for (let h = startHour + 1; h <= maxEndHour; h++) {
+            const jamStr = (h < 10 ? "0" + h : h) + ":00";
+            const option = document.createElement('option');
+            option.value = jamStr;
+            option.text = jamStr;
+            waktuSelesaiSelect.appendChild(option);
+        }
+
+        waktuSelesaiSelect.disabled = false;
     }
 
     function submitWeekChange() {
@@ -388,30 +465,46 @@
         window.location.href = currentUrl.toString();
     }
 
-    const tanggalInput = document.getElementById('tanggal');
-    const dosenSatuInput = document.getElementById('dosenSatu');
-    const dosenDuaInput = document.getElementById('dosenDua');
-
-    if (tanggalInput) {
-        tanggalInput.addEventListener('change', checkAvailability);
-    }
-    if (dosenSatuInput) {
-        dosenSatuInput.addEventListener('change', checkAvailability);
-    }
-    if (dosenDuaInput) {
-        dosenDuaInput.addEventListener('change', checkAvailability);
-    }
-
-    const formInputs = ['dosenSatu', 'dosenDua', 'tanggal', 'waktu', 'topik'];
-    formInputs.forEach(inputId => {
-        const input = document.getElementById(inputId);
-        if (input) {
-            input.addEventListener('input', hideNotification);
-            input.addEventListener('change', hideNotification);
+    function openDatePicker() {
+        const dateInput = document.getElementById('tanggal');
+        if (dateInput) {
+            dateInput.showPicker();
         }
+    }
+
+    // Event listeners - dengan pengecekan null
+    document.addEventListener('DOMContentLoaded', function () {
+        const tanggalInput = document.getElementById('tanggal');
+        const dosenSatuInput = document.getElementById('dosenSatu');
+        const dosenDuaInput = document.getElementById('dosenDua');
+        const waktuMulaiInput = document.getElementById('waktuMulai');
+
+        if (tanggalInput) {
+            tanggalInput.addEventListener('change', checkAvailability);
+        }
+
+        if (dosenSatuInput) {
+            dosenSatuInput.addEventListener('change', checkAvailability);
+        }
+
+        if (dosenDuaInput) {
+            dosenDuaInput.addEventListener('change', checkAvailability);
+        }
+
+        if (waktuMulaiInput) {
+            waktuMulaiInput.addEventListener('change', updateWaktuSelesai);
+        }
+
+        // Hide notification on input
+        const formInputs = ['dosenSatu', 'dosenDua', 'tanggal', 'waktuMulai', 'waktuSelesai', 'topik', 'deskripsi'];
+        formInputs.forEach(inputId => {
+            const input = document.getElementById(inputId);
+            if (input) {
+                input.addEventListener('input', hideNotification);
+                input.addEventListener('change', hideNotification);
+            }
+        });
     });
 </script>
-
 </body>
-
 </html>

@@ -4,11 +4,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Date;
 import java.time.LocalDate;
-import java.util.*;
+import java.time.LocalTime;
+import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
@@ -107,6 +108,17 @@ public class JadwalJdbc implements JadwalRepository {
                 "WHERE b.idruangan = ? AND j.tanggal >= ? AND j.tanggal <= ? " +
                 "AND tb.statusbimbingan IN ('Terjadwalkan', 'Proses')"; // Filter status aktif
         return jdbcTemplate.query(sql, this::mapRowToJadwalWithStatus, idRuangan, startOfWeek, endOfWeek);
+    }
+
+    public int insertJadwal(LocalDate tanggal, LocalTime mulai, LocalTime selesai) {
+        String sql = """
+                    INSERT INTO Jadwal(tanggal, WaktuMulai, WaktuSelesai, berulang)
+                    VALUES (?, ?, ?, 0)
+                    RETURNING IdJadwal
+                """;
+
+        return jdbcTemplate.queryForObject(sql, Integer.class,
+                tanggal, mulai, selesai);
     }
 
     @Override

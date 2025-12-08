@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.IsoFields;
 import java.util.*;
@@ -164,10 +165,10 @@ public class JadwalService {
         return mapJadwal;
     }
 
-    public List<JamDTO> cariSlotGabungan(List<String> listIdDosen, String idMahasiswa, LocalDate tanggal) {
-        List<JamDTO> slotTersedia = new ArrayList<>();
+    public List<String> cariSlotGabungan(List<String> listIdDosen, String idMahasiswa, LocalDate tanggal) {
+        List<String> slotTersedia = new ArrayList<>();
         int jamMulaiKerja = 7;
-        int jamSelesaiKerja = 17;
+        int jamSelesaiKerja = 18;
 
         // 1. Ambil jadwal Mahasiswa (Pribadi + Bimbingan) hari itu
         // Menggunakan method findByWeekRange... dengan start & end date yang sama
@@ -183,7 +184,7 @@ public class JadwalService {
             listDosenBimbingan.add(jadwalRepository.findBimbinganByWeekRangePengguna(tanggal, tanggal, idDosen));
         }
 
-        // 3. Loop per jam (07:00 - 16:00)
+        // 3. Loop per jam (07:00 - 17:00)
         for (int jam = jamMulaiKerja; jam < jamSelesaiKerja; jam++) {
 
             // Cek apakah Mahasiswa sibuk?
@@ -203,14 +204,14 @@ public class JadwalService {
 
             // Jika semua aman, masukkan ke list
             if (semuaDosenBisa) {
-                String jamMulai = String.format("%02d:00", jam);
-                String jamSelesai = String.format("%02d:00", jam + 1);
-                slotTersedia.add(new JamDTO(jamMulai, jamMulai + " - " + jamSelesai));}
+                slotTersedia.add(String.format("%02d:00", jam));}
         }
 
         return slotTersedia;
     }
-
+    public int insertJadwal(LocalDate tanggal, LocalTime mulai, LocalTime selesai){
+        return jadwalRepository.insertJadwal(tanggal,mulai,selesai);
+    }
     /**
      * Helper untuk mengecek tabrakan jadwal
      */

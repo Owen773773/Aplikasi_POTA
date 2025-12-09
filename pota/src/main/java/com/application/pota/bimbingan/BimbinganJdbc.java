@@ -112,7 +112,6 @@ public class BimbinganJdbc implements BimbinganRepository {
     }
 
     private List<BimbinganSiapKirim> getBimbinganDosenByStatus(String tipeStatus, String idPengguna) {
-        // ... (sama seperti sebelumnya)
         String sql = """
                 SELECT 
                     b.IdBim,

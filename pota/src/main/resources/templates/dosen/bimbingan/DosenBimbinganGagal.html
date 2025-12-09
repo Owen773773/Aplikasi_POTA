@@ -70,11 +70,11 @@
             <div class="bimbingan-list">
 
                 <!-- Tempat buat nampilin Data -->
-                <div class="card">
+                <div class="card"  th:each="bimbingan : ${listBimbingan}" >
                     <div class="card-header">
-                        <span>10/10/2025 </span> <!-- Ini masih contoh data -->
-                        <span>10.00 - 11.00</span>
-                        <span>Ruang Tugas Akhir</span>
+                        <span th:text="${bimbingan.tanggal}">10/10/2025 </span> <!-- Ini masih contoh data -->
+                        <span th:text = "${bimbingan.Jam}">10.00</span>
+                        <span th:text="${bimbingan.namaLokasi}">Ruang Tugas Akhir</span>
                         <img src="/assets/icons/Arrow.svg" class="dropdown-btn">
                     </div>
 
@@ -84,26 +84,28 @@
                             <div class="containerItem">
                                 <div class="containerGrid">
                                     <p class="itemkiri">Tanggal</p>
-                                    <p class="itemkanan">: 10/10/2025</p>
+                                    <p class="itemkanan"  th:text="${bimbingan.tanggal}">: 10/10/2025</p>
                                     <p class="itemkiri">Jam</p>
-                                    <p class="itemkanan">: 10.00 - 11.00</p>
+                                    <p class="itemkanan" th:text="${bimbingan.Jam}">: 10.00 - 11.00</p>
                                     <p class="itemkiri">Durasi</p>
-                                    <p class="itemkanan">: 1 Jam</p>
+                                    <p class="itemkanan" th:text="${bimbingan.durasi}">: 1 Jam</p>
                                     <p class="itemkiri">Lokasi</p>
-                                    <p class="itemkanan">: Ruang Tugas Akhir</p>
+                                    <p class="itemkanan" th:text="${bimbingan.namaLokasi}">: Ruang Tugas Akhir</p>
                                     <p class="itemkiri">Dosen</p>
-                                    <p class="itemkanan">: Maria Veronica</p>
-                                    <p class="itemkiri">dosen</p>
-                                    <p class="itemkanan">: -</p>
+                                    <p class="itemkanan" th:text="${bimbingan.dosen}">: Maria Veronica</p>
+                                    <p class="itemkiri" >Mahasiswa</p>
+                                    <p class="itemkanan" th:each="mahasiswa : ${bimbingan.mahasiswa}">
+                                        : <span th:text="${mahasiswa}">-</span>
+                                    </p>
                                 </div>
 
                                 <div class="containerGrid2">
                                     <p class="itemkiri" style="grid-area: kiri1;">Topik</p>
-                                    <p class="itemkanan" style="grid-area: kanan1;">: Bimbingan Mingguan</p>
+                                    <p class="itemkanan" style="grid-area: kanan1;" th:text="${bimbingan.topik}">: Bimbingan Mingguan</p>
                                     <p class="itemkiri" style="grid-area: kiri2;">Deskripsi Topik</p>
-                                    <p class="itemkanan" style="grid-area: kanan2;">: -</p>
+                                    <p class="itemkanan" style="grid-area: kanan2;" th:text="${bimbingan.deskripsi}">: -</p>
                                     <textarea id="catatan" name="catatan" rows="4" cols="50"
-                                        placeholder="Catatan Bimbingan..." disabled style="grid-area: note;">Catatan bimbingan selesai...</textarea>
+                                              placeholder="Catatan Bimbingan..." disabled style="grid-area: note;">Catatan bimbingan selesai...</textarea>
                                 </div>
                             </div>
                         </div>

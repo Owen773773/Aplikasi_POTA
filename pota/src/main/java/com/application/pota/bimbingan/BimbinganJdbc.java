@@ -3,7 +3,6 @@ package com.application.pota.bimbingan;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
@@ -265,6 +264,20 @@ public class BimbinganJdbc implements BimbinganRepository {
         String sql = "SELECT IdTA FROM TopikBimbingan WHERE IdBim = ?";
         return jdbcTemplate.query(sql, (rs, rowNum) -> rs.getInt("IdTA"), idBim);
     }
+
+    @Override
+    public List<String> getListDosenByIdBim(int idBim) {
+        String sql = """
+        SELECT dp.IdDosen
+        FROM TopikBimbingan tb
+        JOIN Dosen_Pembimbing dp ON dp.idTA = tb.IdTA
+        WHERE tb.IdBim = ?
+    """;
+
+        return jdbcTemplate.query(sql, (rs, i) -> rs.getString("IdDosen"), idBim);
+    }
+
+
     @Override
     public void updateStatusMahasiswa(int idBim, String status) {
         String sql = """
@@ -329,8 +342,8 @@ public class BimbinganJdbc implements BimbinganRepository {
                 rs.getString("nama")
         );
     }
-
-    private List<String> getMahasiswaBimbingan(Integer idBim) {
+    @Override
+    public List<String> getMahasiswaBimbingan(Integer idBim) {
         String sql = """
                 SELECT DISTINCT p.nama
                 FROM TopikBimbingan tb

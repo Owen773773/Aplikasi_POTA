@@ -30,6 +30,9 @@ public interface BimbinganRepository {
 
     void updateStatusDosen1(int idBim, String status);
     void updateStatusDosen2(int idBim, String status);
+
+    List<String> getListDosenByIdBim(int idBim);
+    List<String> getMahasiswaBimbingan(Integer idBim);
     void updateStatusMahasiswa(int idBim, String status);
     void updateCatatanBimbingan(int idBim, String status);
     void updateStatusBimbingan(int idBim, String status) ;

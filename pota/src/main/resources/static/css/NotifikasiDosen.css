@@ -57,6 +57,8 @@ body {
   padding: 40px 50px;
   border-radius: 18px;
   box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    overflow-y: auto;
+
 }
 
 /* KARTU NOTIF */

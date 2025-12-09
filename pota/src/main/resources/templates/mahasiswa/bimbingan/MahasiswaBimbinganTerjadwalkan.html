@@ -7,6 +7,7 @@
     <title>POTA - Proses</title>
     <link rel="stylesheet" href="/css/Bimbingan.css">
     <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/StylePopup.css">
 </head>
 
 <body>
@@ -194,60 +195,6 @@
                 })
                 .catch(error => console.error('Error:', error));
         }
-
-        function terimaBimbingan(button) {
-            const idBim = button.getAttribute('data-id-bim');
-
-            if (confirm('Apakah Anda yakin ingin menerima bimbingan ini?')) {
-                fetch('/dosen/bimbingan/terima', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                    body: `idBim=${idBim}`
-                })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            alert(data.message);
-                            location.reload();
-                        } else {
-                            alert(data.message);
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        alert('Terjadi kesalahan saat memproses permintaan.');
-                    });
-            }
-        }
-
-        function tolakBimbingan(button) {
-            const idBim = button.getAttribute('data-id-bim');
-
-            const catatan = prompt('Masukkan alasan penolakan (opsional):');
-            if (catatan === null) return; // User cancelled
-
-            if (confirm('Apakah Anda yakin ingin menolak bimbingan ini?')) {
-                fetch('/dosen/bimbingan/tolak', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                    body: `idBim=${idBim}&catatan=${encodeURIComponent(catatan)}`
-                })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            alert(data.message);
-                            location.reload();
-                        } else {
-                            alert(data.message);
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        alert('Terjadi kesalahan saat memproses permintaan.');
-                    });
-            }
-        }
-
         function validasiBimbingan(button) {
             const idBim = button.getAttribute('data-id-bim');
 

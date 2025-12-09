@@ -11,4 +11,5 @@ public class DTOBimbinganDosen {
     private String waktuSelesai;
     private String topik;
     private String deskripsi;
+    private Integer idRuangan;
 }

@@ -9,6 +9,8 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import com.application.pota.bimbingan.*;
+import com.application.pota.ruangan.Ruangan;
+import com.application.pota.ruangan.RuanganService;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -19,7 +21,6 @@ import com.application.pota.jadwal.JadwalService;
 import com.application.pota.jadwal.SlotWaktu;
 import com.application.pota.notifikasi.Notifikasi;
 import com.application.pota.notifikasi.NotifikasiService;
-import com.fasterxml.jackson.annotation.JsonCreator.Mode;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -36,11 +37,14 @@ class DosenController {
     private  final BimbinganService bimbinganService;
     @Autowired
     private final NotifikasiService notifikasiService;
+    @Autowired
+    private final RuanganService ruanganService;
     
     @GetMapping({"/", ""})
     public String berandaDefault() {
         return beranda();
     }
+
     @GetMapping({"/bimbingan", "/bimbinganProses"})
     public String bimbinganDefault(HttpSession session, Model model) {
         String idPengguna = (String) session.getAttribute("idPengguna");
@@ -50,6 +54,11 @@ class DosenController {
                 bimbinganService.dapatkanBimbinganProses(tipeAkun, idPengguna);
 
         model.addAttribute("listBimbingan", listBimbingan);
+
+        // Tambahkan list ruangan untuk popup pilih lokasi
+        List<Ruangan> listRuangan = ruanganService.getAllRuang();
+        model.addAttribute("listRuangan", listRuangan);
+
         return "dosen/bimbingan/DosenBimbinganProses";
     }
 
@@ -92,10 +101,10 @@ class DosenController {
     public String beranda() {
         return "dosen/DashboardDosen";
     }
-    
+
     @GetMapping("/jadwal")
     public String dosenjadwal(@RequestParam(required = false) String week, HttpSession session,
-                                  Model model) {
+                              Model model) {
         String idPengguna = (String) session.getAttribute("idPengguna");
         if (week == null || week.isEmpty()) {
             LocalDate hariIni = LocalDate.now();
@@ -126,6 +135,9 @@ class DosenController {
         List<PilihanPengguna> pilihanMahasiwa = bimbinganService.getMahasiswaPilihan(idPengguna);
         model.addAttribute("listMahasiswa", pilihanMahasiwa);
 
+        // Tambahkan list ruangan untuk form pengajuan
+        List<Ruangan> listRuangan = ruanganService.getAllRuang();
+        model.addAttribute("listRuangan", listRuangan);
 
         return "dosen/DosenJadwal";
     }
@@ -152,29 +164,30 @@ class DosenController {
     }
 
 
-    @PostMapping("/ajukan-bimbingan")
-    @ResponseBody
-    public Map<String, Object> ajukanBimbingan(
-            @RequestBody DTOBimbinganDosen request,
-            HttpSession session) {
+//    @PostMapping("/ajukan-bimbingan")
+//    @ResponseBody
+//    public Map<String, Object> ajukanBimbingan(
+//            @RequestBody DTOBimbinganDosen request,
+//            HttpSession session) {
+//
+//
+//        String idPengguna = (String) session.getAttribute("idPengguna");
+//
+//
+//        // Parse input
+//        LocalDate tanggal = LocalDate.parse(request.getTanggal());
+//        LocalTime mulai = LocalTime.parse(request.getWaktuMulai());
+//        LocalTime selesai = LocalTime.parse(request.getWaktuSelesai());
+//
+//        bimbinganService.ajukanBimbinganDosen(idPengguna, request.getMahasiswaIds(), request.getTopik(), request.getDeskripsi(), tanggal, mulai, selesai, idRuangan);
+//
+//        Map<String, Object> response = new HashMap<>();
+//        response.put("success", true);
+//        response.put("message", "Pengajuan bimbingan berhasil!");
+//
+//        return response;
+//    }
 
-
-        String idPengguna = (String) session.getAttribute("idPengguna");
-
-
-        // Parse input
-        LocalDate tanggal = LocalDate.parse(request.getTanggal());
-        LocalTime mulai = LocalTime.parse(request.getWaktuMulai());
-        LocalTime selesai = LocalTime.parse(request.getWaktuSelesai());
-
-        bimbinganService.ajukanBimbinganDosen(idPengguna, request.getMahasiswaIds(), request.getTopik(), request.getDeskripsi(), tanggal, mulai, selesai);
-
-        Map<String, Object> response = new HashMap<>();
-        response.put("success", true);
-        response.put("message", "Pengajuan bimbingan berhasil!");
-
-        return response;
-    }
     private LocalDate hitungTanggalMulaiMinggu(int tahun, int minggu) {
         return LocalDate.of(tahun, 1, 1)
         .with(IsoFields.WEEK_OF_WEEK_BASED_YEAR, minggu)
@@ -349,5 +362,60 @@ class DosenController {
         response.put("peran", status.getPeranPengguna());
 
         return response;
+    }
+
+    @PostMapping("/ajukan-bimbingan")
+    @ResponseBody
+    public Map<String, Object> ajukanBimbingan(
+            @RequestBody DTOBimbinganDosen request,
+            HttpSession session) {
+
+        String idPengguna = (String) session.getAttribute("idPengguna");
+
+        // Parse input
+        LocalDate tanggal = LocalDate.parse(request.getTanggal());
+        LocalTime mulai = LocalTime.parse(request.getWaktuMulai());
+        LocalTime selesai = LocalTime.parse(request.getWaktuSelesai());
+        Integer idRuangan = request.getIdRuangan(); // Tambahkan parameter idRuangan
+
+        bimbinganService.ajukanBimbinganDosen(
+                idPengguna,
+                request.getMahasiswaIds(),
+                request.getTopik(),
+                request.getDeskripsi(),
+                tanggal,
+                mulai,
+                selesai,
+                idRuangan  // Pass idRuangan ke service
+        );
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("success", true);
+        response.put("message", "Pengajuan bimbingan berhasil!");
+
+        return response;
+    }
+
+    @GetMapping("/cek-ruangan-tersedia")
+    @ResponseBody
+    public List<Ruangan> getRuanganTersedia(
+            @RequestParam int idBim,
+            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate tanggal,
+            @RequestParam String jamMulai,
+            @RequestParam String jamSelesai,
+            HttpSession session) {
+
+        String idPengguna = (String) session.getAttribute("idPengguna");
+
+        if (idPengguna == null) {
+            return Collections.emptyList();
+        }
+
+        // Parse jam
+        LocalTime mulai = LocalTime.parse(jamMulai.replace(".", ":"));
+        LocalTime selesai = LocalTime.parse(jamSelesai.replace(".", ":"));
+
+        // Dapatkan ruangan yang tersedia untuk waktu tersebut
+        return jadwalService.cariRuanganTersedia(tanggal, mulai, selesai);
     }
 }

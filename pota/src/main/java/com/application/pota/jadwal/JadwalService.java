@@ -1,5 +1,7 @@
 package com.application.pota.jadwal;
 
+import com.application.pota.ruangan.Ruangan;
+import com.application.pota.ruangan.RuanganService;
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
 import org.springframework.stereotype.Service;
@@ -28,6 +30,7 @@ public class JadwalService {
 
     private final PembuatGridJadwal pembuatGridJadwal = new PembuatGridJadwal();
     private final JadwalRepository jadwalRepository;
+    private final RuanganService ruanganService;
 
     /**
      * Data jadwal dengan informasi tipe dan status
@@ -273,4 +276,68 @@ public class JadwalService {
 
         return headerMap;
     }
+
+    public List<Ruangan> cariRuanganTersedia(LocalDate tanggal, LocalTime mulai, LocalTime selesai) {
+
+        // 1. Ambil semua ruangan
+        List<Ruangan> semuaRuangan = ruanganService.getAllRuang();
+
+        // 2. Ambil semua jadwal ruangan pada tanggal tsb
+        Map<Integer, List<JadwalDenganTipe>> jadwalPerRuangan = new HashMap<>();
+
+        for (Ruangan r : semuaRuangan) {
+            List<Jadwal> pemblokiran = jadwalRepository.findByWeekRangeRuangan(
+                    tanggal, tanggal, r.getIdRuangan()
+            );
+
+            List<JadwalJdbc.JadwalWithStatus> bimbingan = jadwalRepository.findBimbinganByWeekRangeRuangan(
+                    tanggal, tanggal, r.getIdRuangan()
+            );
+
+            List<JadwalDenganTipe> daftar = new ArrayList<>();
+
+            for (Jadwal j : pemblokiran) {
+                daftar.add(new JadwalDenganTipe(j, "PEMBLOKIRAN", null));
+            }
+            for (JadwalJdbc.JadwalWithStatus jws : bimbingan) {
+                // abaikan yang gagal/dibatalkan
+                if (jws.getStatus() != null &&
+                        (jws.getStatus().equalsIgnoreCase("GAGAL") ||
+                                jws.getStatus().equalsIgnoreCase("DIBATALKAN"))) {
+                    continue;
+                }
+
+                daftar.add(new JadwalDenganTipe(jws.getJadwal(), "BIMBINGAN", jws.getStatus()));
+            }
+
+            jadwalPerRuangan.put(r.getIdRuangan(), daftar);
+        }
+
+        // 3. Filter ruangan yang bentrok
+        List<Ruangan> ruanganTersedia = new ArrayList<>();
+
+        for (Ruangan r : semuaRuangan) {
+            boolean bentrok = false;
+
+            List<JadwalDenganTipe> daftar = jadwalPerRuangan.get(r.getIdRuangan());
+
+            for (JadwalDenganTipe jdt : daftar) {
+                LocalTime m = jdt.getJadwal().getWaktuMulai().toLocalTime();
+                LocalTime s = jdt.getJadwal().getWaktuSelesai().toLocalTime();
+
+                // Cek overlap
+                if (!(selesai.isBefore(m) || mulai.isAfter(s))) {
+                    bentrok = true;
+                    break;
+                }
+            }
+
+            if (!bentrok) {
+                ruanganTersedia.add(r);
+            }
+        }
+
+        return ruanganTersedia;
+    }
+
 }

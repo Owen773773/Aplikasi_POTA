@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -146,7 +145,7 @@ public class BimbinganService {
                                      String deskripsi,
                                      LocalDate tanggal,
                                      LocalTime waktuMulai,
-                                     LocalTime waktuSelesai) {
+                                     LocalTime waktuSelesai, Integer idRuangan) {
         // Dapatkan ID semua tugas akhir
         List<Integer> idTA = new ArrayList<>();
         for(String idMahasiswa : ListMahasiswa) {
@@ -161,7 +160,7 @@ public class BimbinganService {
         bimbinganRepository.insertJadwalBimbingan(idJadwal);
 
         //Insert Bimbingan → ambil IdBim
-        int idBim = bimbinganRepository.insertBimbingan(deskripsi.isEmpty()?"-":deskripsi, topik, 1, null);
+        int idBim = bimbinganRepository.insertBimbingan(deskripsi.isEmpty()?"-":deskripsi, topik, 1, idRuangan);
 
         //Link Jadwal—Bimbingan
         bimbinganRepository.insertPenjadwalanBimbingan(idJadwal, idBim);
@@ -267,6 +266,11 @@ public class BimbinganService {
 
             default:
                 throw new IllegalArgumentException("Peran tidak valid: " + peran);
+        }
+        BimbinganDetailStatus temp = bimbinganRepository.getDetailStatusBimbingan(idBim);
+
+        if (temp.getStatusMhs().equals("Menyetujui")&&temp.getStatusDosen1().equals("Menyetujui")||temp.getStatusDosen1().equals("Menyetujui")) {
+            bimbinganRepository.updateStatusBimbingan(idBim, "Terjadwalkan");
         }
     }
 

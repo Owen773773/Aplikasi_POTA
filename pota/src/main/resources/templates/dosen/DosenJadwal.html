@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>POTA - Gagal</title>
+    <title>POTA - Jadwal</title>
     <link rel="stylesheet" href="/css/PengajuanBimbingan.css">
     <link rel="stylesheet" href="/css/style.css">
 </head>
@@ -145,7 +145,8 @@
                                        style="width: 20px; height: 20px; margin: 0;"
                                        th:id="'mhs_' + ${iter.index}"
                                        th:value="${mhs.idPengguna}"
-                                       name="mahasiswaIds">
+                                       name="mahasiswaIds"
+                                       onchange="checkAvailability()">
 
                                 <!-- Label -->
                                 <label th:for="'mhs_' + ${iter.index}"
@@ -156,8 +157,6 @@
                             </div>
                         </div>
 
-
-
                         <div class="form-group">
                             <label for="tanggal" class="form-label">Tanggal *</label>
                             <div class="input-with-icon" onclick="openDatePicker()">
@@ -166,6 +165,7 @@
                                        name="tanggal"
                                        class="form-input"
                                        placeholder="Pilih tanggal"
+                                       onchange="checkAvailability()"
                                        required/>
                             </div>
                         </div>
@@ -195,6 +195,20 @@
                                         </select>
                                     </div>
                                 </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="ruangan" class="form-label">Ruangan *</label>
+                            <div class="input-with-icon">
+                                <select id="ruangan" name="ruangan" class="form-input" required>
+                                    <option value="" disabled selected>Pilih ruangan</option>
+                                    <option th:each="ruang : ${listRuangan}"
+                                            th:value="${ruang.idRuangan}"
+                                            th:text="${ruang.namaRuangan}">
+                                        Ruang 101
+                                    </option>
+                                </select>
                             </div>
                         </div>
 
@@ -295,6 +309,7 @@
     function handleSubmit(event) {
         event.preventDefault();
         hideNotification();
+
         const mahasiswaCheckboxes = document.querySelectorAll('input[name="mahasiswaIds"]');
         let mahasiswaSelected = false;
 
@@ -307,22 +322,19 @@
             return false;
         }
 
-        const dosenSatu = document.getElementById('dosenSatu');
-        const dosenDua = document.getElementById('dosenDua');
-        const isDosen1Checked = dosenSatu ? dosenSatu.checked : false;
-        const isDosen2Checked = dosenDua ? dosenDua.checked : false;
-
         const tanggal = document.getElementById('tanggal').value.trim();
         const waktuMulai = document.getElementById('waktuMulai').value.trim();
         const waktuSelesai = document.getElementById('waktuSelesai').value.trim();
+        const ruangan = document.getElementById('ruangan').value.trim();
         const topik = document.getElementById('topik').value.trim();
+
+        const missingFields = [];
 
         if (!tanggal) missingFields.push('Tanggal');
         if (!waktuMulai) missingFields.push('Waktu Mulai');
         if (!waktuSelesai) missingFields.push('Waktu Selesai');
+        if (!ruangan) missingFields.push('Ruangan');
         if (!topik) missingFields.push('Topik Bimbingan');
-
-        const missingFields = [];
 
         if (missingFields.length > 0) {
             const message = `Mohon isi semua field yang wajib: ${missingFields.join(', ')}`;
@@ -334,12 +346,12 @@
             .filter(cb => cb.checked)
             .map(cb => cb.value);
 
-
         const formData = {
             mahasiswaIds: mahasiswaIds,
             tanggal: tanggal,
             waktuMulai: waktuMulai,
             waktuSelesai: waktuSelesai,
+            idRuangan: parseInt(ruangan),
             topik: topik,
             deskripsi: document.getElementById('deskripsi').value.trim()
         };
@@ -375,7 +387,6 @@
                 submitBtn.disabled = false;
                 submitBtn.textContent = originalText;
             });
-
 
         return false;
     }
@@ -440,7 +451,6 @@
             });
     }
 
-
     function updateWaktuSelesai() {
         const waktuMulaiSelect = document.getElementById('waktuMulai');
         const waktuSelesaiSelect = document.getElementById('waktuSelesai');
@@ -496,31 +506,16 @@
         }
     }
 
-    // Event listeners - dengan pengecekan null
+    // Event listeners
     document.addEventListener('DOMContentLoaded', function () {
-        const tanggalInput = document.getElementById('tanggal');
-        const dosenSatuInput = document.getElementById('dosenSatu');
-        const dosenDuaInput = document.getElementById('dosenDua');
         const waktuMulaiInput = document.getElementById('waktuMulai');
-
-        if (tanggalInput) {
-            tanggalInput.addEventListener('change', checkAvailability);
-        }
-
-        if (dosenSatuInput) {
-            dosenSatuInput.addEventListener('change', checkAvailability);
-        }
-
-        if (dosenDuaInput) {
-            dosenDuaInput.addEventListener('change', checkAvailability);
-        }
 
         if (waktuMulaiInput) {
             waktuMulaiInput.addEventListener('change', updateWaktuSelesai);
         }
 
         // Hide notification on input
-        const formInputs = ['dosenSatu', 'dosenDua', 'tanggal', 'waktuMulai', 'waktuSelesai', 'topik', 'deskripsi'];
+        const formInputs = ['tanggal', 'waktuMulai', 'waktuSelesai', 'ruangan', 'topik', 'deskripsi'];
         formInputs.forEach(inputId => {
             const input = document.getElementById(inputId);
             if (input) {

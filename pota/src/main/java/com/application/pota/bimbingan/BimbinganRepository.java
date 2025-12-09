@@ -28,4 +28,17 @@ public interface BimbinganRepository {
             String statusBimbingan
     );
 
+    void updateStatusDosen1(int idBim, String status);
+    void updateStatusDosen2(int idBim, String status);
+    void updateStatusMahasiswa(int idBim, String status);
+    void updateCatatanBimbingan(int idBim, String status);
+    void updateStatusBimbingan(int idBim, String status) ;
+
+    // Tambahkan di BimbinganRepository
+
+     BimbinganDetailStatus getDetailStatusBimbingan(int idBim) ;
+
+     List<Integer> getIdTaByIdBim(int idBim) ;
+
+
 }

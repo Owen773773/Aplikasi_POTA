@@ -88,6 +88,11 @@ public class TugasAkhirJdbc implements TugasAkhirRepository {
         }
         return profilMahasiswa;
     }
+    @Override
+    public String getIdMahasiswaByIdTa(int idTa) {
+        String sql = "SELECT IdMahasiswa FROM TugasAkhir WHERE IdTa = ?";
+        return jdbcTemplate.queryForObject(sql, String.class, idTa);
+    }
 
     @Override
     public List<Integer> getListIdTugasAkhir(String idPengguna) {

@@ -192,4 +192,181 @@ public class BimbinganService {
         // Kirim notifikasi ke dosen pembimbing
         notifikasiService.insertDosenNotifikasi(idPengguna, idNotif);
     }
+
+
+    public void validasiBimbingan(int idBim, String peran, String catatan) {
+
+        switch (peran.toLowerCase()) {
+            case "dosen1":
+                bimbinganRepository.updateStatusDosen1(idBim, "Tervalidasi");
+                break;
+
+            case "dosen2":
+                bimbinganRepository.updateStatusDosen2(idBim, "Tervalidasi");
+                break;
+
+            case "mahasiswa":
+                // Mahasiswa memvalidasi → bimbingan dianggap selesai
+                bimbinganRepository.updateStatusMahasiswa(idBim, "Tervalidasi");
+                bimbinganRepository.updateCatatanBimbingan(idBim,  catatan);
+                break;
+
+            default:
+                throw new IllegalArgumentException("Peran tidak valid: " + peran);
+        }
+    }
+    public String getPeranDalamTA(String idPengguna, int idTa) {
+        
+        String idMahasiswa = tugasAkhirService.getIdMahasiswaByIdTa(idTa);
+        if (idMahasiswa != null && idMahasiswa.equalsIgnoreCase(idPengguna)) {
+            return "mahasiswa";
+        }
+
+        List<PilihanPengguna> listDosen = bimbinganRepository.getDosenPembimbingPilihan(idTa);
+
+        if (idPengguna.equals(listDosen.get(0).getIdPengguna()))return "dosen1";
+        if (listDosen.size() >= 2 && idPengguna.equals(listDosen.get(1).getIdPengguna()))return "dosen2";
+
+        return "unknown";
+    }
+
+    public void batalkanBimbingan(int idBim, String peran, String catatan) {
+        bimbinganRepository.updateCatatanBimbingan(idBim, catatan);
+        bimbinganRepository.updateStatusBimbingan(idBim, "Gagal");
+        switch (peran.toLowerCase()) {
+            case "dosen1":
+                bimbinganRepository.updateStatusDosen1(idBim, "Dibatalkan");
+                break;
+
+            case "dosen2":
+                bimbinganRepository.updateStatusDosen2(idBim, "Dibatalkan");
+                break;
+
+            case "mahasiswa":
+                bimbinganRepository.updateStatusMahasiswa(idBim, "Dibatalkan");
+                break;
+
+            default:
+                throw new IllegalArgumentException("Peran tidak valid: " + peran);
+        }
+    }
+
+    public void terimaBimbingan(int idBim, String peran) {
+        switch (peran.toLowerCase()) {
+            case "dosen1":
+                bimbinganRepository.updateStatusDosen1(idBim, "Menyetujui");
+                break;
+
+            case "dosen2":
+                bimbinganRepository.updateStatusDosen2(idBim, "Menyetujui");
+                break;
+
+            case "mahasiswa":
+                bimbinganRepository.updateStatusMahasiswa(idBim, "Menyetujui");
+                break;
+
+            default:
+                throw new IllegalArgumentException("Peran tidak valid: " + peran);
+        }
+    }
+
+    public void tolakBimbingan(int idBim, String peran, String catatan) {
+        bimbinganRepository.updateCatatanBimbingan(idBim, catatan);
+        bimbinganRepository.updateStatusBimbingan(idBim, "Gagal");
+        switch (peran.toLowerCase()) {
+            case "dosen1":
+                bimbinganRepository.updateStatusDosen1(idBim, "Menolak");
+                break;
+
+            case "dosen2":
+                bimbinganRepository.updateStatusDosen2(idBim, "Menolak");
+                break;
+
+            case "mahasiswa":
+                bimbinganRepository.updateStatusMahasiswa(idBim, "Menolak");
+                break;
+
+            default:
+                throw new IllegalArgumentException("Peran tidak valid: " + peran);
+        }
+    }
+
+    // Tambahkan di BimbinganService.java
+
+    public BimbinganDetailStatus getDetailStatusBimbingan(int idBim, String idPengguna) {
+        BimbinganDetailStatus status = bimbinganRepository.getDetailStatusBimbingan(idBim);
+
+        // Tentukan peran user
+        List<Integer> idTaList = bimbinganRepository.getIdTaByIdBim(idBim);
+        String peran = "unknown";
+
+        for (int idTa : idTaList) {
+            String peranCheck = getPeranDalamTA(idPengguna, idTa);
+            if (!peranCheck.equals("unknown")) {
+                peran = peranCheck;
+                break;
+            }
+        }
+
+        status.setPeranPengguna(peran);
+        status.setIdPengguna(idPengguna);
+
+        return status;
+    }
+
+    public boolean bisaTerima(int idBim, String idPengguna) {
+        BimbinganDetailStatus status = getDetailStatusBimbingan(idBim, idPengguna);
+        String peran = status.getPeranPengguna();
+
+        switch (peran) {
+            case "mahasiswa":
+                return "Menunggu".equals(status.getStatusMhs());
+            case "dosen1":
+                return "Menunggu".equals(status.getStatusDosen1());
+            case "dosen2":
+                return status.getStatusDosen2() != null && "Menunggu".equals(status.getStatusDosen2());
+            default:
+                return false;
+        }
+    }
+
+    public boolean bisaValidasi(int idBim, String idPengguna) {
+        BimbinganDetailStatus status = getDetailStatusBimbingan(idBim, idPengguna);
+        String peran = status.getPeranPengguna();
+
+        if ("mahasiswa".equals(peran)) {
+            // Mahasiswa bisa validasi jika minimal salah satu dosen sudah validasi
+            boolean dosen1Valid = "Tervalidasi".equals(status.getStatusDosen1());
+            boolean dosen2Valid = status.getStatusDosen2() == null || "Tervalidasi".equals(status.getStatusDosen2());
+            return (dosen1Valid || dosen2Valid) && "Menyetujui".equals(status.getStatusMhs());
+        } else if ("dosen1".equals(peran)) {
+            return "Menyetujui".equals(status.getStatusDosen1());
+        } else if ("dosen2".equals(peran)) {
+            return status.getStatusDosen2() != null && "Menyetujui".equals(status.getStatusDosen2());
+        }
+
+        return false;
+    }
+
+    public boolean bisaTolak(int idBim, String idPengguna) {
+        return bisaTerima(idBim, idPengguna); // Sama dengan terima
+    }
+
+    public boolean bisaBatalkan(int idBim, String idPengguna) {
+        BimbinganDetailStatus status = getDetailStatusBimbingan(idBim, idPengguna);
+        String peran = status.getPeranPengguna();
+
+        // Bisa batalkan jika sudah menyetujui atau terjadwalkan
+        switch (peran) {
+            case "mahasiswa":
+                return "Menyetujui".equals(status.getStatusMhs()) || "Terjadwalkan".equals(status.getStatusBimbingan());
+            case "dosen1":
+                return "Menyetujui".equals(status.getStatusDosen1()) || "Terjadwalkan".equals(status.getStatusBimbingan());
+            case "dosen2":
+                return status.getStatusDosen2() != null &&
+                        ("Menyetujui".equals(status.getStatusDosen2()) || "Terjadwalkan".equals(status.getStatusBimbingan()));
+            default:
+                return false;
+        }
+    }
 }

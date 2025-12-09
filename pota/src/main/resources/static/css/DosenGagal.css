@@ -233,12 +233,15 @@ p#itemkiri {
 }
 
 .containerutama .containerGrid2 {
-  display: grid;
-  grid-template-areas: 
+    display: grid;
+    grid-template-columns: 0.3fr 1fr;
+    grid-template-areas:
     "kiri1 kanan1"
     "kiri2 kanan2"
     "note note";
+    gap: 8px;
 }
+
 
 .card.open .card-body {
   display: block;
@@ -252,6 +255,8 @@ p#itemkiri {
 textarea#catatan {
     resize: none;
     border: 2px solid #000000;
+    width: 100%;
+    grid-area: note;
 }
 
 /* BUTTONS */

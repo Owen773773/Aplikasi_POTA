@@ -105,8 +105,16 @@
                                 </div>
                             </div>
                             <div class="card-actions">
-                                <button class="btn reject">Tolak</button>
-                                <button class="btn accept">Terima</button>
+                                <button class="btn reject btn-tolak"
+                                        th:attr="data-id-bim=${bimbingan.idBimbingan}"
+                                        onclick="tolakBimbingan(this)">
+                                    Tolak
+                                </button>
+                                <button class="btn accept btn-terima"
+                                        th:attr="data-id-bim=${bimbingan.idBimbingan}"
+                                        onclick="terimaBimbingan(this)">
+                                    Terima
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -131,7 +139,171 @@
             }
         });
 
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.card').forEach(card => {
+                const idBim = card.querySelector('[data-id-bim]')?.getAttribute('data-id-bim');
+                if (idBim) {
+                    cekStatusTombol(idBim, card);
+                }
+            });
+        });
 
+        function cekStatusTombol(idBim, cardElement) {
+            fetch(`/dosen/bimbingan/cek-aksi?idBim=${idBim}`)
+                .then(response => response.json())
+                .then(data => {
+                    const btnTerima = cardElement.querySelector('.btn-terima');
+                    const btnTolak = cardElement.querySelector('.btn-tolak');
+                    const btnValidasi = cardElement.querySelector('.btn-validasi');
+                    const btnBatalkan = cardElement.querySelector('.btn-batalkan');
+
+                    // Disable/grey out tombol sesuai status
+                    if (btnTerima) {
+                        if (!data.bisaTerima || data.sudahTerima) {
+                            btnTerima.disabled = true;
+                            btnTerima.style.backgroundColor = 'var(--btn-grey-border)';
+                            btnTerima.style.cursor = 'not-allowed';
+                        }
+                    }
+
+                    if (btnTolak) {
+                        if (!data.bisaTolak) {
+                            btnTolak.disabled = true;
+                            btnTolak.style.backgroundColor = 'var(--btn-grey-border)';
+                            btnTolak.style.cursor = 'not-allowed';
+                        }
+                    }
+
+                    if (btnValidasi) {
+                        if (!data.bisaValidasi) {
+                            btnValidasi.disabled = true;
+                            btnValidasi.style.backgroundColor = 'var(--btn-grey-border)';
+                            btnValidasi.style.cursor = 'not-allowed';
+                        }
+                    }
+
+                    if (btnBatalkan) {
+                        if (!data.bisaBatalkan) {
+                            btnBatalkan.disabled = true;
+                            btnBatalkan.style.backgroundColor = 'var(--btn-grey-border)';
+                            btnBatalkan.style.cursor = 'not-allowed';
+                        }
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        function terimaBimbingan(button) {
+            const idBim = button.getAttribute('data-id-bim');
+
+            if (confirm('Apakah Anda yakin ingin menerima bimbingan ini?')) {
+                fetch('/dosen/bimbingan/terima', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: `idBim=${idBim}`
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert(data.message);
+                            location.reload();
+                        } else {
+                            alert(data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Terjadi kesalahan saat memproses permintaan.');
+                    });
+            }
+        }
+
+        function tolakBimbingan(button) {
+            const idBim = button.getAttribute('data-id-bim');
+
+            const catatan = prompt('Masukkan alasan penolakan (opsional):');
+            if (catatan === null) return; // User cancelled
+
+            if (confirm('Apakah Anda yakin ingin menolak bimbingan ini?')) {
+                fetch('/dosen/bimbingan/tolak', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: `idBim=${idBim}&catatan=${encodeURIComponent(catatan)}`
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert(data.message);
+                            location.reload();
+                        } else {
+                            alert(data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Terjadi kesalahan saat memproses permintaan.');
+                    });
+            }
+        }
+
+        function validasiBimbingan(button) {
+            const idBim = button.getAttribute('data-id-bim');
+
+            const catatan = prompt('Masukkan catatan validasi (opsional):');
+            if (catatan === null) return;
+
+            if (confirm('Apakah Anda yakin ingin memvalidasi bimbingan ini?')) {
+                fetch('/dosen/bimbingan/validasi', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: `idBim=${idBim}&catatan=${encodeURIComponent(catatan)}`
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert(data.message);
+                            location.reload();
+                        } else {
+                            alert(data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Terjadi kesalahan saat memproses permintaan.');
+                    });
+            }
+        }
+
+        function batalkanBimbingan(button) {
+            const idBim = button.getAttribute('data-id-bim');
+
+            const catatan = prompt('Masukkan alasan pembatalan:');
+            if (!catatan || catatan.trim() === '') {
+                alert('Alasan pembatalan wajib diisi!');
+                return;
+            }
+
+            if (confirm('Apakah Anda yakin ingin membatalkan bimbingan ini?')) {
+                fetch('/dosen/bimbingan/batalkan', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: `idBim=${idBim}&catatan=${encodeURIComponent(catatan)}`
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert(data.message);
+                            location.reload();
+                        } else {
+                            alert(data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Terjadi kesalahan saat memproses permintaan.');
+                    });
+            }
+        }
 
     </script>
 

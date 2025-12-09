@@ -5,7 +5,7 @@ import java.util.List;
 
 @Data
 public class DTOBimbinganDosen {
-    private List<String> mahasiswaIds; // Ubah dari dosenIds
+    private List<String> mahasiswaIds;
     private String tanggal;
     private String waktuMulai;
     private String waktuSelesai;

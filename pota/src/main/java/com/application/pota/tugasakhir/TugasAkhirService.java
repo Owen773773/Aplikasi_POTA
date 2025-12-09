@@ -20,4 +20,8 @@ public class TugasAkhirService {
     public List<Integer> getListIdTugasAkhir(String idPengguna) {
        return tugasAkhirRepository.getListIdTugasAkhir(idPengguna);
     }
+
+    public String getIdMahasiswaByIdTa(int idTa){
+        return tugasAkhirRepository.getIdMahasiswaByIdTa(idTa);
+    }
 }

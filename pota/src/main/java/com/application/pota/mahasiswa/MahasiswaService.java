@@ -48,4 +48,8 @@ public class MahasiswaService {
         data.setBimbinganMendatang(bimbingan);
         return data;
     }
+
+    public BimbinganSiapKirim getBimbinganMendatang(String idPengguna) {
+        return mahasiswaRepository.getBimbinganMendatang(idPengguna);
+    }
 }

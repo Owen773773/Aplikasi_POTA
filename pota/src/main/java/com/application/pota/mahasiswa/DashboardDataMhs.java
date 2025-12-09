@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DashboardDataMhs {
-     private String semesterAktif;
+    private String semesterAktif;
     private String tahapSkripsi;
     private String judulSkripsi;
     private String dosenPembimbing1;

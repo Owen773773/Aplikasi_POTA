@@ -1,3 +1,4 @@
+
 DROP SCHEMA public CASCADE;
 CREATE SCHEMA public;
 
@@ -391,4 +392,4 @@ VALUES (1, 1),
        (4, 4),
        (5, 5),
 	   (6,6),
-	   (7,7);
+	   (7,7);tugas

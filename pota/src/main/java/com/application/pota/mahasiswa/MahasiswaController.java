@@ -58,7 +58,10 @@ public class MahasiswaController {
         // Bimbingan bimbinganTerdekat = bimbinganService.getJadwalTerdekat(idPengguna);
         // model.addAttribute("bimbinganTerdekat", bimbinganTerdekat);
         DashboardDataMhs dashboardData = mahasiswaService.getDashboardData(idPengguna);
-        model.addAttribute("dashboard", dashboardData);
+        model.addAttribute("DashboardDataMhs", dashboardData);
+
+        BimbinganSiapKirim bimbinganMendatang = mahasiswaService.getBimbinganMendatang(idPengguna);
+        model.addAttribute("bimbinganMendatang", bimbinganMendatang);
         return "mahasiswa/DashboardMahasiswa";    
     }
     

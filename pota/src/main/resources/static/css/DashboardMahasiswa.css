@@ -213,7 +213,7 @@
 }
 
 .target-number {
-    font-size: 40px;
+    font-size: 40px; 
     font-weight: bold;
     margin: 5px 0;
     color: var(--primary);

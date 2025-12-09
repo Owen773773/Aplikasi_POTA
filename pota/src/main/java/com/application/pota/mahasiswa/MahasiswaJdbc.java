@@ -201,7 +201,6 @@ public class MahasiswaJdbc implements MahasiswaRepository {
             ORDER BY j.tanggal, j.WaktuMulai
             LIMIT 1
             """;
-        
         try {
             BimbinganSiapKirim bim = jdbcTemplate.queryForObject(query,this::mapRowToBimbinganSiapKirim, idMhs);
             ProfilMahasiswa profil = makeProfileByIdPengguna(idMhs);
@@ -219,6 +218,7 @@ public class MahasiswaJdbc implements MahasiswaRepository {
         bimbinganSiapKirim.setIdBimbingan(rs.getInt("IdBim"));
         bimbinganSiapKirim.setTopikBimbingan(rs.getString("TopikBim"));
         bimbinganSiapKirim.setDeskripsiBimbingan(rs.getString("DeskripsiBim"));
+        
         bimbinganSiapKirim.setTanggalBimbingan(rs.getDate("tanggal"));
         bimbinganSiapKirim.setWaktuMulai(rs.getTime("WaktuMulai"));
         bimbinganSiapKirim.setWaktuSelesai(rs.getTime("WaktuSelesai"));

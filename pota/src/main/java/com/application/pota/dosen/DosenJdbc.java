@@ -1,10 +1,12 @@
 package com.application.pota.dosen;
 
+import com.application.pota.bimbingan.BimbinganDosenDashboard;
 import lombok.RequiredArgsConstructor;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.util.List;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -39,7 +41,9 @@ public class DosenJdbc implements DosenRepository {
             SELECT ta.TanggalUTS
             FROM TugasAkhir ta
             JOIN Dosen_Pembimbing dp ON dp.idTA = ta.IdTa
-            WHERE dp.IdDosen = ?;
+            WHERE dp.IdDosen = ?
+            ORDER BY ta.TanggalUTS ASC
+            LIMIT 1;
         """;
 
         return jdbcTemplate.queryForObject(query, LocalDate.class, idPengguna);
@@ -49,9 +53,11 @@ public class DosenJdbc implements DosenRepository {
     public LocalDate getTanggalUasByIdPengguna(String idPengguna) {
         String query = """
             SELECT ta.TanggalUAS
-            FROM TugasAkhir ta
-            JOIN Dosen_Pembimbing dp ON dp.idTA = ta.IdTa
-            WHERE dp.IdDosen = ?;
+             FROM TugasAkhir ta
+             JOIN Dosen_Pembimbing dp ON dp.idTA = ta.IdTa
+             WHERE dp.IdDosen = ?
+             ORDER BY ta.TanggalUAS ASC
+             LIMIT 1;
         """;
 
         return jdbcTemplate.queryForObject(query, LocalDate.class, idPengguna);
@@ -121,5 +127,65 @@ public class DosenJdbc implements DosenRepository {
         """;
 
         return jdbcTemplate.queryForObject(query, Integer.class, idPengguna, tanggalAwalMasuk, tanggalUts);
+    }
+
+    @Override
+    public BimbinganDosenDashboard getBimbinganSaatIniByIdPengguna(String idPengguna) {
+        String query = """
+            SELECT
+                b.IdBim,
+                b.DeskripsiBim,
+                b.TopikBim,
+                j.tanggal,
+                j.WaktuMulai,
+                j.WaktuSelesai,
+                r.namaRuangan,
+        
+                STRING_AGG(DISTINCT p_dosen.nama, ', ') AS daftar_dosen,
+                STRING_AGG(DISTINCT p_mhs.nama, ', ') AS daftar_mahasiswa
+        
+            FROM PenjadwalanBimbingan pb
+            JOIN Jadwal j ON pb.IdJadwal = j.IdJadwal
+            JOIN Bimbingan b ON pb.IdBim = b.IdBim
+            LEFT JOIN Ruangan r ON b.idRuangan = r.idRuangan
+        
+            -- Mahasiswa
+            LEFT JOIN TopikBimbingan tb ON tb.IdBim = b.IdBim
+            LEFT JOIN TugasAkhir ta ON ta.IdTa = tb.IdTA
+            LEFT JOIN Mahasiswa m ON m.IdPengguna = ta.IdMahasiswa
+            LEFT JOIN Pengguna p_mhs ON p_mhs.IdPengguna = m.IdPengguna
+        
+            -- Dosen pembimbing
+            LEFT JOIN Dosen_Pembimbing dp ON dp.idTA = ta.IdTa
+            LEFT JOIN Dosen d ON d.IdPengguna = dp.IdDosen
+            LEFT JOIN Pengguna p_dosen ON p_dosen.IdPengguna = d.IdPengguna
+        
+            WHERE
+                j.tanggal = CURRENT_DATE
+                AND j.WaktuMulai >= CURRENT_TIME
+                AND p_dosen.IdPengguna = ?
+        
+            GROUP BY
+                b.IdBim, b.DeskripsiBim, b.TopikBim,
+                j.tanggal, j.WaktuMulai, j.WaktuSelesai,
+                r.namaRuangan
+        
+            ORDER BY j.WaktuMulai ASC
+            LIMIT 1;
+        """;
+
+        List<BimbinganDosenDashboard> currentBimb = jdbcTemplate.query(query, this::mapRowToBimbinganDashboard, idPengguna);
+        return currentBimb.stream().findFirst().orElse(null);
+    }
+
+    private BimbinganDosenDashboard mapRowToBimbinganDashboard(ResultSet rs, int rowNum) throws SQLException {
+        return new BimbinganDosenDashboard(
+            null,
+                rs.getTime("WaktuMulai"),
+                rs.getTime("WaktuSelesai"),
+                rs.getString("namaRuangan"),
+                rs.getString("daftar_dosen"),
+                rs.getString("daftar_mahasiswa")
+        );
     }
 }

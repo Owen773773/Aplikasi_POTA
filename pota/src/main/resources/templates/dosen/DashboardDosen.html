@@ -125,50 +125,51 @@
             <section class="card card-full">
                 <div id="header-bottom">
                     <h2>Bimbingan Saat ini</h2>
-                    <div class="clock">12:00</div>
+                    <div class="clock" th:if="${currentBimb != null}" th:text="${currentBimb.waktuMulai}">Waktu Mulai Placeholder</div>
+                    <div class="clock" th:unless="${currentBimb != null}">-</div>
                 </div>
 
-                <div class="bottom-grid">
+                <div class="bottom-grid" th:if="${currentBimb == null}">
+                    <p>Tidak ada bimbingan untuk saat ini</p>
+                </div>
+
+                <div class="bottom-grid" th:if="${currentBimb != null}">
                     <div class="bottom-info">
                         <div class="info-row">
                             <span class="info-label">Tanggal</span>
                             <span class="info-separator">:</span>
-                            <span class="info-value">10/8/2025</span>
+                            <span class="info-value" th:text="${currentBimb.DateNow}">Tanggal Placeholder</span>
                         </div>
 
                         <div class="info-row">
                             <span class="info-label">Jam</span>
                             <span class="info-separator">:</span>
-                            <span class="info-value">10 : 00 - 11 : 00</span>
+                            <span class="info-value" th:text="${currentBimb.waktuMulai + ' - ' + currentBimb.waktuSelesai}">Waktu Placeholder</span>
                         </div>
 
                         <div class="info-row">
                             <span class="info-label">Durasi</span>
                             <span class="info-separator">:</span>
-                            <span class="info-value">1 Jam</span>
+                            <span class="info-value" th:text="${durasiJam + ' jam'}">Durasi Placeholder</span>
                         </div>
 
                         <div class="info-row">
                             <span class="info-label">Lokasi</span>
                             <span class="info-separator">:</span>
-                            <span class="info-value">Ruang Tugas Akhir</span>
+                            <span class="info-value" th:text="${currentBimb.lokasi}">Lokasi Placeholder</span>
                         </div>
 
                         <div class="info-row">
                             <span class="info-label">Dosen</span>
                             <span class="info-separator">:</span>
-                            <span class="info-value">Maria Veronica</span>
+                            <span class="info-value" th:text="${currentBimb.dosen}">Dosen Placeholder</span>
                         </div>
 
                         <div class="info-row">
                             <span class="info-label">Mahasiswa</span>
                             <span class="info-separator">:</span>
                             <div class="info-value">
-                                <div class="mahasiswa-list">
-                                    <span>Budi Santoso (123456)</span>
-                                    <span>Ani Wijaya (123457)</span>
-                                    <span>Citra Lestari (123458)</span>
-                                </div>
+                                <div class="mahasiswa-list", th:text="${currentBimb.mahasiswa}">Mahasiswa Placeholder</div>
                             </div>
                         </div>
                     </div>

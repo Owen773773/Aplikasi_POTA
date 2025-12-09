@@ -1,5 +1,7 @@
 package com.application.pota.dosen;
 
+import com.application.pota.bimbingan.BimbinganDosenDashboard;
+import org.springframework.cglib.core.Local;
 import org.springframework.cglib.core.internal.LoadingCache;
 import org.springframework.stereotype.Service;
 
@@ -66,6 +68,16 @@ public class DosenService {
         }
         else {
             return dosenRepository.getJumlahMahasiswaMemenuhiTargetPraUTS(idPengguna, tanggalAwalMasuk, tanggalUts);
+        }
+    }
+
+    public BimbinganDosenDashboard getBimbinganSaatIni(String idPengguna) {
+        BimbinganDosenDashboard curBim = dosenRepository.getBimbinganSaatIniByIdPengguna(idPengguna);
+
+        if(curBim == null) return null;
+        else {
+            curBim.setDateNow(LocalDate.now());
+            return curBim;
         }
     }
 }

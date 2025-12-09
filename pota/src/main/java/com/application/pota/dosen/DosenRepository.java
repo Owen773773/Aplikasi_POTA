@@ -1,4 +1,5 @@
 package com.application.pota.dosen;
+import com.application.pota.bimbingan.BimbinganDosenDashboard;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
@@ -13,4 +14,5 @@ public interface DosenRepository {
     int getBanyakPengajuanByIdPengguna(String idPengguna);
     int getJumlahMahasiswaMemenuhiTargetPraUTS(String idPengguna, LocalDate tanggalUts, LocalDate tanggalUas);
     int getJumlahMahasiswaMemenuhiTargetPascaUTS(String idPengguna, LocalDate tanggalAwalMasuk, LocalDate tanggalUts);
+    BimbinganDosenDashboard getBimbinganSaatIniByIdPengguna(String idPengguna);
 }

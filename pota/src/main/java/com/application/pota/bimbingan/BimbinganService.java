@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -56,6 +57,10 @@ public class BimbinganService {
 
     public List<PilihanPengguna> getDosenPembimbingPilihan(int idTa) {
         return bimbinganRepository.getDosenPembimbingPilihan(idTa);
+    }
+
+    public List<PilihanPengguna> getMahasiswaPilihan(String idPengguna) {
+        return bimbinganRepository.getMahasiswaPilihan(idPengguna);
     }
 
     /**
@@ -127,7 +132,7 @@ public class BimbinganService {
                 "Proses"       // StatusBimbingan
         );
 
-        int idNotif = (int)notifikasiService.insertNotifikasi("Mengajukan");
+        int idNotif = (int)notifikasiService.insertNotifikasi("Menunggu");
 
         notifikasiService.insertMahasiswaNotifikasi(idMahasiswa, idNotif);
         notifikasiService.insertBimbinganNotifikasi(idNotif, idBim);
@@ -137,4 +142,54 @@ public class BimbinganService {
         }
     }
 
+    public void ajukanBimbinganDosen(String idPengguna, List<String> ListMahasiswa, String topik,
+                                     String deskripsi,
+                                     LocalDate tanggal,
+                                     LocalTime waktuMulai,
+                                     LocalTime waktuSelesai) {
+        // Dapatkan ID semua tugas akhir
+        List<Integer> idTA = new ArrayList<>();
+        for(String idMahasiswa : ListMahasiswa) {
+            idTA.add(tugasAkhirService.getIdTugasAkhir(idMahasiswa));
+        }
+
+
+        //Insert Jadwal → ambil IdJadwal
+        int idJadwal = jadwalService.insertJadwal(tanggal, waktuMulai, waktuSelesai);
+
+        // Insert ke Jadwal_Bimbingan
+        bimbinganRepository.insertJadwalBimbingan(idJadwal);
+
+        //Insert Bimbingan → ambil IdBim
+        int idBim = bimbinganRepository.insertBimbingan(deskripsi.isEmpty()?"-":deskripsi, topik, 1, null);
+
+        //Link Jadwal—Bimbingan
+        bimbinganRepository.insertPenjadwalanBimbingan(idJadwal, idBim);
+
+        for (int idTa : idTA) {
+            bimbinganRepository.insertTopikBimbingan(
+                    idBim,
+                    idTa,
+                    "Menunggu",  // StatusMhs
+                    "Menyetujui",    // StatusDosen1
+                    null,  // StatusDosen2
+                    "Proses"       // StatusBimbingan
+            );
+        }
+
+
+        // Insert Notifikasi
+        int idNotif = (int) notifikasiService.insertNotifikasi("Menunggu");
+
+        // Kirim notifikasi ke semua mahasiswa
+        for (String idMahasiswa : ListMahasiswa) {
+            notifikasiService.insertMahasiswaNotifikasi(idMahasiswa, idNotif);
+        }
+
+        // Link notifikasi dengan bimbingan
+        notifikasiService.insertBimbinganNotifikasi(idNotif, idBim);
+
+        // Kirim notifikasi ke dosen pembimbing
+        notifikasiService.insertDosenNotifikasi(idPengguna, idNotif);
+    }
 }

@@ -3,6 +3,8 @@ package com.application.pota.tugasakhir;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class TugasAkhirService {
 
@@ -13,5 +15,9 @@ public class TugasAkhirService {
 //    }
     public int getIdTugasAkhir(String idPengguna){
         return tugasAkhirRepository.getIdTugasAkhir(idPengguna);
+    }
+
+    public List<Integer> getListIdTugasAkhir(String idPengguna) {
+       return tugasAkhirRepository.getListIdTugasAkhir(idPengguna);
     }
 }

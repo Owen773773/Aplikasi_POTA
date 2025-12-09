@@ -89,6 +89,19 @@ public class TugasAkhirJdbc implements TugasAkhirRepository {
         return profilMahasiswa;
     }
 
+    @Override
+    public List<Integer> getListIdTugasAkhir(String idPengguna) {
+        String sql = """
+                SELECT ta.IdTa
+                FROM TugasAkhir ta
+                JOIN dosen_pembimbing dp ON dp.idta = ta.idta
+                WHERE dp.iddosen = ?
+                ORDER BY ta.IdTa DESC
+                """;
+
+        return jdbcTemplate.query(sql, (rs, rowNum) -> rs.getInt("IdTa"), idPengguna);
+    }
+
     private TugasAkhir mapRowToTugasAkhir(ResultSet rs, int rowNum) throws SQLException {
         TugasAkhir ta = new TugasAkhir();
         ta.setIdTa(rs.getInt("IdTa"));

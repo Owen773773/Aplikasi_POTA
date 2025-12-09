@@ -2,19 +2,18 @@ package com.application.pota.dosen;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.IsoFields;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
-import com.application.pota.bimbingan.BimbinganService;
-import com.application.pota.bimbingan.BimbinganSiapKirim;
+import com.application.pota.bimbingan.*;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import com.application.pota.jadwal.JadwalService;
 import com.application.pota.jadwal.SlotWaktu;
@@ -124,10 +123,58 @@ class DosenController {
         model.addAttribute("listHari", HariTanggal);
         model.addAttribute("timetable", timetableGrid);
 
+        List<PilihanPengguna> pilihanMahasiwa = bimbinganService.getMahasiswaPilihan(idPengguna);
+        model.addAttribute("listMahasiswa", pilihanMahasiwa);
+
 
         return "dosen/DosenJadwal";
     }
 
+    @GetMapping("/cek-slot-tersedia")
+    @ResponseBody
+    public List<String> getAvailableSlots(
+            @RequestParam("idMhs") List<String> listMahasiswa,
+            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate tanggal,
+            HttpSession session) {
+
+        String idPengguna = (String) session.getAttribute("idPengguna");
+        if (idPengguna == null) {
+            return Collections.emptyList();
+        }
+        //filter
+        List<String> mhsFiltered = listMahasiswa.stream()
+                .filter(Objects::nonNull)
+                .distinct()
+                .collect(Collectors.toList());
+
+        // Panggil service (gabungkan semua mahasiswa)
+        return jadwalService.cariSlotGabungan(mhsFiltered, idPengguna, tanggal);
+    }
+
+
+    @PostMapping("/ajukan-bimbingan")
+    @ResponseBody
+    public Map<String, Object> ajukanBimbingan(
+            @RequestBody DTOBimbinganDosen request,
+            HttpSession session) {
+
+
+        String idPengguna = (String) session.getAttribute("idPengguna");
+
+
+        // Parse input
+        LocalDate tanggal = LocalDate.parse(request.getTanggal());
+        LocalTime mulai = LocalTime.parse(request.getWaktuMulai());
+        LocalTime selesai = LocalTime.parse(request.getWaktuSelesai());
+
+        bimbinganService.ajukanBimbinganDosen(idPengguna, request.getMahasiswaIds(), request.getTopik(), request.getDeskripsi(), tanggal, mulai, selesai);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("success", true);
+        response.put("message", "Pengajuan bimbingan berhasil!");
+
+        return response;
+    }
     private LocalDate hitungTanggalMulaiMinggu(int tahun, int minggu) {
         return LocalDate.of(tahun, 1, 1)
         .with(IsoFields.WEEK_OF_WEEK_BASED_YEAR, minggu)

@@ -19,7 +19,6 @@ public interface BimbinganRepository {
     void insertPenjadwalanBimbingan(int idJadwal, int idBim);
 
     void insertJadwalBimbingan(int idJadwal);
-
     void insertTopikBimbingan(
             int idBim,
             int idTA,

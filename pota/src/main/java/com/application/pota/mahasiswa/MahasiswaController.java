@@ -12,6 +12,7 @@ import com.application.pota.notifikasi.NotifikasiService;
 import com.application.pota.tugasakhir.TugasAkhirService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -152,7 +153,7 @@ public class MahasiswaController {
     @ResponseBody
     public List<String> getAvailableSlots(
             @RequestParam("ids") List<String> listIdDosen, // List String
-            @RequestParam @org.springframework.format.annotation.DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate tanggal,
+            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate tanggal,
             HttpSession session) {
 
         String idPengguna = (String) session.getAttribute("idPengguna");
@@ -161,7 +162,7 @@ public class MahasiswaController {
             return java.util.Collections.emptyList();
         }
 
-        // Filter null dan duplikat
+        // Filter
         List<String> dosenFixed = listIdDosen.stream()
                 .filter(java.util.Objects::nonNull)
                 .distinct()

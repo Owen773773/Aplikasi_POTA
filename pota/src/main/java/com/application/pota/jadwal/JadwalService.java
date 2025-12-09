@@ -165,50 +165,63 @@ public class JadwalService {
         return mapJadwal;
     }
 
-    public List<String> cariSlotGabungan(List<String> listIdDosen, String idMahasiswa, LocalDate tanggal) {
+    public List<String> cariSlotGabungan(
+            List<String> listIdIndividu,   // Pengguna lain yang ikut dicek
+            String idIndividuUtama,        // Pengguna yang sedang login
+            LocalDate tanggal) {
+
         List<String> slotTersedia = new ArrayList<>();
         int jamMulaiKerja = 7;
         int jamSelesaiKerja = 18;
 
-        // 1. Ambil jadwal Mahasiswa (Pribadi + Bimbingan) hari itu
-        // Menggunakan method findByWeekRange... dengan start & end date yang sama
-        List<Jadwal> mhsPribadi = jadwalRepository.findByWeekRangePengguna(tanggal, tanggal, idMahasiswa);
-        List<JadwalJdbc.JadwalWithStatus> mhsBimbingan = jadwalRepository.findBimbinganByWeekRangePengguna(tanggal, tanggal, idMahasiswa);
+        // 1. Ambil jadwal individu utama (misalnya mahasiswa)
+        List<Jadwal> utamaPribadi =
+                jadwalRepository.findByWeekRangePengguna(tanggal, tanggal, idIndividuUtama);
 
-        // 2. Ambil jadwal Dosen (Pribadi + Bimbingan) hari itu
-        List<List<Jadwal>> listDosenPribadi = new ArrayList<>();
-        List<List<JadwalJdbc.JadwalWithStatus>> listDosenBimbingan = new ArrayList<>();
+        List<JadwalJdbc.JadwalWithStatus> utamaBimbingan =
+                jadwalRepository.findBimbinganByWeekRangePengguna(tanggal, tanggal, idIndividuUtama);
 
-        for (String idDosen : listIdDosen) {
-            listDosenPribadi.add(jadwalRepository.findByWeekRangePengguna(tanggal, tanggal, idDosen));
-            listDosenBimbingan.add(jadwalRepository.findBimbinganByWeekRangePengguna(tanggal, tanggal, idDosen));
+
+        // 2. Ambil jadwal semua individu di list
+        List<List<Jadwal>> listPribadi = new ArrayList<>();
+        List<List<JadwalJdbc.JadwalWithStatus>> listBimbingan = new ArrayList<>();
+
+        for (String idIndividu : listIdIndividu) {
+            listPribadi.add(
+                    jadwalRepository.findByWeekRangePengguna(tanggal, tanggal, idIndividu)
+            );
+            listBimbingan.add(
+                    jadwalRepository.findBimbinganByWeekRangePengguna(tanggal, tanggal, idIndividu)
+            );
         }
 
-        // 3. Loop per jam (07:00 - 17:00)
+
+        // 3. Loop 07.00 – 17.00 (1 jam)
         for (int jam = jamMulaiKerja; jam < jamSelesaiKerja; jam++) {
 
-            // Cek apakah Mahasiswa sibuk?
-            if (isSibuk(jam, mhsPribadi, mhsBimbingan)) {
-                continue; // Skip, mahasiswa sibuk
+            // Cek apakah individu utama sibuk?
+            if (isSibuk(jam, utamaPribadi, utamaBimbingan)) {
+                continue;
             }
 
-            // Cek apakah SEMUA Dosen bisa?
-            boolean semuaDosenBisa = true;
-            for (int i = 0; i < listIdDosen.size(); i++) {
-                // Cek dosen ke-i
-                if (isSibuk(jam, listDosenPribadi.get(i), listDosenBimbingan.get(i))) {
-                    semuaDosenBisa = false;
-                    break; // Salah satu dosen sibuk, jam ini hangus
+            // Cek apakah SEMUA individu lain tidak sibuk
+            boolean semuaBisa = true;
+
+            for (int i = 0; i < listIdIndividu.size(); i++) {
+                if (isSibuk(jam, listPribadi.get(i), listBimbingan.get(i))) {
+                    semuaBisa = false;
+                    break;
                 }
             }
 
-            // Jika semua aman, masukkan ke list
-            if (semuaDosenBisa) {
-                slotTersedia.add(String.format("%02d:00", jam));}
+            if (semuaBisa) {
+                slotTersedia.add(String.format("%02d:00", jam));
+            }
         }
 
         return slotTersedia;
     }
+
     public int insertJadwal(LocalDate tanggal, LocalTime mulai, LocalTime selesai){
         return jadwalRepository.insertJadwal(tanggal,mulai,selesai);
     }

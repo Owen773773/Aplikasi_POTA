@@ -49,13 +49,18 @@ public class MahasiswaController {
     //     return "mahasiswa/DashboardMahasiswa";
     // }
     @GetMapping("/beranda")
-    public String beranda(HttpSession session, Model model) {
+    public String beranda(HttpSession session, Model model) {        
         String idPengguna = (String) session.getAttribute("idPengguna");
         if (idPengguna == null) {
-            return "redirect:/login";
+            return "redirect:/login"; 
         }
         // Bimbingan bimbinganTerdekat = bimbinganService.getJadwalTerdekat(idPengguna);
         // model.addAttribute("bimbinganTerdekat", bimbinganTerdekat);
+        DashboardDataMhs dashboardData = mahasiswaService.getDashboardData(idPengguna);
+        model.addAttribute("DashboardDataMhs", dashboardData);
+
+        BimbinganSiapKirim bimbinganMendatang = mahasiswaService.getBimbinganMendatang(idPengguna);
+        model.addAttribute("bimbinganMendatang", bimbinganMendatang);
         return "mahasiswa/DashboardMahasiswa";
     }
 

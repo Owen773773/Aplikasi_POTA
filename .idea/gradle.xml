@@ -6,7 +6,8 @@
       <GradleProjectSettings>
         <option name="distributionType" value="LOCAL" />
         <option name="externalProjectPath" value="$PROJECT_DIR$/pota" />
-        <option name="gradleJvm" value="17" />
+        <option name="gradleHome" value="C:\Gradle\gradle-9.2.0" />
+        <option name="gradleJvm" value="21" />
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$/pota" />

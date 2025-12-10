@@ -4,7 +4,11 @@
     <CLASSES>
       <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.springframework/spring-beans/6.2.12/3f344e97550207fac50a5b3376cc9e59ecb02df/spring-beans-6.2.12.jar!/" />
     </CLASSES>
-    <JAVADOC />
-    <SOURCES />
+    <JAVADOC>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.springframework/spring-beans/6.2.12/49a79a26d417a45ab46159bfd07936c858babcf0/spring-beans-6.2.12-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.springframework/spring-beans/6.2.12/bbf09f118ef42a1c29448bb36c3a6529a7774791/spring-beans-6.2.12-sources.jar!/" />
+    </SOURCES>
   </library>
 </component>

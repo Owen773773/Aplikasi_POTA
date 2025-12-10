@@ -15,17 +15,17 @@ public class NotifikasiController {
     @Autowired
     private NotifikasiService notifikasiService;
 
-    @GetMapping("/username") //
-    public String showNotificationByUsername(@RequestParam String username, Model model){
-        List<Notifikasi> listNotif = notifikasiService.getNotifikasiInAppByUsername(username);
-        model.addAttribute("daftarNotifikasi", listNotif); //th each
-        return "notifikasi"; 
-    }
-    @GetMapping("/id") //
-    public String showNotificationByIdUser(@RequestParam String idUser, Model model){
-        List<Notifikasi> listNotif = notifikasiService.getNotifikasiInAppByIdUser(idUser);
-        model.addAttribute("daftarNotifikasi", listNotif); //th each
-        return "notifikasi"; 
-    }
+    // @GetMapping("/username") //
+    // public String showNotificationByUsername(@RequestParam String username, Model model){
+    //     List<Notifikasi> listNotif = notifikasiService.getNotifikasiInAppByUsername(username);
+    //     model.addAttribute("daftarNotifikasi", listNotif); //th each
+    //     return "notifikasi"; 
+    // }
+    // @GetMapping("/id") //
+    // public String showNotificationByIdUser(@RequestParam String idUser, Model model){
+    //     List<Notifikasi> listNotif = notifikasiService.getNotifikasiInAppByIdUser(idUser);
+    //     model.addAttribute("daftarNotifikasi", listNotif); //th each
+    //     return "notifikasi"; 
+    // }
     
 }

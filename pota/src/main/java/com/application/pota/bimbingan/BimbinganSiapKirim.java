@@ -109,4 +109,11 @@ public class BimbinganSiapKirim {
     public String getDeskripsi() {
         return deskripsiBimbingan != null ? deskripsiBimbingan : "-";
     }
+
+    public String getDosenLengkap() {
+        if (DosenBimbingan2 == null || DosenBimbingan2.isEmpty()) {
+            return DosenBimbingan1;
+        }
+        return DosenBimbingan1 + ", " + DosenBimbingan2;
+    }
 }

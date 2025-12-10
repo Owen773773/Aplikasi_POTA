@@ -2,5 +2,10 @@
 <project version="4">
   <component name="DataSourcePerFileMappings">
     <file url="file://$APPLICATION_CONFIG_DIR$/consoles/db/bd5973d4-3ab7-4829-9bfd-41551a20ded7/console.sql" value="bd5973d4-3ab7-4829-9bfd-41551a20ded7" />
+    <file url="file://$PROJECT_DIR$/Data/potaDB.sql" value="bd5973d4-3ab7-4829-9bfd-41551a20ded7" />
+    <file url="file://$PROJECT_DIR$/pota/src/main/java/com/application/pota/bimbingan/BimbinganJdbc.java" value="bd5973d4-3ab7-4829-9bfd-41551a20ded7" />
+    <file url="file://$PROJECT_DIR$/pota/src/main/java/com/application/pota/jadwal/JadwalJdbc.java" value="bd5973d4-3ab7-4829-9bfd-41551a20ded7" />
+    <file url="file://$PROJECT_DIR$/pota/src/main/java/com/application/pota/mahasiswa/MahasiswaJdbc.java" value="bd5973d4-3ab7-4829-9bfd-41551a20ded7" />
+    <file url="file://$PROJECT_DIR$/pota/src/main/java/com/application/pota/tugasakhir/TugasAkhirJdbc.java" value="bd5973d4-3ab7-4829-9bfd-41551a20ded7" />
   </component>
 </project>

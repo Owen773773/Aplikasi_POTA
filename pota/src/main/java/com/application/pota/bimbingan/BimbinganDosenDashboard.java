@@ -19,4 +19,5 @@ public class BimbinganDosenDashboard {
     private String lokasi;
     private String dosen    ;
     private String mahasiswa;
+    private int idbim;
 }

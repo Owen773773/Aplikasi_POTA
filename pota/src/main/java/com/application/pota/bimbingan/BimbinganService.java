@@ -232,17 +232,32 @@ public class BimbinganService {
     public void batalkanBimbingan(int idBim, String peran, String catatan) {
         bimbinganRepository.updateCatatanBimbingan(idBim, catatan);
         bimbinganRepository.updateStatusBimbingan(idBim, "Gagal");
+
+        List<String> dosenList = bimbinganRepository.getListDosenByIdBim(idBim);
+        int idNotifikasi = notifikasiService.insertNotifikasi("Ditolak");
+        List<String> listMahasiswa = bimbinganRepository.getMahasiswaBimbingan(idBim);
+
         switch (peran.toLowerCase()) {
             case "dosen1":
                 bimbinganRepository.updateStatusDosen1(idBim, "Dibatalkan");
+                for(String mhs:listMahasiswa){
+                    notifikasiService.insertMahasiswaNotifikasi(mhs,idNotifikasi);
+                }
                 break;
 
             case "dosen2":
                 bimbinganRepository.updateStatusDosen2(idBim, "Dibatalkan");
+                for(String mhs:listMahasiswa){
+                    notifikasiService.insertMahasiswaNotifikasi(mhs,idNotifikasi);
+                }
                 break;
 
             case "mahasiswa":
                 bimbinganRepository.updateStatusMahasiswa(idBim, "Dibatalkan");
+                notifikasiService.insertDosenNotifikasi(dosenList.get(0),idNotifikasi);
+                if (dosenList.size() > 1) {
+                    notifikasiService.insertDosenNotifikasi(dosenList.get(1),idNotifikasi);
+                }
                 break;
 
             default:
@@ -251,17 +266,30 @@ public class BimbinganService {
     }
 
     public void terimaBimbingan(int idBim, String peran) {
+        List<String> dosenList = bimbinganRepository.getListDosenByIdBim(idBim);
+        int notifikasi = notifikasiService.insertNotifikasi("Menerima");
+        List<String> listMahasiswa = bimbinganRepository.getMahasiswaBimbingan(idBim);
         switch (peran.toLowerCase()) {
             case "dosen1":
                 bimbinganRepository.updateStatusDosen1(idBim, "Menyetujui");
+                for(String mhs:listMahasiswa){
+                    notifikasiService.insertMahasiswaNotifikasi(mhs,notifikasi);
+                }
                 break;
 
             case "dosen2":
                 bimbinganRepository.updateStatusDosen2(idBim, "Menyetujui");
+                for(String mhs:listMahasiswa){
+                    notifikasiService.insertMahasiswaNotifikasi(mhs,notifikasi);
+                }
                 break;
 
             case "mahasiswa":
                 bimbinganRepository.updateStatusMahasiswa(idBim, "Menyetujui");
+                notifikasiService.insertDosenNotifikasi(dosenList.get(0),notifikasi);
+                if (dosenList.size() > 1) {
+                    notifikasiService.insertDosenNotifikasi(dosenList.get(1),notifikasi);
+                }
                 break;
 
             default:
@@ -279,26 +307,31 @@ public class BimbinganService {
         bimbinganRepository.updateStatusBimbingan(idBim, "Gagal");
         List<String> dosenList = bimbinganRepository.getListDosenByIdBim(idBim);
         int idNotifikasi = notifikasiService.insertNotifikasi("Ditolak");
+        List<String> listMahasiswa = bimbinganRepository.getMahasiswaBimbingan(idBim);
+
         switch (peran.toLowerCase()) {
             case "dosen1":
                 bimbinganRepository.updateStatusDosen1(idBim, "Menolak");
+                for(String mhs:listMahasiswa){
+                    notifikasiService.insertMahasiswaNotifikasi(mhs,idNotifikasi);
+                }
                 notifikasiService.insertDosenNotifikasi(dosenList.get(0),idNotifikasi);
                 break;
 
             case "dosen2":
                 bimbinganRepository.updateStatusDosen2(idBim, "Menolak");
-                notifikasiService.insertDosenNotifikasi(dosenList.get(0),idNotifikasi);
-                if (dosenList.size() > 1) {
-                    notifikasiService.insertDosenNotifikasi(dosenList.get(1),idNotifikasi);
+                for(String mhs:listMahasiswa){
+                    notifikasiService.insertMahasiswaNotifikasi(mhs,idNotifikasi);
                 }
+
                 break;
 
             case "mahasiswa":
                 bimbinganRepository.updateStatusMahasiswa(idBim, "Menolak");
-                List<String> listMahasiswa = bimbinganRepository.getMahasiswaBimbingan(idBim);
-               for(String mhs:listMahasiswa){
-                   notifikasiService.insertMahasiswaNotifikasi(mhs,idNotifikasi);
-               }
+                notifikasiService.insertDosenNotifikasi(dosenList.get(0),idNotifikasi);
+                if (dosenList.size() > 1) {
+                    notifikasiService.insertDosenNotifikasi(dosenList.get(1),idNotifikasi);
+                }
                 break;
 
             default:
@@ -306,7 +339,6 @@ public class BimbinganService {
         }
     }
 
-    // Tambahkan di BimbinganService.java
 
     public BimbinganDetailStatus getDetailStatusBimbingan(int idBim, String idPengguna) {
         BimbinganDetailStatus status = bimbinganRepository.getDetailStatusBimbingan(idBim);
@@ -370,8 +402,6 @@ public class BimbinganService {
     public boolean bisaBatalkan(int idBim, String idPengguna) {
         BimbinganDetailStatus status = getDetailStatusBimbingan(idBim, idPengguna);
         String peran = status.getPeranPengguna();
-
-        // Bisa batalkan jika sudah menyetujui atau terjadwalkan
         switch (peran) {
             case "mahasiswa":
                 return "Menyetujui".equals(status.getStatusMhs()) || "Terjadwalkan".equals(status.getStatusBimbingan());

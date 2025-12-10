@@ -33,6 +33,7 @@ public class TugasAkhirJdbc implements TugasAkhirRepository {
             JOIN Pengguna p ON dp.IdDosen = p.IdPengguna 
             WHERE dp.idTA = ?
         """;
+        
         List<String> listDosen = jdbcTemplate.queryForList(sql2, String.class, profilMahasiswa.getIdTa());
         
         if (listDosen.size() > 1) {

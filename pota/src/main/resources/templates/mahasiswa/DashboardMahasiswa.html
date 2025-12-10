@@ -67,27 +67,27 @@
             <section class="card card-full">
                 <h2>Progress Bimbingan</h2>
 
-                <div class="ringkasan-grid">
+                <div class="ringkasan-grid" th:object="${DashboardDataMhs}">
                     <div class="ringkasan-info">
-                        <p>Semester Aktif : <b>Ganjil 2025/2026</b></p>
-                        <p>Tahap Skripsi : <b>Tugas Akhir II (TA 2)</b></p>
-                        <p>Judul Skripsi : <b>Si Pemulai Kecoa berbasis AI</b></p>
-                        <p>mahasiswa Pembimbing 1 : <b>Maria Veronica</b></p>
-                        <p>mahasiswa Pembimbing 2 : <b>-</b></p>
+                        <p>Semester Aktif : <b><span th:text="*{semesterAktif}">Semester Aktif</span></b></p>
+                        <p>Tahap Skripsi : <b><span th:text="*{tahapSkripsi}">tahap</span></b><p>
+                        <p>Judul Skripsi : <b><span th:text="*{judulSkripsi}">judul</span></b></p>
+                        <p>Dosen Pembimbing 1 : <b><span th:text="*{dosenPembimbing1}"> </span></b></p>
+                        <p>Dosen Pembimbing 2 : <b><span th:text="*{dosenPembimbing2}"> </span></b></p>
                     </div>
 
                     <div class="target-box">
                         <h3>Sesi Pra - UTS</h3>
-                        <div class="target-number">2</div>
+                        <div class="target-number" th:text="*{sesiPraUTS}"> </div>
                         <p>Total Sesi</p>
-                        <span>Target: 2</span>
+                        <span>Target:<span th:text="*{targetPraUTS}"></span> </span>
                     </div>
 
                     <div class="target-box">
                         <h3>Sesi Pasca - UTS</h3>
-                        <div class="target-number">0</div>
+                        <div class="target-number" th:text="*{sesiPascaUTS}"></div>
                         <p>Total Sesi</p>
-                        <span>Target: 3</span>
+                        <span>Target: <span th:text="*{targetPascaUTS}"></span>
                     </div>
                 </div>
             </section>
@@ -96,58 +96,61 @@
             <section class="card card-full">
                 <div id="header-bottom">
                     <h2>Bimbingan Mendatang</h2>
-                    <div class="clock">
-                        <img src="/assets/icons/Jam.svg" alt=""> 12:00
-                    </div>
                 </div>
 
-                <div class="bottom-grid">
+                <div class="bottom-grid" th:if="${bimbinganMendatang != null}">
                     <div class="bottom-info">
                         <div class="info-row">
                             <span class="info-label">Tanggal</span>
                             <span class="info-separator">:</span>
-                            <span class="info-value">10/8/2025</span>
+                            <span class="info-value" th:text="${bimbinganMendatang.tanggal}">tgl</span>
                         </div>
 
                         <div class="info-row">
                             <span class="info-label">Jam</span>
                             <span class="info-separator">:</span>
-                            <span class="info-value">10 : 00 - 11 : 00</span>
+                            <span class="info-value" th:text="${bimbinganMendatang.jam}">jam</span>
                         </div>
 
                         <div class="info-row">
                             <span class="info-label">Durasi</span>
                             <span class="info-separator">:</span>
-                            <span class="info-value">1 Jam</span>
+                            <span class="info-value" th:text="${bimbinganMendatang.durasi}"> Jam</span>
                         </div>
 
                         <div class="info-row">
                             <span class="info-label">Lokasi</span>
                             <span class="info-separator">:</span>
-                            <span class="info-value">Ruang Tugas Akhir</span>
+                            <span class="info-value" th:text="${bimbinganMendatang.namaLokasi}">lokasi</span>
                         </div>
 
                         <div class="info-row">
-                            <span class="info-label">mahasiswa</span>
+                            <span class="info-label">Dosen</span>
                             <span class="info-separator">:</span>
-                            <span class="info-value">Maria Veronica</span>
+                            <span class="info-value" th:text="${bimbinganMendatang.dosen}">dosen</span>
                         </div>
 
                         <div class="info-row">
-                            <span class="info-label">mahasiswa</span>
+                            <span class="info-label">Mahasiswa</span>
                             <span class="info-separator">:</span>
-                            <span class="info-value">-</span>
+                            <span class="info-value" th:text="${bimbinganMendatang.mahasiswa.isEmpty() ? '-' : #strings.listJoin(bimbinganMendatang.mahasiswa, ', ')}">-</span>
                         </div>
                     </div>
 
                     <div class="bottom-right">
-                        <textarea placeholder="Catatan:"></textarea>
+                        <textarea placeholder="Catatan:" th:text="${bimbinganMendatang.deskripsi}"></textarea>
 
                         <div class="bottom-buttons">
                             <button class="btn-grey">VALIDASI</button>
                             <button class="btn-red">Batalkan Bimbingan</button>
                         </div>
                     </div>
+                </div>
+
+                <div class="bottom-grid" th:if="${bimbinganMendatang == null}">
+                    <p style="text-align: center; padding: 20px; color: #666;">
+                        Tidak ada bimbingan mendatang yang terjadwalkan.
+                    </p>
                 </div>
             </section>
 

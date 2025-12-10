@@ -104,7 +104,7 @@
 
                     <div class="mid-content">
                         <span class="target-number" th:text="${nPengajuan}">Banyak Pengajuan Placeholder</span>
-                        <button class="mid-btn">Lihat Detail</button>
+                        <a class="mid-btn" href="/dosen/bimbingan">Lihat Detail</a>
                     </div>
                 </div>
 
@@ -115,7 +115,7 @@
 
                     <div class="mid-content">
                         <span class="target-number" th:text="${currentBimbingan}">Bimbingan Hari Ini Placeholder</span>
-                        <button class="mid-btn">Lihat Detail</button>
+                        <a href="/dosen/bimbinganTerjadwal" class="mid-btn">Lihat Detail</a>
                     </div>
                 </div>
 
@@ -125,15 +125,17 @@
             <section class="card card-full">
                 <div id="header-bottom">
                     <h2>Bimbingan Saat ini</h2>
-                    <div class="clock" th:if="${currentBimb != null}" th:text="${currentBimb.waktuMulai}">Waktu Mulai Placeholder</div>
-                    <div class="clock" th:unless="${currentBimb != null}">-</div>
+                    <!-- Perbaikan: gunakan adaBimbingan untuk cek, bukan currentBimb -->
+<!--                    <div class="clock" th:if="${adaBimbingan}" th:text="${waktuMulai}">Waktu Mulai Placeholder</div>-->
+<!--                    <div class="clock" th:unless="${adaBimbingan}">-</div>-->
                 </div>
 
-                <div class="bottom-grid" th:if="${currentBimb == null}">
+                <!-- Perbaikan: gunakan adaBimbingan untuk konsistensi -->
+                <div class="bottom-grid" th:unless="${adaBimbingan}">
                     <p>Tidak ada bimbingan untuk saat ini</p>
                 </div>
 
-                <div class="bottom-grid" th:if="${currentBimb != null}">
+                <div class="bottom-grid" th:if="${adaBimbingan}">
                     <div class="bottom-info">
                         <div class="info-row">
                             <span class="info-label">Tanggal</span>
@@ -144,7 +146,7 @@
                         <div class="info-row">
                             <span class="info-label">Jam</span>
                             <span class="info-separator">:</span>
-                            <span class="info-value" th:text="${currentBimb.waktuMulai + ' - ' + currentBimb.waktuSelesai}">Waktu Placeholder</span>
+                            <span class="info-value" th:text="${waktuMulai + ' - ' + waktuSelesai}">Waktu Placeholder</span>
                         </div>
 
                         <div class="info-row">
@@ -169,7 +171,7 @@
                             <span class="info-label">Mahasiswa</span>
                             <span class="info-separator">:</span>
                             <div class="info-value">
-                                <div class="mahasiswa-list", th:text="${currentBimb.mahasiswa}">Mahasiswa Placeholder</div>
+                                <div class="mahasiswa-list" th:text="${currentBimb.mahasiswa}">Mahasiswa Placeholder</div>
                             </div>
                         </div>
                     </div>

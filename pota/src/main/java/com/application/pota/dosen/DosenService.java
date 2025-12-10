@@ -80,4 +80,11 @@ public class DosenService {
             return curBim;
         }
     }
+
+    public LocalDate getTanggalUtsByIdPengguna(String idPengguna){
+        return  dosenRepository.getTanggalUtsByIdPengguna(idPengguna);
+    };
+    public LocalDate getTanggalUasByIdPengguna(String idPengguna){
+        return  dosenRepository.getTanggalUasByIdPengguna(idPengguna);
+    };
 }

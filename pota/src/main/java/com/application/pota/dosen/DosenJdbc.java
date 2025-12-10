@@ -36,6 +36,7 @@ public class DosenJdbc implements DosenRepository {
         return profilDosen;
     }
 
+    @Override
     public LocalDate getTanggalUtsByIdPengguna(String idPengguna) {
         String query = """
             SELECT ta.TanggalUTS
@@ -46,8 +47,13 @@ public class DosenJdbc implements DosenRepository {
             LIMIT 1;
         """;
 
-        return jdbcTemplate.queryForObject(query, LocalDate.class, idPengguna);
-    }
+        try {
+            return jdbcTemplate.queryForObject(query, LocalDate.class, idPengguna);
+        } catch (Exception e) {
+            // Dosen belum punya mahasiswa yang dibimbing
+            System.err.println("Warning: Dosen " + idPengguna + " belum memiliki mahasiswa dengan tanggal UAS");
+            return null;
+        }}
 
     @Override
     public LocalDate getTanggalUasByIdPengguna(String idPengguna) {
@@ -60,8 +66,13 @@ public class DosenJdbc implements DosenRepository {
              LIMIT 1;
         """;
 
-        return jdbcTemplate.queryForObject(query, LocalDate.class, idPengguna);
-    }
+        try {
+            return jdbcTemplate.queryForObject(query, LocalDate.class, idPengguna);
+        } catch (Exception e) {
+            // Dosen belum punya mahasiswa yang dibimbing
+            System.err.println("Warning: Dosen " + idPengguna + " belum memiliki mahasiswa dengan tanggal UTS");
+            return null;
+        }}
 
     public int getBanyakMahasiswaByIdPengguna(String idPengguna) {
         String query = """

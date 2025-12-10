@@ -1,30 +1,27 @@
 package com.application.pota.mahasiswa;
 
 
-import com.application.pota.bimbingan.Bimbingan;
-
-import com.application.pota.bimbingan.BimbinganService;
-import com.application.pota.bimbingan.BimbinganSiapKirim;
-
+import com.application.pota.bimbingan.*;
 import com.application.pota.jadwal.JadwalService;
 import com.application.pota.jadwal.SlotWaktu;
+import com.application.pota.notifikasi.Notifikasi;
+import com.application.pota.notifikasi.NotifikasiService;
+import com.application.pota.tugasakhir.TugasAkhirService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.IsoFields;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import com.application.pota.notifikasi.NotifikasiService;
-import com.application.pota.notifikasi.Notifikasi; 
 
 @Controller
 @RequestMapping("/mahasiswa")
@@ -39,6 +36,8 @@ public class MahasiswaController {
 
     @Autowired
     private NotifikasiService notifikasiService;
+    @Autowired
+    private TugasAkhirService tugasAkhirService;
 
     @GetMapping({"/", ""})
     public String berandaDefault() {
@@ -62,9 +61,9 @@ public class MahasiswaController {
 
         BimbinganSiapKirim bimbinganMendatang = mahasiswaService.getBimbinganMendatang(idPengguna);
         model.addAttribute("bimbinganMendatang", bimbinganMendatang);
-        return "mahasiswa/DashboardMahasiswa";    
+        return "mahasiswa/DashboardMahasiswa";
     }
-    
+
 
     @GetMapping({"/bimbingan", "/bimbinganProses"})
     public String bimbinganDefault(HttpSession session, Model model) {
@@ -144,7 +143,58 @@ public class MahasiswaController {
         model.addAttribute("listHari", HariTanggal);
         model.addAttribute("timetable", timetableGrid);
 
+        int idTA = tugasAkhirService.getIdTugasAkhir(idPengguna);
+        List<PilihanPengguna> pilihanDosen = bimbinganService.getDosenPembimbingPilihan(idTA);
+        model.addAttribute("dosenSatu", pilihanDosen.get(0));
+        model.addAttribute("dosenDua", pilihanDosen.size() > 1 ? pilihanDosen.get(1) : null);
+
         return "mahasiswa/MahasiswaJadwal";
+    }
+
+    @GetMapping("/cek-slot-tersedia")
+    @ResponseBody
+    public List<String> getAvailableSlots(
+            @RequestParam("ids") List<String> listIdDosen, // List String
+            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate tanggal,
+            HttpSession session) {
+
+        String idPengguna = (String) session.getAttribute("idPengguna");
+
+        if (idPengguna == null) {
+            return java.util.Collections.emptyList();
+        }
+
+        // Filter
+        List<String> dosenFixed = listIdDosen.stream()
+                .filter(java.util.Objects::nonNull)
+                .distinct()
+                .collect(java.util.stream.Collectors.toList());
+
+        return jadwalService.cariSlotGabungan(dosenFixed, idPengguna, tanggal);
+    }
+
+    @PostMapping("/ajukan-bimbingan")
+    @ResponseBody
+    public Map<String, Object> ajukanBimbingan(
+            @RequestBody DTOBimbinganMahasiswa request,
+            HttpSession session) {
+
+
+        String idPengguna = (String) session.getAttribute("idPengguna");
+
+
+        // Parse input
+        LocalDate tanggal = LocalDate.parse(request.getTanggal());
+        LocalTime mulai = LocalTime.parse(request.getWaktuMulai());
+        LocalTime selesai = LocalTime.parse(request.getWaktuSelesai());
+
+        bimbinganService.ajukanBimbinganMahasiswa(idPengguna, request.getDosenIds(), request.getTopik(), request.getDeskripsi(), tanggal, mulai, selesai);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("success", true);
+        response.put("message", "Pengajuan bimbingan berhasil!");
+
+        return response;
     }
 
     private LocalDate hitungTanggalMulaiMinggu(int tahun, int minggu) {
@@ -155,14 +205,14 @@ public class MahasiswaController {
 
     @GetMapping("/profil")
     public String profil(Model model, HttpSession session) {
-        String id = (String)session.getAttribute("idPengguna");
+        String id = (String) session.getAttribute("idPengguna");
         ProfilMahasiswa profilMahasiswa = mahasiswaService.makeProfile(id);
 
         model.addAttribute("nama", profilMahasiswa.getNama());
         model.addAttribute("npm", profilMahasiswa.getNpm());
         model.addAttribute("peran", profilMahasiswa.getPeran());
         model.addAttribute("dospem1", profilMahasiswa.getDosen1());
-        model.addAttribute("dospem2 ", profilMahasiswa.getDosen2() == null? "-" : profilMahasiswa.getDosen2());
+        model.addAttribute("dospem2 ", profilMahasiswa.getDosen2() == null ? "-" : profilMahasiswa.getDosen2());
         model.addAttribute("pra", profilMahasiswa.getTotBimPra());
         model.addAttribute("pasca", profilMahasiswa.getTotBimPas());
         model.addAttribute("syarat", profilMahasiswa.getSyaratKelayakan());
@@ -172,10 +222,160 @@ public class MahasiswaController {
 
     @GetMapping("/notifikasi")
     public String notifkasi(Model model, HttpSession session) {
-        String id = (String)session.getAttribute("idPengguna");
+        String id = (String) session.getAttribute("idPengguna");
         String idPengguna = (String) session.getAttribute("idPengguna");
         List<Notifikasi> listNotif = notifikasiService.getNotifikasiInAppByIdUser(idPengguna);
         model.addAttribute("daftarNotifikasi", listNotif);
         return "mahasiswa/NotifikasiMahasiswa";
+    }
+
+    // Tambahkan di DosenController.java (buat juga untuk MahasiswaController)
+
+    @PostMapping("/bimbingan/terima")
+    @ResponseBody
+    public Map<String, Object> terimaBimbingan(
+            @RequestParam int idBim,
+            HttpSession session) {
+
+        Map<String, Object> response = new HashMap<>();
+
+        try {
+            String idPengguna = (String) session.getAttribute("idPengguna");
+
+            if (!bimbinganService.bisaTerima(idBim, idPengguna)) {
+                response.put("success", false);
+                response.put("message", "Anda tidak dapat menerima bimbingan ini.");
+                return response;
+            }
+
+            BimbinganDetailStatus status = bimbinganService.getDetailStatusBimbingan(idBim, idPengguna);
+            bimbinganService.terimaBimbingan(idBim, status.getPeranPengguna());
+
+            response.put("success", true);
+            response.put("message", "Bimbingan berhasil diterima!");
+
+        } catch (Exception e) {
+            response.put("success", false);
+            response.put("message", "Terjadi kesalahan: " + e.getMessage());
+        }
+
+        return response;
+    }
+
+    @PostMapping("/bimbingan/tolak")
+    @ResponseBody
+    public Map<String, Object> tolakBimbingan(
+            @RequestParam int idBim,
+            @RequestParam(required = false) String catatan,
+            HttpSession session) {
+
+        Map<String, Object> response = new HashMap<>();
+
+        try {
+            String idPengguna = (String) session.getAttribute("idPengguna");
+
+            if (!bimbinganService.bisaTolak(idBim, idPengguna)) {
+                response.put("success", false);
+                response.put("message", "Anda tidak dapat menolak bimbingan ini.");
+                return response;
+            }
+
+            BimbinganDetailStatus status = bimbinganService.getDetailStatusBimbingan(idBim, idPengguna);
+            bimbinganService.tolakBimbingan(idBim, status.getPeranPengguna(), catatan != null ? catatan : "-");
+
+            response.put("success", true);
+            response.put("message", "Bimbingan berhasil ditolak.");
+
+        } catch (Exception e) {
+            response.put("success", false);
+            response.put("message", "Terjadi kesalahan: " + e.getMessage());
+        }
+
+        return response;
+    }
+
+    @PostMapping("/bimbingan/validasi")
+    @ResponseBody
+    public Map<String, Object> validasiBimbingan(
+            @RequestParam int idBim,
+            @RequestParam(required = false) String catatan,
+            HttpSession session) {
+
+        Map<String, Object> response = new HashMap<>();
+
+        try {
+            String idPengguna = (String) session.getAttribute("idPengguna");
+
+            if (!bimbinganService.bisaValidasi(idBim, idPengguna)) {
+                response.put("success", false);
+                response.put("message", "Anda belum dapat memvalidasi bimbingan ini. Pastikan minimal satu dosen sudah memvalidasi.");
+                return response;
+            }
+
+            BimbinganDetailStatus status = bimbinganService.getDetailStatusBimbingan(idBim, idPengguna);
+            bimbinganService.validasiBimbingan(idBim, status.getPeranPengguna(), catatan != null ? catatan : "-");
+
+            response.put("success", true);
+            response.put("message", "Bimbingan berhasil divalidasi!");
+
+        } catch (Exception e) {
+            response.put("success", false);
+            response.put("message", "Terjadi kesalahan: " + e.getMessage());
+        }
+
+        return response;
+    }
+
+    @PostMapping("/bimbingan/batalkan")
+    @ResponseBody
+    public Map<String, Object> batalkanBimbingan(
+            @RequestParam int idBim,
+            @RequestParam(required = false) String catatan,
+            HttpSession session) {
+
+        Map<String, Object> response = new HashMap<>();
+
+        try {
+            String idPengguna = (String) session.getAttribute("idPengguna");
+
+            if (!bimbinganService.bisaBatalkan(idBim, idPengguna)) {
+                response.put("success", false);
+                response.put("message", "Anda tidak dapat membatalkan bimbingan ini.");
+                return response;
+            }
+
+            BimbinganDetailStatus status = bimbinganService.getDetailStatusBimbingan(idBim, idPengguna);
+            bimbinganService.batalkanBimbingan(idBim, status.getPeranPengguna(), catatan != null ? catatan : "-");
+
+            response.put("success", true);
+            response.put("message", "Bimbingan berhasil dibatalkan.");
+
+        } catch (Exception e) {
+            response.put("success", false);
+            response.put("message", "Terjadi kesalahan: " + e.getMessage());
+        }
+
+        return response;
+    }
+
+    @GetMapping("/bimbingan/cek-aksi")
+    @ResponseBody
+    public Map<String, Object> cekAksiTersedia(
+            @RequestParam int idBim,
+            HttpSession session) {
+
+        Map<String, Object> response = new HashMap<>();
+        String idPengguna = (String) session.getAttribute("idPengguna");
+
+        BimbinganDetailStatus status = bimbinganService.getDetailStatusBimbingan(idBim, idPengguna);
+
+        response.put("bisaTerima", bimbinganService.bisaTerima(idBim, idPengguna));
+        response.put("bisaTolak", bimbinganService.bisaTolak(idBim, idPengguna));
+        response.put("bisaValidasi", bimbinganService.bisaValidasi(idBim, idPengguna));
+        response.put("bisaBatalkan", bimbinganService.bisaBatalkan(idBim, idPengguna));
+        response.put("sudahTerima", status.isSudahTerima());
+        response.put("peran", status.getPeranPengguna());
+
+        return response;
     }
 }

@@ -193,6 +193,7 @@ body {
     display: flex;
     flex-direction: column;
     position: relative;
+    overflow-y: hidden;
 }
 
 .page-title {
@@ -395,7 +396,6 @@ body {
     width: 90%;
     max-width: 500px;
     max-height: 90vh;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
     overflow: hidden;
     display: flex;
     flex-direction: column;

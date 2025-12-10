@@ -1,47 +1,37 @@
 package com.application.pota.jadwal;
 
+import com.application.pota.ruangan.Ruangan;
+import com.application.pota.ruangan.RuanganService;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
 import org.springframework.stereotype.Service;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.IsoFields;
 import java.util.*;
 
-/**
- * Service untuk mengelola jadwal dan membuat timetable
- *
- * ALUR KERJA:
- * 1. Terima parameter minggu (string) dan ID target (pengguna/ruangan)
- * 2. Konversi minggu ke range tanggal (Senin-Jumat)
- * 3. Ambil data jadwal dari database
- * 4. Kelompokkan jadwal per hari
- * 5. Buat grid timetable (baris=jam, kolom=hari)
- * 6. Return data lengkap (grid + header tanggal)
- */
 @Service
 @RequiredArgsConstructor
 public class JadwalService {
 
     private final PembuatGridJadwal pembuatGridJadwal = new PembuatGridJadwal();
     private final JadwalRepository jadwalRepository;
+    private final RuanganService ruanganService;
 
-    /**
-     * Data jadwal dengan informasi tipe dan status
-     */
-    @lombok.Data
-    @lombok.AllArgsConstructor
+
+    @Data
+    @AllArgsConstructor
     public static class JadwalDenganTipe {
         private Jadwal jadwal;
-        private String tipe; // "PEMBLOKIRAN" atau "BIMBINGAN" atau "PRIBADI"
+        private String tipe; // "BIMBINGAN" atau "PRIBADI"
         private String status; // untuk bimbingan: status dari tabel Bimbingan
     }
 
-    /**
-     * Struktur data lengkap untuk tampilan jadwal mingguan
-     */
     @Value
     public static class DataJadwalMingguan {
         Map<DayOfWeek, String> tanggalHeader;
@@ -50,14 +40,6 @@ public class JadwalService {
         LocalDate tanggalAkhirMinggu;
     }
 
-    /**
-     * Mendapatkan jadwal mingguan untuk pengguna atau ruangan
-     *
-     * @param minggu Format: "2024-W01"
-     * @param idTarget ID pengguna atau ID ruangan
-     * @param apakahRuangan true jika mencari jadwal ruangan, false jika pengguna
-     * @return Data jadwal mingguan lengkap dengan grid
-     */
     public DataJadwalMingguan dapatkanJadwalMingguan(String minggu, String idTarget, boolean apakahRuangan) {
         // Konversi minggu ke tanggal Senin dan Jumat
         LocalDate hariSenin = konversiMingguKeHariSenin(minggu);
@@ -67,24 +49,17 @@ public class JadwalService {
         List<List<SlotWaktu>> gridJadwal;
 
         if (apakahRuangan) {
-            // Ambil jadwal untuk ruangan (pemblokiran + bimbingan)
-            List<Jadwal> jadwalPemblokiran = jadwalRepository.findByWeekRangeRuangan(
-                    hariSenin, hariJumat, Integer.parseInt(idTarget)
-            );
+            // KHUSUS RUANGAN: Ambil HANYA jadwal bimbingan di ruangan yang dipilih
+            // idTarget adalah ID ruangan yang dipilih admin untuk monitoring
+            int idRuangan = Integer.parseInt(idTarget);
 
-            List<JadwalJdbc.JadwalWithStatus> jadwalBimbingan = jadwalRepository.findBimbinganByWeekRangeRuangan(
-                    hariSenin, hariJumat, Integer.parseInt(idTarget)
-            );
+            List<JadwalJdbc.JadwalWithStatus> jadwalBimbingan =
+                    jadwalRepository.findBimbinganByWeekRangeRuangan(
+                            hariSenin, hariJumat, idRuangan
+                    );
 
-            // Gabungkan semua jadwal dengan tipenya
+            // Konversi ke JadwalDenganTipe
             List<JadwalDenganTipe> semuaJadwal = new ArrayList<>();
-
-            // Tambahkan jadwal pemblokiran
-            for (Jadwal j : jadwalPemblokiran) {
-                semuaJadwal.add(new JadwalDenganTipe(j, "PEMBLOKIRAN", null));
-            }
-
-            // Tambahkan jadwal bimbingan dengan statusnya
             for (JadwalJdbc.JadwalWithStatus jws : jadwalBimbingan) {
                 semuaJadwal.add(new JadwalDenganTipe(jws.getJadwal(), "BIMBINGAN", jws.getStatus()));
             }
@@ -93,7 +68,6 @@ public class JadwalService {
             gridJadwal = pembuatGridJadwal.buatGridJadwal(jadwalPerHari);
 
         } else {
-            // Ambil jadwal untuk pengguna (jadwal pribadi + bimbingan)
             List<Jadwal> jadwalPribadi = jadwalRepository.findByWeekRangePengguna(
                     hariSenin, hariJumat, idTarget
             );
@@ -137,9 +111,7 @@ public class JadwalService {
                 .with(DayOfWeek.MONDAY);
     }
 
-    /**
-     * Kelompokkan daftar jadwal berdasarkan hari (Senin-Jumat)
-     */
+
     private Map<DayOfWeek, List<JadwalDenganTipe>> kelompokkanJadwalPerHari(List<JadwalDenganTipe> daftarJadwal) {
         Map<DayOfWeek, List<JadwalDenganTipe>> mapJadwal = new LinkedHashMap<>();
 
@@ -165,7 +137,100 @@ public class JadwalService {
     }
 
     /**
-     * Buat header tanggal untuk setiap hari kerja (format: d/M/yyyy)
+     * Mencari slot waktu yang tersedia untuk semua individu yang terlibat
+     * Digunakan saat membuat jadwal bimbingan baru
+     */
+    public List<String> cariSlotGabungan(
+            List<String> listIdIndividu,   // Pengguna lain yang ikut dicek (dosen pembimbing)
+            String idIndividuUtama,        // Pengguna yang sedang login (mahasiswa)
+            LocalDate tanggal) {
+
+        List<String> slotTersedia = new ArrayList<>();
+        int jamMulaiKerja = 7;
+        int jamSelesaiKerja = 18;
+
+        // 1. Ambil jadwal individu utama (misalnya mahasiswa)
+        List<Jadwal> utamaPribadi =
+                jadwalRepository.findByWeekRangePengguna(tanggal, tanggal, idIndividuUtama);
+
+        List<JadwalJdbc.JadwalWithStatus> utamaBimbingan =
+                jadwalRepository.findBimbinganByWeekRangePengguna(tanggal, tanggal, idIndividuUtama);
+
+        // 2. Ambil jadwal semua individu di list
+        List<List<Jadwal>> listPribadi = new ArrayList<>();
+        List<List<JadwalJdbc.JadwalWithStatus>> listBimbingan = new ArrayList<>();
+
+        for (String idIndividu : listIdIndividu) {
+            listPribadi.add(
+                    jadwalRepository.findByWeekRangePengguna(tanggal, tanggal, idIndividu)
+            );
+            listBimbingan.add(
+                    jadwalRepository.findBimbinganByWeekRangePengguna(tanggal, tanggal, idIndividu)
+            );
+        }
+
+        // 3. Loop 07.00 – 17.00 (1 jam interval)
+        for (int jam = jamMulaiKerja; jam < jamSelesaiKerja; jam++) {
+
+            // Cek apakah individu utama sibuk?
+            if (isSibuk(jam, utamaPribadi, utamaBimbingan)) {
+                continue;
+            }
+
+            // Cek apakah SEMUA individu lain tidak sibuk
+            boolean semuaBisa = true;
+
+            for (int i = 0; i < listIdIndividu.size(); i++) {
+                if (isSibuk(jam, listPribadi.get(i), listBimbingan.get(i))) {
+                    semuaBisa = false;
+                    break;
+                }
+            }
+
+            if (semuaBisa) {
+                slotTersedia.add(String.format("%02d:00", jam));
+            }
+        }
+
+        return slotTersedia;
+    }
+
+    public int insertJadwal(LocalDate tanggal, LocalTime mulai, LocalTime selesai){
+        return jadwalRepository.insertJadwal(tanggal,mulai,selesai);
+    }
+
+    private boolean isSibuk(int jamCek, List<Jadwal> jadwalPribadi, List<JadwalJdbc.JadwalWithStatus> jadwalBimbingan) {
+        // Cek Jadwal Pribadi
+        for (Jadwal j : jadwalPribadi) {
+            int jamMulai = j.getWaktuMulai().toLocalTime().getHour();
+            int jamSelesai = j.getWaktuSelesai().toLocalTime().getHour();
+
+            if (jamCek >= jamMulai && jamCek < jamSelesai) {
+                return true;
+            }
+        }
+
+        // Cek Jadwal Bimbingan
+        for (JadwalJdbc.JadwalWithStatus js : jadwalBimbingan) {
+            String status = js.getStatus();
+            // Abaikan jadwal yang batal/gagal
+            if (status != null && (status.equalsIgnoreCase("DIBATALKAN") || status.equalsIgnoreCase("GAGAL"))) {
+                continue;
+            }
+
+            int jamMulai = js.getJadwal().getWaktuMulai().toLocalTime().getHour();
+            int jamSelesai = js.getJadwal().getWaktuSelesai().toLocalTime().getHour();
+
+            if (jamCek >= jamMulai && jamCek < jamSelesai) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Membuat header tanggal untuk grid (Senin-Jumat)
      */
     private Map<DayOfWeek, String> buatHeaderTanggal(LocalDate hariSenin) {
         Map<DayOfWeek, String> headerMap = new LinkedHashMap<>();
@@ -181,4 +246,56 @@ public class JadwalService {
 
         return headerMap;
     }
+
+
+    public List<Ruangan> cariRuanganTersedia(LocalDate tanggal, LocalTime mulai, LocalTime selesai) {
+        List<Ruangan> semuaRuangan = ruanganService.getAllRuang();
+        Map<Integer, List<JadwalDenganTipe>> jadwalPerRuangan = new HashMap<>();
+
+        for (Ruangan r : semuaRuangan) {
+            List<JadwalJdbc.JadwalWithStatus> bimbingan =
+                    jadwalRepository.findBimbinganByWeekRangeRuangan(
+                            tanggal, tanggal, r.getIdRuangan()
+                    );
+
+            List<JadwalDenganTipe> daftar = new ArrayList<>();
+
+            // Filter jadwal bimbingan yang aktif (bukan dibatalkan/gagal)
+            for (JadwalJdbc.JadwalWithStatus jws : bimbingan) {
+                if (jws.getStatus() != null &&
+                        (jws.getStatus().equalsIgnoreCase("GAGAL") ||
+                                jws.getStatus().equalsIgnoreCase("DIBATALKAN"))) {
+                    continue; // Skip jadwal yang dibatalkan
+                }
+
+                daftar.add(new JadwalDenganTipe(jws.getJadwal(), "BIMBINGAN", jws.getStatus()));
+            }
+
+            jadwalPerRuangan.put(r.getIdRuangan(), daftar);
+        }
+
+        List<Ruangan> ruanganTersedia = new ArrayList<>();
+
+        for (Ruangan r : semuaRuangan) {
+            boolean bentrok = false;
+            List<JadwalDenganTipe> daftar = jadwalPerRuangan.get(r.getIdRuangan());
+
+            for (JadwalDenganTipe jdt : daftar) {
+                LocalTime m = jdt.getJadwal().getWaktuMulai().toLocalTime();
+                LocalTime s = jdt.getJadwal().getWaktuSelesai().toLocalTime();
+
+                if (!(selesai.isBefore(m) || selesai.equals(m) || mulai.isAfter(s) || mulai.equals(s))) {
+                    bentrok = true;
+                    break;
+                }
+            }
+
+            if (!bentrok) {
+                ruanganTersedia.add(r);
+            }
+        }
+
+        return ruanganTersedia;
+    }
+
 }

@@ -54,7 +54,6 @@ public class PembuatGridJadwal {
             LocalTime waktuSelesai = jadwal.getWaktuSelesai().toLocalTime();
 
             // Cek apakah jam ini berada dalam rentang jadwal
-            // Contoh: jadwal 08:00-10:00 akan mengisi slot jam 8 dan 9
             boolean jamTermasukDalamJadwal = waktuMulai.getHour() <= jam && waktuSelesai.getHour() > jam;
 
             if (jamTermasukDalamJadwal) {
@@ -82,8 +81,7 @@ public class PembuatGridJadwal {
     private String tentukanStatus(JadwalService.JadwalDenganTipe jadwalDenganTipe) {
         String tipe = jadwalDenganTipe.getTipe();
 
-        if ("PEMBLOKIRAN".equalsIgnoreCase(tipe) || "PRIBADI".equalsIgnoreCase(tipe)) {
-            // Pemblokiran ruangan ATAU Jadwal pribadi pengguna = blocked
+        if ("PRIBADI".equalsIgnoreCase(tipe)) {
             return "blocked";
 
         } else if ("BIMBINGAN".equalsIgnoreCase(tipe)) {

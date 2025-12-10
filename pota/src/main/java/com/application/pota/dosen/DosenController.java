@@ -1,29 +1,28 @@
 package com.application.pota.dosen;
 
-import java.time.DayOfWeek;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.IsoFields;
-import java.util.List;
-import java.util.Map;
-
-import com.application.pota.bimbingan.BimbinganService;
-import com.application.pota.bimbingan.BimbinganSiapKirim;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-
+import com.application.pota.bimbingan.*;
 import com.application.pota.jadwal.JadwalService;
 import com.application.pota.jadwal.SlotWaktu;
 import com.application.pota.notifikasi.Notifikasi;
 import com.application.pota.notifikasi.NotifikasiService;
-import com.fasterxml.jackson.annotation.JsonCreator.Mode;
-
+import com.application.pota.ruangan.Ruangan;
+import com.application.pota.ruangan.RuanganService;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+
+import java.time.DayOfWeek;
+import java.time.Duration;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.IsoFields;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Controller
 @RequiredArgsConstructor
@@ -34,7 +33,7 @@ class DosenController {
     @Autowired
     private final DosenService dosenService;
     @Autowired
-    private  final BimbinganService bimbinganService;
+    private final BimbinganService bimbinganService;
     @Autowired
     private final NotifikasiService notifikasiService;
     @Autowired
@@ -44,6 +43,7 @@ class DosenController {
     public String berandaDefault(Model model, HttpSession session) {
         return beranda(model, session);
     }
+
     @GetMapping({"/bimbingan", "/bimbinganProses"})
     public String bimbinganDefault(HttpSession session, Model model) {
         String idPengguna = (String) session.getAttribute("idPengguna");
@@ -109,17 +109,29 @@ class DosenController {
 
         //tengah
         int nPengajuan = dosenService.getBanyakPengajuan(idPengguna);
-        int currentBimbingan = dosenService.getBanyakBimbinganHariIni(idPengguna);
+        Integer currentBimbingan = dosenService.getBanyakBimbinganHariIni(idPengguna);
 
         //bawah
         BimbinganDosenDashboard currentBimb = dosenService.getBimbinganSaatIni(idPengguna);
 
-        LocalTime mulai = currentBimb.getWaktuMulai().toLocalTime();
-        LocalTime selesai = currentBimb.getWaktuSelesai().toLocalTime();
+        // Cek null terlebih dahulu sebelum mengakses method apapun
+        if (currentBimb == null) {
+            model.addAttribute("adaBimbingan", false);
+        } else {
+            model.addAttribute("adaBimbingan", true);
+            model.addAttribute("waktuMulai", currentBimb.getWaktuMulai());
+            model.addAttribute("waktuSelesai", currentBimb.getWaktuSelesai());
 
-        long durasiMenit = Duration.between(mulai, selesai).toMinutes();
-        long durasiJam = durasiMenit / 60;
-        model.addAttribute("durasiJam", durasiJam);
+            LocalTime mulai = currentBimb.getWaktuMulai().toLocalTime();
+            LocalTime selesai = currentBimb.getWaktuSelesai().toLocalTime();
+
+            long durasiMenit = Duration.between(mulai, selesai).toMinutes();
+            long durasiJam = durasiMenit / 60;
+            model.addAttribute("durasiJam", durasiJam);
+
+            //bawah
+            model.addAttribute("currentBimb", currentBimb);
+        }
 
         //atas
         model.addAttribute("semesterAktif", semesterAktif);
@@ -130,9 +142,6 @@ class DosenController {
         //tengah
         model.addAttribute("nPengajuan", nPengajuan);
         model.addAttribute("currentBimbingan", currentBimbingan);
-
-        //bawah
-        model.addAttribute("currentBimb", currentBimb);
 
         return "dosen/DashboardDosen";
     }
@@ -225,19 +234,19 @@ class DosenController {
 
     private LocalDate hitungTanggalMulaiMinggu(int tahun, int minggu) {
         return LocalDate.of(tahun, 1, 1)
-        .with(IsoFields.WEEK_OF_WEEK_BASED_YEAR, minggu)
-        .with(DayOfWeek.MONDAY);
+                .with(IsoFields.WEEK_OF_WEEK_BASED_YEAR, minggu)
+                .with(DayOfWeek.MONDAY);
     }
 
     @GetMapping("/profil")
     public String profil(Model model, HttpSession session) {
-        String idPengguna = (String)session.getAttribute("idPengguna");
+        String idPengguna = (String) session.getAttribute("idPengguna");
         ProfilDosen profilDosen = dosenService.ambilProfil(idPengguna);
 
         model.addAttribute("namaDosen", profilDosen.getNama());
         model.addAttribute("npmDosen", profilDosen.getNpm());
         model.addAttribute("peranPengguna", profilDosen.getPeran());
-        model.addAttribute("usernameDosen", profilDosen.getUsername()); 
+        model.addAttribute("usernameDosen", profilDosen.getUsername());
         return "dosen/ProfileDosen";
     }
 

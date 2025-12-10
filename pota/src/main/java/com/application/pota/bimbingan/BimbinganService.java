@@ -13,7 +13,9 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -101,7 +103,7 @@ public class BimbinganService {
 
         bimbinganRepository.insertJadwalBimbingan(idJadwal);
 
-        int idBim = bimbinganRepository.insertBimbingan(deskripsi.isEmpty()?"-":deskripsi, topik, 1, null);
+        int idBim = bimbinganRepository.insertBimbingan(deskripsi.isEmpty() ? "-" : deskripsi, topik, 1, null);
 
         bimbinganRepository.insertPenjadwalanBimbingan(idJadwal, idBim);
 
@@ -114,7 +116,7 @@ public class BimbinganService {
                 "Proses"       // StatusBimbingan
         );
 
-        int idNotif = (int)notifikasiService.insertNotifikasi("Menunggu");
+        int idNotif = (int) notifikasiService.insertNotifikasi("Menunggu");
 
         notifikasiService.insertMahasiswaNotifikasi(idMahasiswa, idNotif);
         notifikasiService.insertBimbinganNotifikasi(idNotif, idBim);
@@ -124,56 +126,112 @@ public class BimbinganService {
         }
     }
 
-    public void ajukanBimbinganDosen(String idPengguna, List<String> ListMahasiswa, String topik,
-                                     String deskripsi,
-                                     LocalDate tanggal,
-                                     LocalTime waktuMulai,
-                                     LocalTime waktuSelesai, Integer idRuangan, Integer jumlahMinggu) {
-        // Dapatkan ID semua tugas akhir
-        List<Integer> idTA = new ArrayList<>();
-        for(String idMahasiswa : ListMahasiswa) {
-            idTA.add(tugasAkhirService.getIdTugasAkhir(idMahasiswa));
+    public void ajukanBimbinganDosen(
+            String idPengguna,
+            List<String> listMahasiswa,
+            String topik,
+            String deskripsi,
+            LocalDate tanggalMulai,
+            LocalTime waktuMulai,
+            LocalTime waktuSelesai,
+            Integer idRuangan,
+            Integer tiapBerapaMinggu   // interval antar bimbingan (0 = hanya 1x)
+    ) {
+
+        if (tiapBerapaMinggu == null || tiapBerapaMinggu < 0) {
+            tiapBerapaMinggu = 0;
         }
-        if (jumlahMinggu == null || jumlahMinggu < 0) {
-            jumlahMinggu = 0;
+
+        // Simpan ID TA dan tanggal UTS/UAS untuk semua mahasiswa
+        Map<String, Integer> idTAmap = new HashMap<>();
+        Map<String, LocalDate> utsMap = new HashMap<>();
+        Map<String, LocalDate> uasMap = new HashMap<>();
+
+        for (String idMhs : listMahasiswa) {
+            int idTA = tugasAkhirService.getIdTugasAkhir(idMhs);
+            LocalDate uts = tugasAkhirService.getTanggalUtsByIdMahasiswa(idMhs);
+            LocalDate uas = tugasAkhirService.getTanggalUasByIdMahasiswa(idMhs);
+
+            idTAmap.put(idMhs, idTA);
+            utsMap.put(idMhs, uts);
+            uasMap.put(idMhs, uas);
         }
-        //Insert Jadwal -> ambil IdJadwal
-        int idJadwal = jadwalService.insertJadwal(tanggal, waktuMulai, waktuSelesai);
 
-        // Insert ke Jadwal_Bimbingan
-        bimbinganRepository.insertJadwalBimbingan(idJadwal);
+        List<LocalDate> daftarTanggal = new ArrayList<>();
 
-        //Insert Bimbingan -> ambil IdBim
-        int idBim = bimbinganRepository.insertBimbingan(deskripsi.isEmpty()?"-":deskripsi, topik, 1, idRuangan);
+        // CASE 1: Jika interval = 0 → hanya 1x
+        if (tiapBerapaMinggu == 0) {
+            daftarTanggal.add(tanggalMulai);
+        }
+        // CASE 2: Jika interval > 0 → generate sampai batas UAS
+        else {
+            LocalDate current = tanggalMulai;
 
-        //Link Jadwal—Bimbingan
-        bimbinganRepository.insertPenjadwalanBimbingan(idJadwal, idBim);
+            // batas maksimal iterasi: sampai salah satu mahasiswa melewati UAS
+            while (true) {
 
-        for (int idTa : idTA) {
-            bimbinganRepository.insertTopikBimbingan(
-                    idBim,
-                    idTa,
-                    "Menunggu",  // StatusMhs
-                    "Menyetujui",    // StatusDosen1
-                    null,  // StatusDosen2
-                    "Proses"       // StatusBimbingan
+                boolean validUntukSemua = true;
+                boolean sudahLewatUAS = false;
+
+                for (String idMhs : listMahasiswa) {
+                    LocalDate uts = utsMap.get(idMhs);
+                    LocalDate uas = uasMap.get(idMhs);
+
+                    // stop total jika sudah lewat atau sama dengan uas
+                    if (uas != null && !current.isBefore(uas)) {
+                        sudahLewatUAS = true;
+                        break;
+                    }
+
+                    // skip jika kena UTS
+                    if (uts != null && current.isEqual(uts)) {
+                        validUntukSemua = false;
+                    }
+                }
+
+                if (sudahLewatUAS) break;
+                if (validUntukSemua) daftarTanggal.add(current);
+
+                current = current.plusWeeks(tiapBerapaMinggu);
+            }
+        }
+
+        // Eksekusi INSERT untuk setiap tanggal valid
+        for (LocalDate tglBim : daftarTanggal) {
+
+            int idJadwal = jadwalService.insertJadwal(tglBim, waktuMulai, waktuSelesai);
+            bimbinganRepository.insertJadwalBimbingan(idJadwal);
+
+            int idBim = bimbinganRepository.insertBimbingan(
+                    deskripsi.isEmpty() ? "-" : deskripsi,
+                    topik,
+                    listMahasiswa.size(),
+                    idRuangan
             );
+
+            bimbinganRepository.insertPenjadwalanBimbingan(idJadwal, idBim);
+
+            // Insert status mahasiswa & dosen
+            for (String idMhs : listMahasiswa) {
+                bimbinganRepository.insertTopikBimbingan(
+                        idBim,
+                        idTAmap.get(idMhs),
+                        "Menunggu",
+                        "Menyetujui",
+                        null,
+                        "Proses"
+                );
+            }
+
+            // Notifikasi
+            int idNotif = (int) notifikasiService.insertNotifikasi("Menunggu");
+
+            for (String idMhs : listMahasiswa) {
+                notifikasiService.insertMahasiswaNotifikasi(idMhs, idNotif);
+            }
+            notifikasiService.insertBimbinganNotifikasi(idNotif, idBim);
+            notifikasiService.insertDosenNotifikasi(idPengguna, idNotif);
         }
-
-
-        // Insert Notifikasi
-        int idNotif = (int) notifikasiService.insertNotifikasi("Menunggu");
-
-        // Kirim notifikasi ke semua mahasiswa
-        for (String idMahasiswa : ListMahasiswa) {
-            notifikasiService.insertMahasiswaNotifikasi(idMahasiswa, idNotif);
-        }
-
-        // Link notifikasi dengan bimbingan
-        notifikasiService.insertBimbinganNotifikasi(idNotif, idBim);
-
-        // Kirim notifikasi ke dosen pembimbing
-        notifikasiService.insertDosenNotifikasi(idPengguna, idNotif);
     }
 
 
@@ -191,15 +249,16 @@ public class BimbinganService {
             case "mahasiswa":
                 // Mahasiswa memvalidasi → bimbingan dianggap selesai
                 bimbinganRepository.updateStatusMahasiswa(idBim, "Tervalidasi");
-                bimbinganRepository.updateCatatanBimbingan(idBim,  catatan);
+                bimbinganRepository.updateCatatanBimbingan(idBim, catatan);
                 break;
 
             default:
                 throw new IllegalArgumentException("Peran tidak valid: " + peran);
         }
     }
+
     public String getPeranDalamTA(String idPengguna, int idTa) {
-        
+
         String idMahasiswa = tugasAkhirService.getIdMahasiswaByIdTa(idTa);
         if (idMahasiswa != null && idMahasiswa.equalsIgnoreCase(idPengguna)) {
             return "mahasiswa";
@@ -207,8 +266,8 @@ public class BimbinganService {
 
         List<PilihanPengguna> listDosen = bimbinganRepository.getDosenPembimbingPilihan(idTa);
 
-        if (idPengguna.equals(listDosen.get(0).getIdPengguna()))return "dosen1";
-        if (listDosen.size() >= 2 && idPengguna.equals(listDosen.get(1).getIdPengguna()))return "dosen2";
+        if (idPengguna.equals(listDosen.get(0).getIdPengguna())) return "dosen1";
+        if (listDosen.size() >= 2 && idPengguna.equals(listDosen.get(1).getIdPengguna())) return "dosen2";
 
         return "unknown";
     }
@@ -224,23 +283,23 @@ public class BimbinganService {
         switch (peran.toLowerCase()) {
             case "dosen1":
                 bimbinganRepository.updateStatusDosen1(idBim, "Dibatalkan");
-                for(String mhs:listMahasiswa){
-                    notifikasiService.insertMahasiswaNotifikasi(mhs,idNotifikasi);
+                for (String mhs : listMahasiswa) {
+                    notifikasiService.insertMahasiswaNotifikasi(mhs, idNotifikasi);
                 }
                 break;
 
             case "dosen2":
                 bimbinganRepository.updateStatusDosen2(idBim, "Dibatalkan");
-                for(String mhs:listMahasiswa){
-                    notifikasiService.insertMahasiswaNotifikasi(mhs,idNotifikasi);
+                for (String mhs : listMahasiswa) {
+                    notifikasiService.insertMahasiswaNotifikasi(mhs, idNotifikasi);
                 }
                 break;
 
             case "mahasiswa":
                 bimbinganRepository.updateStatusMahasiswa(idBim, "Dibatalkan");
-                notifikasiService.insertDosenNotifikasi(dosenList.get(0),idNotifikasi);
+                notifikasiService.insertDosenNotifikasi(dosenList.get(0), idNotifikasi);
                 if (dosenList.size() > 1) {
-                    notifikasiService.insertDosenNotifikasi(dosenList.get(1),idNotifikasi);
+                    notifikasiService.insertDosenNotifikasi(dosenList.get(1), idNotifikasi);
                 }
                 break;
 
@@ -256,23 +315,23 @@ public class BimbinganService {
         switch (peran.toLowerCase()) {
             case "dosen1":
                 bimbinganRepository.updateStatusDosen1(idBim, "Menyetujui");
-                for(String mhs:listMahasiswa){
-                    notifikasiService.insertMahasiswaNotifikasi(mhs,notifikasi);
+                for (String mhs : listMahasiswa) {
+                    notifikasiService.insertMahasiswaNotifikasi(mhs, notifikasi);
                 }
                 break;
 
             case "dosen2":
                 bimbinganRepository.updateStatusDosen2(idBim, "Menyetujui");
-                for(String mhs:listMahasiswa){
-                    notifikasiService.insertMahasiswaNotifikasi(mhs,notifikasi);
+                for (String mhs : listMahasiswa) {
+                    notifikasiService.insertMahasiswaNotifikasi(mhs, notifikasi);
                 }
                 break;
 
             case "mahasiswa":
                 bimbinganRepository.updateStatusMahasiswa(idBim, "Menyetujui");
-                notifikasiService.insertDosenNotifikasi(dosenList.get(0),notifikasi);
+                notifikasiService.insertDosenNotifikasi(dosenList.get(0), notifikasi);
                 if (dosenList.size() > 1) {
-                    notifikasiService.insertDosenNotifikasi(dosenList.get(1),notifikasi);
+                    notifikasiService.insertDosenNotifikasi(dosenList.get(1), notifikasi);
                 }
                 break;
 
@@ -281,7 +340,7 @@ public class BimbinganService {
         }
         BimbinganDetailStatus temp = bimbinganRepository.getDetailStatusBimbingan(idBim);
 
-        if (temp.getStatusMhs().equals("Menyetujui")&&temp.getStatusDosen1().equals("Menyetujui")||temp.getStatusDosen1().equals("Menyetujui")) {
+        if (temp.getStatusMhs().equals("Menyetujui") && temp.getStatusDosen1().equals("Menyetujui") || temp.getStatusDosen1().equals("Menyetujui")) {
             bimbinganRepository.updateStatusBimbingan(idBim, "Terjadwalkan");
         }
     }
@@ -296,25 +355,25 @@ public class BimbinganService {
         switch (peran.toLowerCase()) {
             case "dosen1":
                 bimbinganRepository.updateStatusDosen1(idBim, "Menolak");
-                for(String mhs:listMahasiswa){
-                    notifikasiService.insertMahasiswaNotifikasi(mhs,idNotifikasi);
+                for (String mhs : listMahasiswa) {
+                    notifikasiService.insertMahasiswaNotifikasi(mhs, idNotifikasi);
                 }
-                notifikasiService.insertDosenNotifikasi(dosenList.get(0),idNotifikasi);
+                notifikasiService.insertDosenNotifikasi(dosenList.get(0), idNotifikasi);
                 break;
 
             case "dosen2":
                 bimbinganRepository.updateStatusDosen2(idBim, "Menolak");
-                for(String mhs:listMahasiswa){
-                    notifikasiService.insertMahasiswaNotifikasi(mhs,idNotifikasi);
+                for (String mhs : listMahasiswa) {
+                    notifikasiService.insertMahasiswaNotifikasi(mhs, idNotifikasi);
                 }
 
                 break;
 
             case "mahasiswa":
                 bimbinganRepository.updateStatusMahasiswa(idBim, "Menolak");
-                notifikasiService.insertDosenNotifikasi(dosenList.get(0),idNotifikasi);
+                notifikasiService.insertDosenNotifikasi(dosenList.get(0), idNotifikasi);
                 if (dosenList.size() > 1) {
-                    notifikasiService.insertDosenNotifikasi(dosenList.get(1),idNotifikasi);
+                    notifikasiService.insertDosenNotifikasi(dosenList.get(1), idNotifikasi);
                 }
                 break;
 

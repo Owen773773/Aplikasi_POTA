@@ -12,4 +12,5 @@ public class DTOBimbinganDosen {
     private String topik;
     private String deskripsi;
     private Integer idRuangan;
+    private Integer jumlahMinggu;
 }

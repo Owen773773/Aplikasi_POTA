@@ -10,9 +10,6 @@ public interface JadwalRepository {
     // Mencari Jadwal berdasarkan idPengguna dan tanggal
     List<Jadwal> findByIdPengguna(String IdPengguna, Date date);
 
-    // Mencari Jadwal Berdasarkan idRuangan
-    List<Jadwal> findByDateByidRuangan(int idRuangan, Date date);
-
     int insertJadwal(LocalDate tanggal, LocalTime mulai, LocalTime selesai);
 
     // Mencari Jadwal Berdasarkan idBimbingan
@@ -26,9 +23,6 @@ public interface JadwalRepository {
 
     // Cari jadwal dalam 1 minggu by Pengguna (hanya jadwal pribadi)
     List<Jadwal> findByWeekRangePengguna(LocalDate startOfWeek, LocalDate endOfWeek, String IdPengguna);
-
-    // Cari jadwal dalam 1 minggu by Ruangan (pemblokiran)
-    List<Jadwal> findByWeekRangeRuangan(LocalDate startOfWeek, LocalDate endOfWeek, int idRuangan);
 
     // Cari jadwal bimbingan dalam 1 minggu by Ruangan dengan status
     List<JadwalJdbc.JadwalWithStatus> findBimbinganByWeekRangeRuangan(LocalDate startOfWeek, LocalDate endOfWeek, int idRuangan);

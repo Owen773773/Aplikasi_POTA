@@ -213,6 +213,24 @@
                         </div>
 
                         <div class="form-group">
+                            <label for="jumlahMinggu" class="form-label">Pengulangan Mingguan (Opsional)</label>
+                            <div class="input-with-icon">
+                                <input type="number"
+                                       id="jumlahMinggu"
+                                       name="jumlahMinggu"
+                                       class="form-input"
+                                       placeholder="0 = Tidak ada pengulangan"
+                                       min="0"
+                                       max="4"
+                                       value="0"
+                                       style="width: 100%;"/>
+                            </div>
+                            <small style="color: #666; font-size: 12px; margin-top: 4px; display: block;">
+                                1 = Bimbingan tiap minggu berturut-turut dengan hari dan jam yang sama. 0 = hanya sekali.
+                            </small>
+                        </div>
+
+                        <div class="form-group">
                             <label for="topik" class="form-label">Topik Bimbingan *</label>
                             <input type="text"
                                    id="topik"
@@ -327,6 +345,7 @@
         const waktuSelesai = document.getElementById('waktuSelesai').value.trim();
         const ruangan = document.getElementById('ruangan').value.trim();
         const topik = document.getElementById('topik').value.trim();
+        const jumlahMinggu = document.getElementById('jumlahMinggu').value.trim();
 
         const missingFields = [];
 
@@ -353,7 +372,8 @@
             waktuSelesai: waktuSelesai,
             idRuangan: parseInt(ruangan),
             topik: topik,
-            deskripsi: document.getElementById('deskripsi').value.trim()
+            deskripsi: document.getElementById('deskripsi').value.trim(),
+            jumlahMinggu: parseInt(jumlahMinggu) || 0
         };
 
         console.log('Mengirim data:', formData);
@@ -515,7 +535,7 @@
         }
 
         // Hide notification on input
-        const formInputs = ['tanggal', 'waktuMulai', 'waktuSelesai', 'ruangan', 'topik', 'deskripsi'];
+        const formInputs = ['tanggal', 'waktuMulai', 'waktuSelesai', 'ruangan', 'topik', 'deskripsi', 'jumlahMinggu'];
         formInputs.forEach(inputId => {
             const input = document.getElementById(inputId);
             if (input) {

@@ -15,59 +15,6 @@ public class BimbinganJdbc implements BimbinganRepository {
     @Autowired
     private final JdbcTemplate jdbcTemplate;
 
-//     //jgn lupaa ganti return type
-//     public void getTipeAkunByIdPengguna(String idPengguna, Bimbingan bimbingan, LocalDate tanggal, LocalTime waktuMulai, LocalTime waktuSelesai, Integer idRuangan){
-//         String tipeAkunQuery = """
-//                     SELECT tipeAkun
-//                     FROM Pengguna
-//                     WHERE IdPengguna ILIKE ?
-//                 """;
-//         String tipeAkun = jdbcTemplate.queryForObject(tipeAkunQuery, String.class, idPengguna);
-//         String sqlQuery="";
-//         if("Mahasiswa".equalsIgnoreCase(tipeAkun)){
-//             masukkanBimbinganBaruMahasiswa(idPengguna, bimbingan, tanggal, waktuMulai, waktuSelesai, idRuangan);
-//         } else if ("Dosen".equalsIgnoreCase(tipeAkun)){
-//             masukkanBimbinganBaruDosen(idPengguna, bimbingan, tanggal, waktuMulai, waktuSelesai, idRuangan);
-//         } else{
-//             throw new IllegalArgumentException("Tipe akun tidak valid");
-//         }
-//     }
-//
-//     public boolean masukkanBimbinganBaruDosen(String idPengguna, Bimbingan bimbingan, LocalDate tanggal, LocalTime waktuMulai, LocalTime waktuSelesai, Integer idRuangan){
-//         String sqlMaxId = "SELECT MAX(IdBim) FROM Bimbingan";
-//         Integer maxId = jdbcTemplate.queryForObject(sqlMaxId, Integer.class);
-//
-//         String sqlQuery = """
-//                         INSERT INTO Bimbingan
-//                         """;
-//         return;
-//
-//     }
-//     public boolean masukkanBimbinganBaruMahasiswa(String idPengguna, Bimbingan bimbingan, LocalDate tanggal, LocalTime waktuMulai, LocalTime waktuSelesai, Integer idRuangan){
-//         String sqlQuery = "INSERT INTO ";
-//
-//
-
-//     @Override
-//     public List<BimbinganSiapKirim> getBimbinganUserBertipe(String tipeStatus, String idPengguna) {
-//         // Cek tipe akun pengguna
-//         String tipeAkunQuery = """
-//                SELECT tipeAkun
-//                FROM Pengguna
-//                WHERE IdPengguna ILIKE ?
-//            """;
-//         String tipeAkun = jdbcTemplate.queryForObject(tipeAkunQuery, String.class, idPengguna);
-//
-//         // Sesuaikan query berdasarkan tipe akun
-//         if ("Mahasiswa".equalsIgnoreCase(tipeAkun)) {
-//             return getBimbinganMahasiswaByStatus(tipeStatus, idPengguna);
-//         } else if ("Dosen".equalsIgnoreCase(tipeAkun)) {
-//             return getBimbinganDosenByStatus(tipeStatus, idPengguna);
-//         } else {
-//             throw new IllegalArgumentException("Tipe akun tidak valid atau tidak memiliki bimbingan");
-//         }
-//     }
-
     @Override
     public List<BimbinganSiapKirim> getBimbinganUserBertipe(String tipeAkun, String tipeStatus, String idPengguna) {
 
@@ -372,7 +319,7 @@ public class BimbinganJdbc implements BimbinganRepository {
                         AND (j.tanggal > CURRENT_DATE OR (j.tanggal = CURRENT_DATE AND j.WaktuMulai > CURRENT_TIME))
                         ORDER BY j.tanggal ASC, j.WaktuMulai ASC
                         LIMIT 1
-                """; //waktu durasi dikurang di java aj
+                """;
         List<Bimbingan> hasil = jdbcTemplate.query(sql, this::mapRowToBimbingan, idMahasiswa);
         if (hasil.isEmpty()) {
             return null;

@@ -2,6 +2,7 @@ package com.application.pota.bimbingan;
 
 import com.application.pota.dosen.DosenService;
 import com.application.pota.jadwal.JadwalService;
+import com.application.pota.mahasiswa.MahasiswaService;
 import com.application.pota.notifikasi.NotifikasiService;
 import com.application.pota.pengguna.PenggunaService;
 import com.application.pota.tugasakhir.TugasAkhirService;
@@ -32,24 +33,15 @@ public class BimbinganService {
 
     @Autowired
     private NotifikasiService notifikasiService;
+    @Autowired
+    private MahasiswaService mahasiswaService;
 
-    /**
-     * Mendapatkan list bimbingan sesuai tipe status, tipe akun, dan id pengguna
-     *
-     * @param tipeAkun   Tipe akun pengguna (Mahasiswa/Dosen) [New Param]
-     * @param tipeStatus Status bimbingan yang ingin diambil (Terjadwalkan, Selesai, Gagal, Proses)
-     * @param idPengguna ID dari pengguna (mahasiswa atau dosen)
-     * @return List BimbinganSiapKirim yang siap dikirim ke view
-     */
     public List<BimbinganSiapKirim> dapatkanBimbingan(String tipeAkun, String tipeStatus, String idPengguna) {
         // Mengirim tipeAkun ke repository
         return bimbinganRepository.getBimbinganUserBertipe(tipeAkun, tipeStatus, idPengguna);
     }
 
-    /**
-     * Mendapatkan bimbingan yang terjadwalkan
-     * (Asumsi tipeAkun diambil dari session di Controller, lalu diteruskan)
-     */
+
     public List<BimbinganSiapKirim> dapatkanBimbinganTerjadwal(String tipeAkun, String idPengguna) {
         return dapatkanBimbingan(tipeAkun, "Terjadwalkan", idPengguna);
     }
@@ -62,16 +54,12 @@ public class BimbinganService {
         return bimbinganRepository.getMahasiswaPilihan(idPengguna);
     }
 
-    /**
-     * Mendapatkan bimbingan yang selesai
-     */
+
     public List<BimbinganSiapKirim> dapatkanBimbinganSelesai(String tipeAkun, String idPengguna) {
         return dapatkanBimbingan(tipeAkun, "Selesai", idPengguna);
     }
 
-    /**
-     * Mendapatkan bimbingan yang gagal
-     */
+
     public List<BimbinganSiapKirim> dapatkanBimbinganGagal(String tipeAkun, String idPengguna) {
         return dapatkanBimbingan(tipeAkun, "Gagal", idPengguna);
     }
@@ -106,20 +94,15 @@ public class BimbinganService {
             LocalTime waktuSelesai
     ) {
 
-        // 1. Dapatkan ID Tugas Akhir mahasiswa
         int idTA = tugasAkhirService.getIdTugasAkhir(idMahasiswa);
 
 
-        // 3. Insert Jadwal → ambil IdJadwal
         int idJadwal = jadwalService.insertJadwal(tanggal, waktuMulai, waktuSelesai);
 
-        // 4. Insert ke Jadwal_Bimbingan (PENTING!)
         bimbinganRepository.insertJadwalBimbingan(idJadwal);
 
-        // 5. Insert Bimbingan → ambil IdBim
         int idBim = bimbinganRepository.insertBimbingan(deskripsi.isEmpty()?"-":deskripsi, topik, 1, null);
 
-        // 6. Link Jadwal—Bimbingan
         bimbinganRepository.insertPenjadwalanBimbingan(idJadwal, idBim);
 
         bimbinganRepository.insertTopikBimbingan(
@@ -145,21 +128,22 @@ public class BimbinganService {
                                      String deskripsi,
                                      LocalDate tanggal,
                                      LocalTime waktuMulai,
-                                     LocalTime waktuSelesai, Integer idRuangan) {
+                                     LocalTime waktuSelesai, Integer idRuangan, Integer jumlahMinggu) {
         // Dapatkan ID semua tugas akhir
         List<Integer> idTA = new ArrayList<>();
         for(String idMahasiswa : ListMahasiswa) {
             idTA.add(tugasAkhirService.getIdTugasAkhir(idMahasiswa));
         }
-
-
-        //Insert Jadwal → ambil IdJadwal
+        if (jumlahMinggu == null || jumlahMinggu < 0) {
+            jumlahMinggu = 0;
+        }
+        //Insert Jadwal -> ambil IdJadwal
         int idJadwal = jadwalService.insertJadwal(tanggal, waktuMulai, waktuSelesai);
 
         // Insert ke Jadwal_Bimbingan
         bimbinganRepository.insertJadwalBimbingan(idJadwal);
 
-        //Insert Bimbingan → ambil IdBim
+        //Insert Bimbingan -> ambil IdBim
         int idBim = bimbinganRepository.insertBimbingan(deskripsi.isEmpty()?"-":deskripsi, topik, 1, idRuangan);
 
         //Link Jadwal—Bimbingan

@@ -214,8 +214,6 @@ class DosenController {
         return "dosen/NotifikasiDosen";
     }
 
-    // Tambahkan di DosenController.java (buat juga untuk MahasiswaController)
-
     @PostMapping("/bimbingan/terima")
     @ResponseBody
     public Map<String, Object> terimaBimbingan(
@@ -377,6 +375,7 @@ class DosenController {
         LocalTime mulai = LocalTime.parse(request.getWaktuMulai());
         LocalTime selesai = LocalTime.parse(request.getWaktuSelesai());
         Integer idRuangan = request.getIdRuangan(); // Tambahkan parameter idRuangan
+        Integer jumlahMinggu = request.getJumlahMinggu() != null ? request.getJumlahMinggu() : 0;
 
         bimbinganService.ajukanBimbinganDosen(
                 idPengguna,
@@ -386,7 +385,8 @@ class DosenController {
                 tanggal,
                 mulai,
                 selesai,
-                idRuangan  // Pass idRuangan ke service
+                idRuangan,
+                jumlahMinggu
         );
 
         Map<String, Object> response = new HashMap<>();

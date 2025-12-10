@@ -1,12 +1,15 @@
 package com.application.pota.dosen;
 
 import java.time.DayOfWeek;
+import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.IsoFields;
 import java.util.List;
 import java.util.Map;
 
+import com.application.pota.bimbingan.BimbinganDosenDashboard;
 import com.application.pota.bimbingan.BimbinganService;
 import com.application.pota.bimbingan.BimbinganSiapKirim;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,9 +42,10 @@ class DosenController {
     private final NotifikasiService notifikasiService;
     
     @GetMapping({"/", ""})
-    public String berandaDefault() {
-        return beranda();
+    public String berandaDefault(Model model, HttpSession session) {
+        return beranda(model, session);
     }
+
     @GetMapping({"/bimbingan", "/bimbinganProses"})
     public String bimbinganDefault(HttpSession session, Model model) {
         String idPengguna = (String) session.getAttribute("idPengguna");
@@ -89,8 +93,44 @@ class DosenController {
         model.addAttribute("listBimbingan", listBimbingan);
         return "dosen/bimbingan/DosenBimbinganGagal";
     }
+
     @GetMapping("/beranda")
-    public String beranda() {
+    public String beranda(Model model, HttpSession session) {
+        String idPengguna = (String) session.getAttribute("idPengguna");
+
+        //atas
+        String semesterAktif = dosenService.getSemesterAktif(idPengguna);
+        String tahapBimb = dosenService.getTahapBimbingan(idPengguna);
+        int nMH = dosenService.getBanyakMHDibimbing(idPengguna);
+        int jumlahMHMemenuhi = dosenService.getJumlahMahasiswaMemenuhiTarget(idPengguna, tahapBimb);
+
+        //tengah
+        int nPengajuan = dosenService.getBanyakPengajuan(idPengguna);
+        int currentBimbingan = dosenService.getBanyakBimbinganHariIni(idPengguna);
+
+        //bawah
+        BimbinganDosenDashboard currentBimb = dosenService.getBimbinganSaatIni(idPengguna);
+
+        LocalTime mulai = currentBimb.getWaktuMulai().toLocalTime();
+        LocalTime selesai = currentBimb.getWaktuSelesai().toLocalTime();
+
+        long durasiMenit = Duration.between(mulai, selesai).toMinutes();
+        long durasiJam = durasiMenit / 60;
+        model.addAttribute("durasiJam", durasiJam);
+
+        //atas
+        model.addAttribute("semesterAktif", semesterAktif);
+        model.addAttribute("tahapBimb", tahapBimb);
+        model.addAttribute("nMH", nMH);
+        model.addAttribute("jumlahMHMemenuhi", jumlahMHMemenuhi);
+
+        //tengah
+        model.addAttribute("nPengajuan", nPengajuan);
+        model.addAttribute("currentBimbingan", currentBimbingan);
+
+        //bawah
+        model.addAttribute("currentBimb", currentBimb);
+
         return "dosen/DashboardDosen";
     }
     

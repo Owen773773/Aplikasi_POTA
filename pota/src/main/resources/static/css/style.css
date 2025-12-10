@@ -178,6 +178,7 @@ body {
     border-color: var(--primary);
     background-color: var(--primary);
     color: var(--bg-white);
+    
 }
 
 .btn-logout img {

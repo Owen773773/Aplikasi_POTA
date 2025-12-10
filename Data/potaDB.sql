@@ -1,3 +1,4 @@
+
 DROP SCHEMA public CASCADE;
 CREATE SCHEMA public;
 
@@ -298,7 +299,7 @@ VALUES (1, 101, 'Menunggu', 'Menunggu', NULL, 'Terjadwalkan'),
        (4, 104, 'Dibatalkan', NULL, NULL, 'Gagal'),
        (5, 105, 'Menerima', 'Menerima', 'Menerima', 'Selesai'),
 	   (6, 106, 'Mengajukan', 'Menunggu', NULL, 'Proses'),
-	   (7, 107, 'Mengajukan', 'Menunggu', NULL, 'Proses');
+	   (7, 107, 'Mengajukan', 'Menerima', 'Menerima', 'Selesai');
 
 INSERT INTO Jadwal
 VALUES (1, '2025-11-24', '08:00', '10:00', 0),
@@ -391,7 +392,4 @@ VALUES (1, 1),
        (4, 4),
        (5, 5),
 	   (6,6),
-	   (7,7);
-
-
-	
+	   (7,7);tugas

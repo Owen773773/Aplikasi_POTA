@@ -89,8 +89,45 @@ public class PenggunaJdbc implements PenggunaRepository {
 
     @Override
     public void delete(String id) {
-        String sql = "DELETE FROM Pengguna WHERE IdPengguna = ?";
-        jdbcTemplate.update(sql, id);
+
+        String sqlDelJadwalPribadi = "DELETE FROM Jadwal_Pribadi WHERE IdPengguna = ?";
+        jdbcTemplate.update(sqlDelJadwalPribadi, id);
+        
+        String sqlDelNotifMhs = "DELETE FROM MahasiswaNotifikasi WHERE IdPengguna = ?";
+        jdbcTemplate.update(sqlDelNotifMhs, id);
+
+        String sqlDelNotifDsn = "DELETE FROM DosenNotifikasi WHERE IdPengguna = ?";
+        jdbcTemplate.update(sqlDelNotifDsn, id);
+
+        String sqlDelBlokRuangan = "DELETE FROM PemblokiranRuangan WHERE idAdmin = ?";
+        jdbcTemplate.update(sqlDelBlokRuangan, id);
+
+        String sqlDelDosBingUDosen = "DELETE FROM Dosen_Pembimbing WHERE IdDosen = ?";
+        jdbcTemplate.update(sqlDelDosBingUDosen, id);
+
+        String sqlDelTAAKademikMhs = "DELETE FROM TAtermasukAkademik WHERE IdTA IN (SELECT IdTa FROM TugasAkhir WHERE IdMahasiswa = ?)";
+        jdbcTemplate.update(sqlDelTAAKademikMhs, id);
+        
+        String sqlDelTopikBim = "DELETE FROM TopikBimbingan WHERE IdTA IN (SELECT IdTa FROM TugasAkhir WHERE IdMahasiswa = ?)";
+        jdbcTemplate.update(sqlDelTopikBim, id);
+        
+        String sqlDelDosBingMhs = "DELETE FROM Dosen_Pembimbing WHERE idTA IN (SELECT IdTa FROM TugasAkhir WHERE IdMahasiswa = ?)";
+        jdbcTemplate.update(sqlDelDosBingMhs, id);
+        
+        String sqlDelTAMhs = "DELETE FROM TugasAkhir WHERE IdMahasiswa = ?"; 
+        jdbcTemplate.update(sqlDelTAMhs, id);
+
+        String sqlDelAdmin = "DELETE FROM Admin WHERE IdPengguna = ?";
+        jdbcTemplate.update(sqlDelAdmin, id);
+        
+        String sqlDelMhs = "DELETE FROM Mahasiswa WHERE IdPengguna = ?";
+        jdbcTemplate.update(sqlDelMhs, id);
+
+        String sqlDelDosen = "DELETE FROM Dosen WHERE IdPengguna = ?";
+        jdbcTemplate.update(sqlDelDosen, id);
+
+        String sqlDelPengguna = "DELETE FROM Pengguna WHERE IdPengguna = ?";
+        jdbcTemplate.update(sqlDelPengguna, id); 
     }
 
     @Override

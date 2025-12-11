@@ -1,4 +1,3 @@
-
 DROP SCHEMA public CASCADE;
 CREATE SCHEMA public;
 
@@ -265,7 +264,9 @@ VALUES (101, 'Topik A', '2025-03-01', '2025-06-01', 'U001'),
        (104, 'Topik D', '2025-03-01', '2025-06-01', 'U007'),
        (105, 'Topik E', '2025-03-01', '2025-06-01', 'U008'),
 	   (106, 'Topik A', '2025-03-01', '2025-06-01', 'U001'),
-	   (107, 'Topik A', '2025-03-01', '2025-06-01', 'U001');
+	   (107, 'Topik A', '2025-03-01', '2025-06-01', 'U001'),
+		(108, 'Topik A', '2025-03-01', '2025-06-01', 'U001');
+	   
 	  
 
 INSERT INTO TAtermasukAkademik
@@ -289,7 +290,8 @@ VALUES (1, 'Diskusi awal', 'Catatan 1', 'Topik A', 1, 1),
        (4, 'Review Bab 3', 'Catatan 4', 'Topik D', 4, 4),
        (5, 'Akhir', 'Catatan 5', 'Topik E', 5, 5),
 	   (6, 'Pengajuan Judul Baru', 'Catatan6', 'Analisis Laporan', 1, 1),
-	   (7, 'Pengajuan Testing', 'Catatan7', 'Analisis Laporan', 1, 1);
+	   (7, 'Pengajuan Testing', 'Catatan7', 'Analisis Laporan', 1, 1),
+	   (8, 'Pengajuan Testing', 'Catatan78', 'Analisis Laporan', 1, 1);;
 
 
 INSERT INTO TopikBimbingan
@@ -299,7 +301,8 @@ VALUES (1, 101, 'Menunggu', 'Menunggu', NULL, 'Terjadwalkan'),
        (4, 104, 'Dibatalkan', NULL, NULL, 'Gagal'),
        (5, 105, 'Menerima', 'Menerima', 'Menerima', 'Selesai'),
 	   (6, 106, 'Mengajukan', 'Menunggu', NULL, 'Proses'),
-	   (7, 107, 'Mengajukan', 'Menerima', 'Menerima', 'Selesai');
+	   (7, 107, 'Mengajukan', 'Menerima', 'Menerima', 'Selesai'),
+	   (8, 108, 'Mengajukan', 'Menerima', 'Menerima', 'Terjadwalkan');
 
 INSERT INTO Jadwal
 VALUES (1, '2025-11-24', '08:00', '10:00', 0),
@@ -315,8 +318,9 @@ VALUES (1, '2025-11-24', '08:00', '10:00', 0),
        (9, '2025-11-26', '08:00', '10:00', 0)
         , -- Acara pribadi Rabu
        (10, '2025-11-27', '14:00', '16:00', 1),
-	   (11, '2025-12-08', '09:00', '11:00', 0),
-	   (12, '2025-12-10', '09:00', '11:00', 0);
+	   (11, '2025-10-01', '09:00', '11:00', 0),
+	   (12, '2025-12-10', '09:00', '11:00', 0),
+	   (13, '2025-12-12', '09:00', '11:00', 0);
 -- Jadwal kelas Kamis
 
 -- Masukkan ke Jadwal_Pribadi untuk pengguna tertentu
@@ -340,7 +344,8 @@ VALUES (1),
        (4),
        (5),
 	   (11),
-	   (12);
+	   (12),
+	   (13);
 
 INSERT INTO PenjadwalanBimbingan
 VALUES (1, 1),
@@ -349,7 +354,8 @@ VALUES (1, 1),
        (4, 4),
        (5, 5),
 	   (11, 6),
-	   (12, 7);
+	   (12, 7),
+	   (13, 8);
 	   
 INSERT INTO PemblokiranRuangan
 VALUES (1, 'U004', 1, NOW(), 'Perbaikan'),
@@ -365,7 +371,8 @@ VALUES (1, 'Diterima', NOW()),
        (4, 'Dibatalkan', NOW()),
        (5, 'Ditolak', NOW()),
 	   (6, 'Menunggu', NOW()),
-	   (7, 'Menunggu', NOW());
+	   (7, 'Menunggu', NOW()),
+	   (8, 'Menunggu', NOW());
 
 INSERT INTO MahasiswaNotifikasi
 VALUES ('U001', 1),
@@ -374,7 +381,8 @@ VALUES ('U001', 1),
        ('U007', 4),
        ('U008', 5),
 	   ('U001', 6),
-	   ('U001', 7);;
+	   ('U001', 7),
+	   ('U001', 8);
 
 INSERT INTO DosenNotifikasi
 VALUES ('U003', 1),
@@ -383,7 +391,8 @@ VALUES ('U003', 1),
        ('U010', 4),
        ('U011', 5),
 	   ('U003', 6),
-	   ('U003', 7);
+	   ('U003', 7),
+	   ('U003', 8);
 
 INSERT INTO BimbinganNotifikasi
 VALUES (1, 1),
@@ -392,4 +401,5 @@ VALUES (1, 1),
        (4, 4),
        (5, 5),
 	   (6,6),
-	   (7,7);tugas
+	   (7,7),
+	   (8,8);

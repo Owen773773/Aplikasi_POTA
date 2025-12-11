@@ -34,4 +34,8 @@ public class PenggunaService {
     public void editPengguna(Pengguna Pengguna) {
         PenggunaRepository.edit(Pengguna);
     }
+
+    public void delete(String id) {
+        PenggunaRepository.delete(id);
+    }
 }

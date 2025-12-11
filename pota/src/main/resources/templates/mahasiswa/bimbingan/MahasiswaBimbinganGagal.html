@@ -5,8 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>POTA - Gagal</title>
-    <link rel="stylesheet" href="/css/BimbinganGagal.css">
+
+    <link rel="stylesheet" href="/css/Bimbingan.css">
     <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/DosenGagal.css">
 </head>
 
 <body>
@@ -105,7 +107,7 @@
                                     <p class="itemkiri" style="grid-area: kiri2;">Deskripsi Topik</p>
                                     <p class="itemkanan" style="grid-area: kanan2;" th:text="${bimbingan.deskripsi}">: -</p>
                                     <textarea id="catatan" name="catatan" rows="4" cols="50"
-                                        placeholder="Catatan Bimbingan..." disabled style="grid-area: note;">Catatan bimbingan selesai...</textarea>
+                                        placeholder="Catatan Bimbingan..." disabled style="grid-area: note;" th:text="${bimbingan.catatan}">Catatan bimbingan selesai...</textarea>
                                 </div>
                             </div>
                         </div>

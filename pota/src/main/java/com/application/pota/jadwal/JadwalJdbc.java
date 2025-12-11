@@ -4,11 +4,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Date;
 import java.time.LocalDate;
-import java.util.*;
+import java.time.LocalTime;
+import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
@@ -47,14 +48,6 @@ public class JadwalJdbc implements JadwalRepository {
     }
 
     @Override
-    public List<Jadwal> findByDateByidRuangan(int idRuangan, Date date) {
-        String sql = "SELECT j.* FROM jadwal j " +
-                "JOIN pemblokiranruangan pr ON j.idjadwal = pr.idjadwal " +
-                "WHERE pr.idruangan = ? AND j.tanggal = ?";
-        return jdbcTemplate.query(sql, this::mapRowToJadwal, idRuangan, date);
-    }
-
-    @Override
     public List<Jadwal> findByIdbimbingan(String idBim, Date date) {
         String sql = "SELECT j.* FROM jadwal j " +
                 "JOIN jadwal_bimbingan jb ON j.idjadwal = jb.idjadwal " +
@@ -88,16 +81,7 @@ public class JadwalJdbc implements JadwalRepository {
     }
 
     @Override
-    public List<Jadwal> findByWeekRangeRuangan(LocalDate startOfWeek, LocalDate endOfWeek, int idRuangan) {
-        String sql = "SELECT j.* FROM jadwal j " +
-                "JOIN pemblokiranruangan pr ON j.idjadwal = pr.idjadwal " +
-                "WHERE pr.idruangan = ? AND j.tanggal >= ? AND j.tanggal <= ?";
-        return jdbcTemplate.query(sql, this::mapRowToJadwal, idRuangan, startOfWeek, endOfWeek);
-    }
-
-    @Override
     public List<JadwalWithStatus> findBimbinganByWeekRangeRuangan(LocalDate startOfWeek, LocalDate endOfWeek, int idRuangan) {
-        // Query diperbaiki: ambil statusbimbingan dari topikbimbingan, bukan dari bimbingan
         String sql = "SELECT DISTINCT j.idjadwal, j.tanggal, j.waktumulai, j.waktuselesai, j.berulang, tb.statusbimbingan " +
                 "FROM jadwal j " +
                 "JOIN jadwal_bimbingan jb ON j.idjadwal = jb.idjadwal " +
@@ -105,14 +89,23 @@ public class JadwalJdbc implements JadwalRepository {
                 "JOIN bimbingan b ON pb.idbim = b.idbim " +
                 "JOIN topikbimbingan tb ON b.idbim = tb.idbim " +
                 "WHERE b.idruangan = ? AND j.tanggal >= ? AND j.tanggal <= ? " +
-                "AND tb.statusbimbingan IN ('Terjadwalkan', 'Proses')"; // Filter status aktif
+                "AND tb.statusbimbingan IN ('Terjadwalkan', 'Proses')";
         return jdbcTemplate.query(sql, this::mapRowToJadwalWithStatus, idRuangan, startOfWeek, endOfWeek);
+    }
+
+    public int insertJadwal(LocalDate tanggal, LocalTime mulai, LocalTime selesai) {
+        String sql = """
+                    INSERT INTO Jadwal(tanggal, WaktuMulai, WaktuSelesai, berulang)
+                    VALUES (?, ?, ?, 0)
+                    RETURNING IdJadwal
+                """;
+
+        return jdbcTemplate.queryForObject(sql, Integer.class,
+                tanggal, mulai, selesai);
     }
 
     @Override
     public List<JadwalWithStatus> findBimbinganByWeekRangePengguna(LocalDate startOfWeek, LocalDate endOfWeek, String idPengguna) {
-        // Menggunakan TopikBimbingan untuk menghubungkan bimbingan dengan mahasiswa
-        // Menggunakan Dosen_Pembimbing untuk menghubungkan dengan dosen
         String sql = "SELECT DISTINCT j.idjadwal, j.tanggal, j.waktumulai, j.waktuselesai, j.berulang, tb.statusbimbingan " +
                 "FROM jadwal j " +
                 "JOIN jadwal_bimbingan jb ON j.idjadwal = jb.idjadwal " +
@@ -151,4 +144,6 @@ public class JadwalJdbc implements JadwalRepository {
             return status;
         }
     }
+
+
 }

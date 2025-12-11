@@ -1,203 +1,307 @@
- package com.application.pota.bimbingan;
+package com.application.pota.bimbingan;
 
- import lombok.RequiredArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.stereotype.Repository;
 
- import java.sql.ResultSet;
- import java.sql.SQLException;
- import java.time.LocalDate;
- import java.time.LocalTime;
- import java.util.List;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.List;
 
- import org.springframework.beans.factory.annotation.Autowired;
- import org.springframework.jdbc.core.JdbcTemplate;
- import org.springframework.jdbc.core.RowMapper;
- import org.springframework.stereotype.Repository;
+@Repository
+@RequiredArgsConstructor  // Lombok untuk constructor injection
+public class BimbinganJdbc implements BimbinganRepository {
+    @Autowired
+    private final JdbcTemplate jdbcTemplate;
 
- import com.application.pota.dosen.DosenService;
- import com.application.pota.jadwal.JadwalService;
- import com.application.pota.notifikasi.NotifikasiService;
- import com.application.pota.pengguna.PenggunaService;
- import com.application.pota.tugasakhir.TugasAkhirService;
+    @Override
+    public List<BimbinganSiapKirim> getBimbinganUserBertipe(String tipeAkun, String tipeStatus, String idPengguna) {
 
- @Repository
- @RequiredArgsConstructor  // Lombok untuk constructor injection
- public class BimbinganJdbc implements BimbinganRepository {
-     @Autowired
-     private final JdbcTemplate jdbcTemplate;
+        // Langsung menggunakan parameter tipeAkun
+        if ("Mahasiswa".equalsIgnoreCase(tipeAkun)) {
+            return getBimbinganMahasiswaByStatus(tipeStatus, idPengguna);
+        } else if ("Dosen".equalsIgnoreCase(tipeAkun)) {
+            return getBimbinganDosenByStatus(tipeStatus, idPengguna);
+        } else {
+            // Admin atau tipe akun lain yang tidak memiliki list bimbingan
+            // Kita kembalikan list kosong
+            return List.of();
+        }
+    }
 
-//     //jgn lupaa ganti return type
-//     public void getTipeAkunByIdPengguna(String idPengguna, Bimbingan bimbingan, LocalDate tanggal, LocalTime waktuMulai, LocalTime waktuSelesai, Integer idRuangan){
-//         String tipeAkunQuery = """
-//                     SELECT tipeAkun
-//                     FROM Pengguna
-//                     WHERE IdPengguna ILIKE ?
-//                 """;
-//         String tipeAkun = jdbcTemplate.queryForObject(tipeAkunQuery, String.class, idPengguna);
-//         String sqlQuery="";
-//         if("Mahasiswa".equalsIgnoreCase(tipeAkun)){
-//             masukkanBimbinganBaruMahasiswa(idPengguna, bimbingan, tanggal, waktuMulai, waktuSelesai, idRuangan);
-//         } else if ("Dosen".equalsIgnoreCase(tipeAkun)){
-//             masukkanBimbinganBaruDosen(idPengguna, bimbingan, tanggal, waktuMulai, waktuSelesai, idRuangan);
-//         } else{
-//             throw new IllegalArgumentException("Tipe akun tidak valid");
-//         }
-//     }
-//
-//     public boolean masukkanBimbinganBaruDosen(String idPengguna, Bimbingan bimbingan, LocalDate tanggal, LocalTime waktuMulai, LocalTime waktuSelesai, Integer idRuangan){
-//         String sqlMaxId = "SELECT MAX(IdBim) FROM Bimbingan";
-//         Integer maxId = jdbcTemplate.queryForObject(sqlMaxId, Integer.class);
-//
-//         String sqlQuery = """
-//                         INSERT INTO Bimbingan
-//                         """;
-//         return;
-//
-//     }
-//     public boolean masukkanBimbinganBaruMahasiswa(String idPengguna, Bimbingan bimbingan, LocalDate tanggal, LocalTime waktuMulai, LocalTime waktuSelesai, Integer idRuangan){
-//         String sqlQuery = "INSERT INTO ";
-//
-//
+    private List<BimbinganSiapKirim> getBimbinganMahasiswaByStatus(String tipeStatus, String idPengguna) {
+        String sql = """
+                SELECT 
+                    b.IdBim,
+                    b.TopikBim,
+                    b.DeskripsiBim,
+                    b.Catatan,
+                    r.namaRuangan,
+                    j.tanggal,
+                    j.WaktuMulai,
+                    j.WaktuSelesai,
+                    tb.StatusBimbingan,
+                    tb.statusmhs,
+                    tb.StatusDosen1,
+                    tb.StatusDosen2,
+     
+                    ta.IdTa
+                FROM Bimbingan b
+                JOIN TopikBimbingan tb ON b.IdBim = tb.IdBim
+                JOIN TugasAkhir ta ON tb.IdTA = ta.IdTa
+                LEFT JOIN Ruangan r ON b.idRuangan = r.idRuangan
+                LEFT JOIN PenjadwalanBimbingan pb ON b.IdBim = pb.IdBim
+                LEFT JOIN Jadwal j ON pb.IdJadwal = j.IdJadwal
+                WHERE ta.IdMahasiswa ILIKE ? AND tb.StatusBimbingan ILIKE ?
+                ORDER BY j.tanggal DESC, j.WaktuMulai DESC
+                """;
 
-//     @Override
-//     public List<BimbinganSiapKirim> getBimbinganUserBertipe(String tipeStatus, String idPengguna) {
-//         // Cek tipe akun pengguna
-//         String tipeAkunQuery = """
-//                SELECT tipeAkun
-//                FROM Pengguna
-//                WHERE IdPengguna ILIKE ?
-//            """;
-//         String tipeAkun = jdbcTemplate.queryForObject(tipeAkunQuery, String.class, idPengguna);
-//
-//         // Sesuaikan query berdasarkan tipe akun
-//         if ("Mahasiswa".equalsIgnoreCase(tipeAkun)) {
-//             return getBimbinganMahasiswaByStatus(tipeStatus, idPengguna);
-//         } else if ("Dosen".equalsIgnoreCase(tipeAkun)) {
-//             return getBimbinganDosenByStatus(tipeStatus, idPengguna);
-//         } else {
-//             throw new IllegalArgumentException("Tipe akun tidak valid atau tidak memiliki bimbingan");
-//         }
-//     }
+        return jdbcTemplate.query(sql,this::BimbinganRowMapper, idPengguna, tipeStatus);
+    }
 
-     @Override
-     public List<BimbinganSiapKirim> getBimbinganUserBertipe(String tipeAkun, String tipeStatus, String idPengguna) {
+    private List<BimbinganSiapKirim> getBimbinganDosenByStatus(String tipeStatus, String idPengguna) {
+        String sql = """
+                SELECT 
+                    b.IdBim,
+                    b.TopikBim,
+                    b.DeskripsiBim,
+                    b.Catatan,
+                    r.namaRuangan,
+                    j.tanggal,
+                    j.WaktuMulai,
+                    j.WaktuSelesai,
+                    tb.StatusBimbingan,
+                    tb.statusmhs,
+                    tb.StatusDosen1,
+                    tb.StatusDosen2,
+                    b.catatan,
+                    ta.IdTa
+                FROM Bimbingan b
+                JOIN TopikBimbingan tb ON b.IdBim = tb.IdBim
+                JOIN TugasAkhir ta ON tb.IdTA = ta.IdTa
+                JOIN Dosen_Pembimbing dp ON ta.IdTa = dp.idTA
+                LEFT JOIN Ruangan r ON b.idRuangan = r.idRuangan
+                LEFT JOIN PenjadwalanBimbingan pb ON b.IdBim = pb.IdBim
+                LEFT JOIN Jadwal j ON pb.IdJadwal = j.IdJadwal
+                WHERE dp.IdDosen ILIKE ? AND tb.StatusBimbingan ILIKE ?
+                ORDER BY j.tanggal DESC, j.WaktuMulai DESC
+                """;
 
-         // Langsung menggunakan parameter tipeAkun
-         if ("Mahasiswa".equalsIgnoreCase(tipeAkun)) {
-             return getBimbinganMahasiswaByStatus(tipeStatus, idPengguna);
-         } else if ("Dosen".equalsIgnoreCase(tipeAkun)) {
-             return getBimbinganDosenByStatus(tipeStatus, idPengguna);
-         } else {
-             // Admin atau tipe akun lain yang tidak memiliki list bimbingan
-             // Kita kembalikan list kosong
-             return List.of();
-         }
-     }
+        return jdbcTemplate.query(sql, this::BimbinganRowMapper, idPengguna, tipeStatus);
+    }
 
-     private List<BimbinganSiapKirim> getBimbinganMahasiswaByStatus(String tipeStatus, String idPengguna) {
-         // ... (sama seperti sebelumnya)
-         String sql = """
-            SELECT 
-                b.IdBim,
-                b.TopikBim,
-                b.DeskripsiBim,
-                b.Catatan,
-                r.namaRuangan,
-                j.tanggal,
-                j.WaktuMulai,
-                j.WaktuSelesai,
-                tb.StatusBimbingan,
-                ta.IdTa
-            FROM Bimbingan b
-            JOIN TopikBimbingan tb ON b.IdBim = tb.IdBim
-            JOIN TugasAkhir ta ON tb.IdTA = ta.IdTa
-            LEFT JOIN Ruangan r ON b.idRuangan = r.idRuangan
-            LEFT JOIN PenjadwalanBimbingan pb ON b.IdBim = pb.IdBim
-            LEFT JOIN Jadwal j ON pb.IdJadwal = j.IdJadwal
-            WHERE ta.IdMahasiswa ILIKE ? AND tb.StatusBimbingan ILIKE ?
-            ORDER BY j.tanggal DESC, j.WaktuMulai DESC
-            """;
+    public BimbinganSiapKirim BimbinganRowMapper(ResultSet rs, int rowNum) throws SQLException {
 
-         return jdbcTemplate.query(sql, new BimbinganRowMapper(), idPengguna, tipeStatus);
-     }
+        Integer idBim = rs.getInt("IdBim");
+        Integer idTa = rs.getInt("IdTa");
 
-     private List<BimbinganSiapKirim> getBimbinganDosenByStatus(String tipeStatus, String idPengguna) {
-         // ... (sama seperti sebelumnya)
-         String sql = """
-            SELECT 
-                b.IdBim,
-                b.TopikBim,
-                b.DeskripsiBim,
-                b.Catatan,
-                r.namaRuangan,
-                j.tanggal,
-                j.WaktuMulai,
-                j.WaktuSelesai,
-                tb.StatusBimbingan,
-                ta.IdTa
-            FROM Bimbingan b
-            JOIN TopikBimbingan tb ON b.IdBim = tb.IdBim
-            JOIN TugasAkhir ta ON tb.IdTA = ta.IdTa
-            JOIN Dosen_Pembimbing dp ON ta.IdTa = dp.idTA
-            LEFT JOIN Ruangan r ON b.idRuangan = r.idRuangan
-            LEFT JOIN PenjadwalanBimbingan pb ON b.IdBim = pb.IdBim
-            LEFT JOIN Jadwal j ON pb.IdJadwal = j.IdJadwal
-            WHERE dp.IdDosen ILIKE ? AND tb.StatusBimbingan ILIKE ?
-            ORDER BY j.tanggal DESC, j.WaktuMulai DESC
-            """;
+        List<String> dosenList = getDosenPembimbing(idTa);
 
-         return jdbcTemplate.query(sql, new BimbinganRowMapper(), idPengguna, tipeStatus);
-     }
+        String dosen1 = dosenList.size() > 0 ? dosenList.get(0) : null;
+        String dosen2 = dosenList.size() > 1 ? dosenList.get(1) : null;
 
-     private class BimbinganRowMapper implements RowMapper<BimbinganSiapKirim> {
-         @Override
-         public BimbinganSiapKirim mapRow(ResultSet rs, int rowNum) throws SQLException {
-             Integer idBim = rs.getInt("IdBim");
-             Integer idTa = rs.getInt("IdTa");
+        String statusmhs = rs.getString("statusmhs");
+        String statusDosen1 = rs.getString("StatusDosen1");
+        String statusDosen2 = rs.getString("StatusDosen2");
 
-             List<String> dosenList = getDosenPembimbing(idTa);
-             String dosen1 = dosenList.size() > 0 ? dosenList.get(0) : null;
-             String dosen2 = dosenList.size() > 1 ? dosenList.get(1) : null;
+        List<String> mahasiswaList = getMahasiswaBimbingan(idBim);
 
-             // Ambil daftar mahasiswa yang mengikuti bimbingan ini
-             List<String> mahasiswaList = getMahasiswaBimbingan(idBim);
+        return BimbinganSiapKirim.builder()
+                .idBimbingan(idBim)
+                .topikBimbingan(rs.getString("TopikBim"))
+                .deskripsiBimbingan(rs.getString("DeskripsiBim"))
+                .namaRuangan(rs.getString("namaRuangan"))
+                .DosenBimbingan1(dosen1)
+                .DosenBimbingan2(dosen2)
+                .statusMhs(statusmhs)
+                .statusDosen1(statusDosen1)
+                .statusDosen2(statusDosen2)
+                .TanggalBimbingan(rs.getDate("tanggal"))
+                .waktuMulai(rs.getTime("WaktuMulai"))
+                .waktuSelesai(rs.getTime("WaktuSelesai"))
+                .listNamaMahasiswa(mahasiswaList)
+                .statusBimbingan(rs.getString("StatusBimbingan"))
+                .Catatan(rs.getString("Catatan"))
+                .build();
+    }
 
-             return BimbinganSiapKirim.builder()
-                     .idBimbingan(idBim)
-                     .topikBimbingan(rs.getString("TopikBim"))
-                     .deskripsiBimbingan(rs.getString("DeskripsiBim"))
-                     .namaRuangan(rs.getString("namaRuangan"))
-                     .DosenBimbingan1(dosen1)
-                     .DosenBimbingan2(dosen2)
-                     .TanggalBimbingan(rs.getDate("tanggal"))
-                     .waktuMulai(rs.getTime("WaktuMulai"))
-                     .waktuSelesai(rs.getTime("WaktuSelesai"))
-                     .listNamaMahasiswa(mahasiswaList)
-                     .statusBimbingan(rs.getString("StatusBimbingan"))
-                     .build();
-         }
-     }
-     private List<String> getDosenPembimbing(Integer idTa) {
-         String sql = """
-            SELECT p.nama
-            FROM Dosen_Pembimbing dp
-            JOIN Pengguna p ON dp.IdDosen = p.IdPengguna
-            WHERE dp.idTA = ?
-            ORDER BY dp.IdDosen
-            """;
-         return jdbcTemplate.queryForList(sql, String.class, idTa);
-     }
 
-     private List<String> getMahasiswaBimbingan(Integer idBim) {
-         String sql = """
-            SELECT DISTINCT p.nama
-            FROM TopikBimbingan tb
-            JOIN TugasAkhir ta ON tb.IdTA = ta.IdTa
-            JOIN Pengguna p ON ta.IdMahasiswa = p.IdPengguna
-            WHERE tb.IdBim = ?
-            """;
-         return jdbcTemplate.queryForList(sql, String.class, idBim);
-     }
-     public Bimbingan bimbinganTerdekat(String idMahasiswa){
+    private List<String> getDosenPembimbing(int idTa) {
+        String sql = """
+                SELECT p.nama
+                FROM Dosen_Pembimbing dp
+                JOIN Pengguna p ON dp.IdDosen = p.IdPengguna
+                WHERE dp.idTA = ?
+                ORDER BY p.nama ASC 
+                """;
+        return jdbcTemplate.queryForList(sql, String.class, idTa);
+    }
+
+    // Get dosen pembimbing untuk satu TA tertentu
+    @Override
+    public List<PilihanPengguna> getDosenPembimbingPilihan(int idTa) {
+        String sql = """
+                SELECT p.IdPengguna, p.nama
+                FROM Dosen_Pembimbing dp
+                JOIN Pengguna p ON dp.IdDosen = p.IdPengguna
+                WHERE dp.idTA = ?
+                ORDER BY dp.IdDosen
+                """;
+        return jdbcTemplate.query(sql, this::mapRowToPilihanPengguna, idTa);
+    }
+
+    // Get semua mahasiswa yang dibimbing oleh dosen tertentu
+    @Override
+    public List<PilihanPengguna> getMahasiswaPilihan(String idDosen) {
+        String sql = """
+                SELECT DISTINCT p.IdPengguna, p.nama
+                FROM Dosen_Pembimbing dp
+                JOIN TugasAkhir ta ON dp.idTA = ta.IdTa
+                JOIN Pengguna p ON ta.IdMahasiswa = p.IdPengguna
+                WHERE dp.IdDosen = ?
+                ORDER BY p.nama
+                """;
+        return jdbcTemplate.query(sql, this::mapRowToPilihanPengguna, idDosen);
+    }
+
+    @Override
+    public void updateStatusDosen1(int idBim, String status) {
+        String sql = """
+            UPDATE TopikBimbingan
+            SET StatusDosen1 = ?
+            WHERE IdBim = ?
+        """;
+        jdbcTemplate.update(sql, status,idBim);
+    }
+
+    @Override
+    public void updateStatusDosen2(int idBim, String status) {
+        String sql = """
+            UPDATE TopikBimbingan
+            SET StatusDosen2 = ?
+            WHERE IdBim = ?
+        """;
+        jdbcTemplate.update(sql, status,idBim);
+    }
+
+    @Override
+    public BimbinganDetailStatus getDetailStatusBimbingan(int idBim) {
+        String sql = """
+        SELECT StatusMhs, StatusDosen1, StatusDosen2, StatusBimbingan
+        FROM TopikBimbingan
+        WHERE IdBim = ?
+        LIMIT 1
+        """;
+
+        return jdbcTemplate.queryForObject(sql, (rs, rowNum) -> {
+            BimbinganDetailStatus status = new BimbinganDetailStatus();
+            status.setIdBim(idBim);
+            status.setStatusMhs(rs.getString("StatusMhs"));
+            status.setStatusDosen1(rs.getString("StatusDosen1"));
+            status.setStatusDosen2(rs.getString("StatusDosen2"));
+            status.setStatusBimbingan(rs.getString("StatusBimbingan"));
+            return status;
+        }, idBim);
+    }
+
+
+    @Override
+    public List<Integer> getIdTaByIdBim(int idBim) {
+        String sql = "SELECT IdTA FROM TopikBimbingan WHERE IdBim = ?";
+        return jdbcTemplate.query(sql, (rs, rowNum) -> rs.getInt("IdTA"), idBim);
+    }
+
+    @Override
+    public List<String> getListDosenByIdBim(int idBim) {
+        String sql = """
+        SELECT dp.IdDosen
+        FROM TopikBimbingan tb
+        JOIN Dosen_Pembimbing dp ON dp.idTA = tb.IdTA
+        WHERE tb.IdBim = ?
+    """;
+
+        return jdbcTemplate.query(sql, (rs, i) -> rs.getString("IdDosen"), idBim);
+    }
+
+
+    @Override
+    public void updateStatusMahasiswa(int idBim, String status) {
+        String sql = """
+            UPDATE TopikBimbingan
+            SET StatusMhs = ?
+            WHERE IdBim = ?
+        """;
+        jdbcTemplate.update(sql, status, idBim);
+    }
+
+    @Override
+    public void updateStatusBimbingan(int idBim, String status) {
+        String sql = """
+            UPDATE TopikBimbingan
+            SET statusbimbingan = ?
+            WHERE IdBim = ?
+        """;
+        jdbcTemplate.update(sql, status, idBim);
+    }
+
+    @Override
+    public void updateCatatanBimbingan(int idBim, String catatan) {
+        String sql = """
+            UPDATE bimbingan
+            SET catatan = ?
+            WHERE IdBim = ?
+        """;
+        jdbcTemplate.update(sql, catatan, idBim);
+    }
+
+
+    public void insertJadwalBimbingan(int idJadwal) {
+        String sql = """
+        INSERT INTO Jadwal_Bimbingan(IdJadwal)
+        VALUES (?)
+    """;
+
+        jdbcTemplate.update(sql, idJadwal);
+    }
+    public void insertTopikBimbingan(
+            int idBim,
+            int idTA,
+            String statusMhs,
+            String statusDosen1,
+            String statusDosen2,
+            String statusBimbingan
+    ) {
+        String sql = """
+        INSERT INTO TopikBimbingan(
+            IdBim, IdTA, StatusMhs, StatusDosen1, StatusDosen2, StatusBimbingan
+        )
+        VALUES (?, ?, ?, ?, ?, ?)
+    """;
+
+        jdbcTemplate.update(sql, idBim, idTA, statusMhs, statusDosen1, statusDosen2, statusBimbingan);
+    }
+
+    // RowMapper untuk PilihanPengguna
+    private PilihanPengguna mapRowToPilihanPengguna(ResultSet rs, int rowNum) throws SQLException {
+        return new PilihanPengguna(
+                rs.getString("IdPengguna"),
+                rs.getString("nama")
+        );
+    }
+    @Override
+    public List<String> getMahasiswaBimbingan(Integer idBim) {
+        String sql = """
+                SELECT DISTINCT p.nama
+                FROM TopikBimbingan tb
+                JOIN TugasAkhir ta ON tb.IdTA = ta.IdTa
+                JOIN Pengguna p ON ta.IdMahasiswa = p.IdPengguna
+                WHERE tb.IdBim = ?
+                """;
+        return jdbcTemplate.queryForList(sql, String.class, idBim);
+    }
+
+    public Bimbingan bimbinganTerdekat(String idMahasiswa) {
         String sql = """
                 SELECT 
                     j.tanggal, j.WaktuMulai, j.WaktuSelesai, r.namaRuangan, p_dosen.nama AS namaDosen,
@@ -215,8 +319,7 @@
                         AND (j.tanggal > CURRENT_DATE OR (j.tanggal = CURRENT_DATE AND j.WaktuMulai > CURRENT_TIME))
                         ORDER BY j.tanggal ASC, j.WaktuMulai ASC
                         LIMIT 1
-                """
-        ; //waktu durasi dikurang di java aj
+                """;
         List<Bimbingan> hasil = jdbcTemplate.query(sql, this::mapRowToBimbingan, idMahasiswa);
         if (hasil.isEmpty()) {
             return null;
@@ -232,7 +335,7 @@
         bimbingan.setDeskripsiBim(rs.getString("DeskripsiBim"));
         bimbingan.setNamaRuangan(rs.getString("namaRuangan"));
         bimbingan.setNamaDosen(rs.getString("namaDosen"));
-        bimbingan.setTanggal(rs.getString("tanggal")); 
+        bimbingan.setTanggal(rs.getString("tanggal"));
 
         // Logika Waktu & Durasi
         String mulai = rs.getString("WaktuMulai").substring(0, 5); // Ambil 10:00
@@ -250,4 +353,25 @@
 
         return bimbingan;
     }
- }
+
+    public int insertBimbingan(String deskripsi, String topik, int jumlahPeserta, Integer idRuangan) {
+        String sql = """
+                    INSERT INTO Bimbingan(DeskripsiBim, TopikBim, JumlahPeserta, idRuangan)
+                    VALUES (?, ?, ?, ?)
+                    RETURNING IdBim
+                """;
+
+        return jdbcTemplate.queryForObject(sql, Integer.class,
+                deskripsi, topik, jumlahPeserta, idRuangan);
+    }
+
+    public void insertPenjadwalanBimbingan(int idJadwal, int idBim) {
+        String sql = """
+                    INSERT INTO PenjadwalanBimbingan(IdJadwal, IdBim)
+                    VALUES (?, ?)
+                """;
+
+        jdbcTemplate.update(sql, idJadwal, idBim);
+    }
+
+}

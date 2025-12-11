@@ -195,6 +195,7 @@ body {
     font-weight: bold;
     cursor: pointer;
     transition: all 0.2s;
+    text-decoration: none;
 }
 
 .mid-btn:hover {

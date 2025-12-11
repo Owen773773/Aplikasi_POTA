@@ -96,7 +96,7 @@ CREATE TABLE Dosen_Pembimbing
 
 CREATE TABLE Bimbingan
 (
-    IdBim         INT PRIMARY KEY,
+    IdBim         serial PRIMARY KEY,
     DeskripsiBim  TEXT,
     Catatan       TEXT,
     TopikBim      VARCHAR(150),
@@ -140,7 +140,6 @@ CREATE TABLE Jadwal_Ruangan
 (
     IdJadwal INT PRIMARY KEY,
     FOREIGN KEY (IdJadwal) REFERENCES Jadwal (IdJadwal)
-    -- Catatan: Tabel ini kurang informatif. Harusnya ada kolom idRuangan.
 );
 
 CREATE TABLE Jadwal_Bimbingan
@@ -205,201 +204,183 @@ CREATE TABLE BimbinganNotifikasi
     FOREIGN KEY (IdBim) REFERENCES Bimbingan (IdBim)
 );
 
-INSERT INTO Pengguna
-VALUES ('U001', 'mhs1', 'pass', 'Mahasiswa Satu', TRUE, 'Mahasiswa', NOW()),
-       ('U002', 'mhs2', 'pass', 'Mahasiswa Dua', TRUE, 'Mahasiswa', NOW()),
-       ('U003', 'dsn1', 'pass', 'Dosen Satu', TRUE, 'Dosen', NOW()),
-       ('U004', 'adm1', 'pass', 'Admin Satu', TRUE, 'Admin', NOW()),
-       ('U005', 'dsn2', 'pass', 'Dosen Dua', TRUE, 'Dosen', NOW()),
-       ('U006', 'mhs3', 'pass', 'Mahasiswa Tiga', TRUE, 'Mahasiswa', NOW()),
-       ('U007', 'mhs4', 'pass', 'Mahasiswa Empat', TRUE, 'Mahasiswa', NOW()),
-       ('U008', 'mhs5', 'pass', 'Mahasiswa Lima', TRUE, 'Mahasiswa', NOW()),
-       ('U009', 'dsn3', 'pass', 'Dosen Tiga', TRUE, 'Dosen', NOW()),
-       ('U010', 'dsn4', 'pass', 'Dosen Empat', TRUE, 'Dosen', NOW()),
-       ('U011', 'dsn5', 'pass', 'Dosen Lima', TRUE, 'Dosen', NOW()),
-       ('U012', 'adm2', 'pass', 'Admin Dua', TRUE, 'Admin', NOW()),
-       ('U013', 'adm3', 'pass', 'Admin Tiga', TRUE, 'Admin', NOW()),
-       ('U014', 'adm4', 'pass', 'Admin Empat', TRUE, 'Admin', NOW()),
-       ('U015', 'adm5', 'pass', 'Admin Lima', TRUE, 'Admin', NOW());
+-- ========== INSERT DATA ==========
 
-INSERT INTO Mahasiswa
-VALUES ('U001', 1),
-       ('U002', 2),
-       ('U006', 1),
-       ('U007', 2),
-       ('U008', 3);
+INSERT INTO Pengguna VALUES
+                         ('U001', 'mhs1', 'pass', 'Mahasiswa Satu', TRUE, 'Mahasiswa', NOW()),
+                         ('U002', 'mhs2', 'pass', 'Mahasiswa Dua', TRUE, 'Mahasiswa', NOW()),
+                         ('U003', 'dsn1', 'pass', 'Dosen Satu', TRUE, 'Dosen', NOW()),
+                         ('U004', 'adm1', 'pass', 'Admin Satu', TRUE, 'Admin', NOW()),
+                         ('U005', 'dsn2', 'pass', 'Dosen Dua', TRUE, 'Dosen', NOW()),
+                         ('U006', 'mhs3', 'pass', 'Mahasiswa Tiga', TRUE, 'Mahasiswa', NOW()),
+                         ('U007', 'mhs4', 'pass', 'Mahasiswa Empat', TRUE, 'Mahasiswa', NOW()),
+                         ('U008', 'mhs5', 'pass', 'Mahasiswa Lima', TRUE, 'Mahasiswa', NOW()),
+                         ('U009', 'dsn3', 'pass', 'Dosen Tiga', TRUE, 'Dosen', NOW()),
+                         ('U010', 'dsn4', 'pass', 'Dosen Empat', TRUE, 'Dosen', NOW()),
+                         ('U011', 'dsn5', 'pass', 'Dosen Lima', TRUE, 'Dosen', NOW()),
+                         ('U012', 'adm2', 'pass', 'Admin Dua', TRUE, 'Admin', NOW()),
+                         ('U013', 'adm3', 'pass', 'Admin Tiga', TRUE, 'Admin', NOW()),
+                         ('U014', 'adm4', 'pass', 'Admin Empat', TRUE, 'Admin', NOW()),
+                         ('U015', 'adm5', 'pass', 'Admin Lima', TRUE, 'Admin', NOW());
 
-INSERT INTO Dosen
-VALUES ('U003'),
-       ('U005'),
-       ('U009'),
-       ('U010'),
-       ('U011');
+INSERT INTO Mahasiswa VALUES
+                          ('U001', 1),
+                          ('U002', 2),
+                          ('U006', 1),
+                          ('U007', 2),
+                          ('U008', 3);
 
-INSERT INTO Admin
-VALUES ('U004'),
-       ('U012'),
-       ('U013'),
-       ('U014'),
-       ('U015');
+INSERT INTO Dosen VALUES
+                      ('U003'),
+                      ('U005'),
+                      ('U009'),
+                      ('U010'),
+                      ('U011');
 
-INSERT INTO Akademik
-VALUES (20241, 2, 3),
-       (20242, 2, 3),
-       (20243, 2, 3),
-       (20244, 2, 3),
-       (20245, 2, 3);
+INSERT INTO Admin VALUES
+                      ('U004'),
+                      ('U012'),
+                      ('U013'),
+                      ('U014'),
+                      ('U015');
 
-INSERT INTO Ruangan
-VALUES (1, 'Ruang A'),
-       (2, 'Ruang B'),
-       (3, 'Ruang C'),
-       (4, 'Ruang D'),
-       (5, 'Ruang E');
+INSERT INTO Akademik VALUES
+                         (20241, 2, 3),
+                         (20242, 2, 3),
+                         (20243, 2, 3),
+                         (20244, 2, 3),
+                         (20245, 2, 3);
 
-INSERT INTO TugasAkhir
-VALUES (101, 'Topik A', '2025-03-01', '2025-06-01', 'U001'),
-       (102, 'Topik B', '2025-03-01', '2025-06-01', 'U002'),
-       (103, 'Topik C', '2025-03-01', '2025-06-01', 'U006'),
-       (104, 'Topik D', '2025-03-01', '2025-06-01', 'U007'),
-       (105, 'Topik E', '2025-03-01', '2025-06-01', 'U008'),
-	   (106, 'Topik A', '2025-03-01', '2025-06-01', 'U001'),
-	   (107, 'Topik A', '2025-03-01', '2025-06-01', 'U001'),
-		(108, 'Topik A', '2025-03-01', '2025-06-01', 'U001');
-	   
-	  
+INSERT INTO Ruangan VALUES
+                        (1, 'Ruang A'),
+                        (2, 'Ruang B'),
+                        (3, 'Ruang C'),
+                        (4, 'Ruang D'),
+                        (5, 'Ruang E');
 
-INSERT INTO TAtermasukAkademik
-VALUES (101, 20241),
-       (102, 20241),
-       (103, 20242),
-       (104, 20242),
-       (105, 20243);
+-- PERBAIKAN: Tanggal UTS dan UAS yang realistis
+-- Current date: 10 Desember 2025
+-- UTS: Pertengahan Januari 2026 (sekitar 5-6 minggu dari sekarang)
+-- UAS: Akhir Februari 2026 (3-4 minggu setelah UTS)
+INSERT INTO TugasAkhir VALUES
+                           (101, 'Sistem Informasi Akademik Berbasis Web', '2026-01-15', '2026-02-20', 'U001'),
+                           (102, 'Aplikasi Mobile untuk E-Commerce', '2026-01-15', '2026-02-20', 'U002'),
+                           (103, 'Analisis Data Mining untuk Prediksi Penjualan', '2026-01-20', '2026-02-25', 'U006'),
+                           (104, 'Sistem Rekomendasi Film Menggunakan Machine Learning', '2026-01-20', '2026-02-25', 'U007'),
+                           (105, 'Dashboard Monitoring IoT Real-time', '2026-01-22', '2026-02-27', 'U008');
 
-INSERT INTO Dosen_Pembimbing
-VALUES ('U003', 101),
-       ('U005', 102),
-       ('U009', 103),
-       ('U010', 104),
-       ('U011', 105);
+INSERT INTO TAtermasukAkademik VALUES
+                                   (101, 20241),
+                                   (102, 20241),
+                                   (103, 20242),
+                                   (104, 20242),
+                                   (105, 20243);
 
-INSERT INTO Bimbingan
-VALUES (1, 'Diskusi awal', 'Catatan 1', 'Topik A', 1, 1),
-       (2, 'Review Bab 1', 'Catatan 2', 'Topik B', 2, 2),
-       (3, 'Review Bab 2', 'Catatan 3', 'Topik C', 3, 3),
-       (4, 'Review Bab 3', 'Catatan 4', 'Topik D', 4, 4),
-       (5, 'Akhir', 'Catatan 5', 'Topik E', 5, 5),
-	   (6, 'Pengajuan Judul Baru', 'Catatan6', 'Analisis Laporan', 1, 1),
-	   (7, 'Pengajuan Testing', 'Catatan7', 'Analisis Laporan', 1, 1),
-	   (8, 'Pengajuan Testing', 'Catatan78', 'Analisis Laporan', 1, 1);;
+INSERT INTO Dosen_Pembimbing VALUES
+                                 ('U003', 101),  -- Dosen 1 membimbing TA 101 (U001)
+                                 ('U005', 101),  -- Dosen 2 co-pembimbing TA 101
+                                 ('U003', 102),  -- Dosen 1 membimbing TA 102 (U002)
+                                 ('U009', 103),  -- Dosen 3 membimbing TA 103 (U006)
+                                 ('U010', 104),  -- Dosen 4 membimbing TA 104 (U007)
+                                 ('U011', 105);  -- Dosen 5 membimbing TA 105 (U008)
 
+INSERT INTO Bimbingan (DeskripsiBim, Catatan, TopikBim, JumlahPeserta, idRuangan) VALUES
+                                                                                      ('Diskusi progress Bab 1', 'Revisi metodologi', 'Progress Bab 1', 1, 1),
+                                                                                      ('Review literatur dan teori', 'Tambah referensi', 'Review Bab 2', 1, 2),
+                                                                                      ('Konsultasi implementasi sistem', 'Perbaiki database design', 'Implementasi', 1, 3),
+                                                                                      ('Diskusi hasil testing', 'Ada beberapa bug', 'Testing & Debugging', 1, 4),
+                                                                                      ('Persiapan presentasi', 'Slide sudah oke', 'Persiapan Sidang', 1, 5),
+                                                                                      ('Pengajuan topik baru', '-', 'Pengajuan Judul', 1, 1),
+                                                                                      ('Konsultasi metodologi', '-', 'Metodologi Penelitian', 1, 2);
 
-INSERT INTO TopikBimbingan
-VALUES (1, 101, 'Menunggu', 'Menunggu', NULL, 'Terjadwalkan'),
-       (2, 102, 'Menerima', 'Menerima', 'Menunggu', 'Terjadwalkan'),
-       (3, 103, 'Menerima', 'Menolak', NULL, 'Gagal'),
-       (4, 104, 'Dibatalkan', NULL, NULL, 'Gagal'),
-       (5, 105, 'Menerima', 'Menerima', 'Menerima', 'Selesai'),
-	   (6, 106, 'Mengajukan', 'Menunggu', NULL, 'Proses'),
-	   (7, 107, 'Mengajukan', 'Menerima', 'Menerima', 'Selesai'),
-	   (8, 108, 'Mengajukan', 'Menerima', 'Menerima', 'Terjadwalkan');
+INSERT INTO TopikBimbingan VALUES
+                               (1, 101, 'Menyetujui', 'Menyetujui', 'Menyetujui', 'Terjadwalkan'),
+                               (2, 102, 'Menyetujui', 'Menyetujui', NULL, 'Terjadwalkan'),
+                               (3, 103, 'Menyetujui', 'Menolak', NULL, 'Gagal'),
+                               (4, 104, 'Dibatalkan', 'Menunggu', NULL, 'Gagal'),
+                               (5, 105, 'Menyetujui', 'Tervalidasi', NULL, 'Selesai'),
+                               (6, 101, 'Menunggu', 'Menyetujui', 'Menunggu', 'Proses'),
+                               (7, 102, 'Menunggu', 'Menyetujui', NULL, 'Proses');
 
-INSERT INTO Jadwal
-VALUES (1, '2025-11-24', '08:00', '10:00', 0),
-       (2, '2025-11-25', '08:00', '10:00', 0),
-       (3, '2025-11-26', '10:00', '12:00', 1),
-       (4, '2025-11-26', '13:00', '15:00', 0),
-       (5, '2025-11-27', '09:00', '11:00', 1),
-       (6, '2025-11-28', '14:00', '16:00', 0),
-       (7, '2025-11-24', '10:00', '12:00', 1)
-        , -- Jadwal kelas Senin
-       (8, '2025-11-25', '13:00', '15:00', 1)
-        , -- Jadwal kelas Selasa
-       (9, '2025-11-26', '08:00', '10:00', 0)
-        , -- Acara pribadi Rabu
-       (10, '2025-11-27', '14:00', '16:00', 1),
-	   (11, '2025-10-01', '09:00', '11:00', 0),
-	   (12, '2025-12-10', '09:00', '11:00', 0),
-	   (13, '2025-12-12', '09:00', '11:00', 0);
--- Jadwal kelas Kamis
+-- PERBAIKAN: Jadwal bimbingan di rentang Desember 2025
+INSERT INTO Jadwal(tanggal, WaktuMulai, WaktuSelesai, berulang) VALUES
+                                                                    -- Bimbingan yang sudah lewat (minggu lalu)
+                                                                    ('2025-12-02', '09:00', '11:00', 0),
+                                                                    ('2025-12-03', '10:00', '12:00', 0),
+                                                                    ('2025-12-04', '13:00', '15:00', 0),
+                                                                    ('2025-12-05', '14:00', '16:00', 0),
+                                                                    ('2025-12-06', '09:00', '11:00', 0),
 
--- Masukkan ke Jadwal_Pribadi untuk pengguna tertentu
-INSERT INTO Jadwal_Pribadi
-VALUES (7, 'U001'), -- Mahasiswa 1 ada kelas
-       (8, 'U002'), -- Mahasiswa 2 ada kelas
-       (9, 'U003'), -- Dosen 1 ada acara
-       (10, 'U006'); -- Mahasiswa 3 ada kelas
+                                                                    -- Bimbingan minggu ini (10 Des 2025 = Rabu)
+                                                                    ('2025-12-11', '09:00', '11:00', 0),  -- Besok (Kamis)
+                                                                    ('2025-12-12', '13:00', '15:00', 0),  -- Jumat
 
-INSERT INTO Jadwal_Ruangan
-VALUES (1),
-       (2),
-       (3),
-       (4),
-       (5);
+                                                                    -- Jadwal pribadi (kelas/acara pribadi)
+                                                                    ('2025-12-11', '14:00', '16:00', 0),  -- U001 ada kelas
+                                                                    ('2025-12-12', '09:00', '11:00', 0),  -- U002 ada kelas
+                                                                    ('2025-12-16', '10:00', '12:00', 0),  -- U003 ada rapat
+                                                                    ('2025-12-17', '13:00', '15:00', 0);  -- U006 ada kelas
 
-INSERT INTO Jadwal_Bimbingan
-VALUES (1),
-       (2),
-       (3),
-       (4),
-       (5),
-	   (11),
-	   (12),
-	   (13);
+INSERT INTO Jadwal_Pribadi VALUES
+                               (8, 'U001'),   -- Mahasiswa 1 ada kelas Kamis 14.00
+                               (9, 'U002'),   -- Mahasiswa 2 ada kelas Jumat 09.00
+                               (10, 'U003'),  -- Dosen 1 ada rapat Senin 10.00
+                               (11, 'U006');  -- Mahasiswa 3 ada kelas Selasa 13.00
 
-INSERT INTO PenjadwalanBimbingan
-VALUES (1, 1),
-       (2, 2),
-       (3, 3),
-       (4, 4),
-       (5, 5),
-	   (11, 6),
-	   (12, 7),
-	   (13, 8);
-	   
-INSERT INTO PemblokiranRuangan
-VALUES (1, 'U004', 1, NOW(), 'Perbaikan'),
-       (2, 'U012', 2, NOW(), 'Pembersihan'),
-       (3, 'U013', 3, NOW(), 'Acara Khusus'),
-       (4, 'U014', 4, NOW(), 'Maintenance'),
-       (5, 'U015', 5, NOW(), 'Kerusakan');
+INSERT INTO Jadwal_Ruangan VALUES
+                               (1), (2), (3), (4), (5);
 
-INSERT INTO Notifikasi
-VALUES (1, 'Diterima', NOW()),
-       (2, 'Menunggu', NOW()),
-       (3, 'Ditolak', NOW()),
-       (4, 'Dibatalkan', NOW()),
-       (5, 'Ditolak', NOW()),
-	   (6, 'Menunggu', NOW()),
-	   (7, 'Menunggu', NOW()),
-	   (8, 'Menunggu', NOW());
+INSERT INTO Jadwal_Bimbingan VALUES
+                                 (1), (2), (3), (4), (5), (6), (7);
 
-INSERT INTO MahasiswaNotifikasi
-VALUES ('U001', 1),
-       ('U002', 2),
-       ('U006', 3),
-       ('U007', 4),
-       ('U008', 5),
-	   ('U001', 6),
-	   ('U001', 7),
-	   ('U001', 8);
+INSERT INTO PenjadwalanBimbingan VALUES
+                                     (1, 1),  -- Jadwal 1 untuk Bimbingan 1
+                                     (2, 2),  -- Jadwal 2 untuk Bimbingan 2
+                                     (3, 3),  -- dst...
+                                     (4, 4),
+                                     (5, 5),
+                                     (6, 6),
+                                     (7, 7);
 
-INSERT INTO DosenNotifikasi
-VALUES ('U003', 1),
-       ('U005', 2),
-       ('U009', 3),
-       ('U010', 4),
-       ('U011', 5),
-	   ('U003', 6),
-	   ('U003', 7),
-	   ('U003', 8);
+INSERT INTO PemblokiranRuangan VALUES
+                                   (1, 'U004', 1, NOW(), 'Perbaikan AC dan proyektor'),
+                                   (2, 'U012', 2, NOW(), 'Pembersihan rutin semester'),
+                                   (3, 'U013', 3, NOW(), 'Acara seminar departemen'),
+                                   (4, 'U014', 4, NOW(), 'Maintenance jaringan'),
+                                   (5, 'U015', 5, NOW(), 'Kerusakan kursi dan meja');
 
-INSERT INTO BimbinganNotifikasi
-VALUES (1, 1),
-       (2, 2),
-       (3, 3),
-       (4, 4),
-       (5, 5),
-	   (6,6),
-	   (7,7),
-	   (8,8);
+INSERT INTO Notifikasi (tipeNotif, waktuAcara) VALUES
+                                                   ('Diterima', NOW() - INTERVAL '5 days'),
+                                                   ('Menunggu', NOW() - INTERVAL '3 days'),
+                                                   ('Ditolak', NOW() - INTERVAL '4 days'),
+                                                   ('Dibatalkan', NOW() - INTERVAL '2 days'),
+                                                   ('Ditolak', NOW() - INTERVAL '6 days'),
+                                                   ('Menunggu', NOW() - INTERVAL '1 day'),
+                                                   ('Menunggu', NOW());
+
+INSERT INTO MahasiswaNotifikasi VALUES
+                                    ('U001', 1),
+                                    ('U002', 2),
+                                    ('U006', 3),
+                                    ('U007', 4),
+                                    ('U008', 5),
+                                    ('U001', 6),
+                                    ('U002', 7);
+
+INSERT INTO DosenNotifikasi VALUES
+                                ('U003', 1),
+                                ('U003', 2),
+                                ('U009', 3),
+                                ('U010', 4),
+                                ('U011', 5),
+                                ('U003', 6),
+                                ('U003', 7);
+
+INSERT INTO BimbinganNotifikasi VALUES
+                                    (1, 1),
+                                    (2, 2),
+                                    (3, 3),
+                                    (4, 4),
+                                    (5, 5),
+                                    (6, 6),
+                                    (7, 7);

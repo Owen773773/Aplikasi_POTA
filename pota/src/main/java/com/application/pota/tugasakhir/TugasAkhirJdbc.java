@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.List;
 
 @Repository
@@ -13,6 +14,19 @@ import java.util.List;
 public class TugasAkhirJdbc implements TugasAkhirRepository {
 
     private final JdbcTemplate jdbcTemplate;
+
+    @Override
+    public int getIdTugasAkhir(String idPengguna) {
+        String sql = """
+        SELECT IdTa
+        FROM TugasAkhir
+        WHERE IdMahasiswa = ?
+        ORDER BY IdTa DESC
+        LIMIT 1
+        """;
+
+        return (int)jdbcTemplate.queryForObject(sql, Integer.class, idPengguna);
+    }
 
     @Override
     public TugasAkhir getProfilMahasiswa(String idMahasiswa) {
@@ -76,6 +90,24 @@ public class TugasAkhirJdbc implements TugasAkhirRepository {
         }
         return profilMahasiswa;
     }
+    @Override
+    public String getIdMahasiswaByIdTa(int idTa) {
+        String sql = "SELECT IdMahasiswa FROM TugasAkhir WHERE IdTa = ?";
+        return jdbcTemplate.queryForObject(sql, String.class, idTa);
+    }
+
+    @Override
+    public List<Integer> getListIdTugasAkhir(String idPengguna) {
+        String sql = """
+                SELECT ta.IdTa
+                FROM TugasAkhir ta
+                JOIN dosen_pembimbing dp ON dp.idta = ta.idta
+                WHERE dp.iddosen = ?
+                ORDER BY ta.IdTa DESC
+                """;
+
+        return jdbcTemplate.query(sql, (rs, rowNum) -> rs.getInt("IdTa"), idPengguna);
+    }
 
     private TugasAkhir mapRowToTugasAkhir(ResultSet rs, int rowNum) throws SQLException {
         TugasAkhir ta = new TugasAkhir();
@@ -88,7 +120,34 @@ public class TugasAkhirJdbc implements TugasAkhirRepository {
         ta.setSemesterAktif("Ganjil 2025/2026"); //ini hardcode, ntar ganti 
         return ta;
     }
+// Tambahkan di TugasAkhirJdbc.java (implementasi)
 
+    @Override
+    public LocalDate getTanggalUtsByIdMahasiswa(String idMahasiswa) {
+        String sql = """
+        SELECT TanggalUTS
+        FROM TugasAkhir
+        WHERE IdMahasiswa = ?
+        ORDER BY TanggalUTS DESC
+        LIMIT 1
+    """;
+
+        return jdbcTemplate.queryForObject(sql, LocalDate.class, idMahasiswa);
+
+    }
+
+    @Override
+    public LocalDate getTanggalUasByIdMahasiswa(String idMahasiswa) {
+        String sql = """
+        SELECT TanggalUAS
+        FROM TugasAkhir
+        WHERE IdMahasiswa = ?
+        ORDER BY TanggalUAS DESC
+        LIMIT 1
+    """;
+
+        return jdbcTemplate.queryForObject(sql, LocalDate.class, idMahasiswa);
+    }
     // private TugasAkhir mapRowToTugasAkhir(ResultSet rs, int rowNum) throws SQLException {
     //     TugasAkhir  ta = new TugasAkhir();
     //     ta.setIdTa(rs.getInt("Idta"));

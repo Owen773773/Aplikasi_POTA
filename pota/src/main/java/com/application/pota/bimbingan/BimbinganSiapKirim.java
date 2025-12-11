@@ -22,11 +22,15 @@ public class BimbinganSiapKirim {
     private String namaRuangan;
     private String DosenBimbingan1;
     private String DosenBimbingan2;
+    private String statusMhs;
+    private String statusDosen1;
+    private String statusDosen2;
     private Date TanggalBimbingan;
     private Time waktuMulai;
     private Time waktuSelesai;
     private List<String> listNamaMahasiswa;
     private String statusBimbingan;
+    private String Catatan;
 
     // Helper methods untuk Thymeleaf
 
@@ -88,7 +92,9 @@ public class BimbinganSiapKirim {
             return DosenBimbingan1 + ", " + DosenBimbingan2;
         }
     }
-
+    public Integer getIdBimbingan() {
+        return idBimbingan;
+    }
     /**
      * List mahasiswa untuk display
      */

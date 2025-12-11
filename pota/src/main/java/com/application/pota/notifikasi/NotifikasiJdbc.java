@@ -5,16 +5,16 @@ import lombok.RequiredArgsConstructor;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
 @Repository
 @RequiredArgsConstructor  // Lombok untuk constructor injection
 public class NotifikasiJdbc implements NotifikasiRepository {
-    @Autowired
+
     private final JdbcTemplate jdbcTemplate;
     
     public Notifikasi getById(int id){ //bisi perlu
@@ -98,23 +98,62 @@ public class NotifikasiJdbc implements NotifikasiRepository {
         return notif;
     }
 
+//    @Override
+//    public void buatNotifikasiBaru(Notifikasi notif, String username) {
+//        String sqlNotifikasi = "INSERT INTO Notifikasi (tipeNotif, waktuAcara) VALUES (?, ?) RETURNING idNotifikasi";//returning untuk mengambil index berdasarkan yg baru di insert ataupun delete
+//        int newId = jdbcTemplate.queryForObject(sqlNotifikasi, Integer.class, notif.getTipeNotif(), notif.getWaktuAcara());
+//
+//        String sqlCekRole = "SELECT tipeAkun FROM Pengguna WHERE username = ?";
+//        String role = jdbcTemplate.queryForObject(sqlCekRole, String.class, username);
+//
+//        String sqlAmbilIdPengguna = "SELECT IdPengguna FROM Pengguna WHERE username = ?";
+//        String idPengguna = jdbcTemplate.queryForObject(sqlAmbilIdPengguna, String.class, username);
+//
+//        if ("Mahasiswa".equalsIgnoreCase(role)) {
+//            String sqlRelasi = "INSERT INTO MahasiswaNotifikasi (IdPengguna, IdNotifikasi) VALUES (?, ?)";
+//            jdbcTemplate.update(sqlRelasi, idPengguna, newId);
+//        } else if ("Dosen".equalsIgnoreCase(role)) {
+//            String sqlRelasi = "INSERT INTO DosenNotifikasi (IdPengguna, IdNotifikasi) VALUES (?, ?)";
+//            jdbcTemplate.update(sqlRelasi, idPengguna, newId);
+//        }
+//    }
     @Override
-    public void buatNotifikasiBaru(Notifikasi notif, String username) {
-        String sqlNotifikasi = "INSERT INTO Notifikasi (tipeNotif, waktuAcara) VALUES (?, ?) RETURNING idNotifikasi";//returning untuk mengambil index berdasarkan yg baru di insert ataupun delete
-        int newId = jdbcTemplate.queryForObject(sqlNotifikasi, Integer.class, notif.getTipeNotif(), notif.getWaktuAcara());
+    public Integer insertNotifikasi(String tipe) {
+        String sql = """
+            INSERT INTO Notifikasi(tipeNotif,waktuacara)
+            VALUES (?, now())
+            RETURNING idNotifikasi
+        """;
 
-        String sqlCekRole = "SELECT tipeAkun FROM Pengguna WHERE username = ?";
-        String role = jdbcTemplate.queryForObject(sqlCekRole, String.class, username);
-        
-        String sqlAmbilIdPengguna = "SELECT IdPengguna FROM Pengguna WHERE username = ?";
-        String idPengguna = jdbcTemplate.queryForObject(sqlAmbilIdPengguna, String.class, username);
-
-        if ("Mahasiswa".equalsIgnoreCase(role)) {
-            String sqlRelasi = "INSERT INTO MahasiswaNotifikasi (IdPengguna, IdNotifikasi) VALUES (?, ?)";
-            jdbcTemplate.update(sqlRelasi, idPengguna, newId);
-        } else if ("Dosen".equalsIgnoreCase(role)) {
-            String sqlRelasi = "INSERT INTO DosenNotifikasi (IdPengguna, IdNotifikasi) VALUES (?, ?)";
-            jdbcTemplate.update(sqlRelasi, idPengguna, newId);
-        }
+        return jdbcTemplate.queryForObject(sql, Integer.class, tipe);
     }
+
+    @Override
+    public void insertMahasiswaNotifikasi(String idMhs, int idNotif) {
+        String sql = """
+            INSERT INTO mahasiswanotifikasi(idpengguna, idnotifikasi)
+            VALUES (?, ?)
+        """;
+
+        jdbcTemplate.update(sql, idMhs, idNotif);
+    }
+    @Override
+    public void insertBimbinganNotifikasi(int idNotif, int idBim) {
+        String sql = """
+            INSERT INTO bimbingannotifikasi(idnotifikasi, idbim)
+            VALUES (?, ?)
+        """;
+
+        jdbcTemplate.update(sql, idNotif, idBim);
+    }
+    @Override
+    public void insertDosenNotifikasi(String idDosen, int idNotif) {
+        String sql = """
+        INSERT INTO dosennotifikasi(IdPengguna, IdNotifikasi)
+        VALUES (?, ?)
+    """;
+
+        jdbcTemplate.update(sql, idDosen, idNotif);
+    }
+
 }

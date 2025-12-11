@@ -7,6 +7,7 @@
     <title>POTA - Akun</title>
     <link rel="stylesheet" href="/css/style.css">
     <link rel="stylesheet" href="/css/dosen.css">
+    <link rel="stylesheet" href="/css/StylePopup.css">
 </head>
 
 <body>
@@ -71,23 +72,25 @@
 
                 <div class="ringkasan-grid">
                     <div class="ringkasan-info">
-                        <p>Semester Aktif   : <b>Ganjil 2025/2026</b></p>
-                        <p>Tahap Bimbingan : <b>Pra - UTS</b></p>
-                        <p>Jumlah Mahasiswa : <b>9</b></p>
+                        <p>Semester Aktif   : <b th:text="${semesterAktif}">Semester Aktif Placeholder</b></p>
+                        <p>Tahap Bimbingan : <b th:text="${tahapBimb}">Tahap Bimbingan Placeholder</b></p>
+                        <p>Jumlah Mahasiswa : <b th:text="${nMH}">Jumlah Mahasiswa Placeholder</b></p>
                     </div>
 
                     <div class="target-box">
                         <h3>Pra - UTS</h3>
-                        <div class="target-number">2</div>
+                        <div class="target-number" th:if="${tahapBimb == 'Pra - UTS'}" th:text="${jumlahMHMemenuhi}">jumlah Mahasiswa Memenuhi Placeholder</div>
+                        <div class="target-number" th:unless="${tahapBimb == 'Pra - UTS'}">-</div>
                         <p>Memenuhi Target Pra - UTS</p>
-                        <span>Total Mahasiswa: 7</span>
+                        <span>Total Mahasiswa: <span th:text="${nMH}">Total Mahasiswa Placeholder</span></span>
                     </div>
 
                     <div class="target-box">
                         <h3>Pasca - UTS</h3>
-                        <div class="target-number">-</div>
+                        <div class="target-number" th:if="${tahapBimb == 'Pasca - UTS'}" th:text="${jumlahMHMemenuhi}">jumlah Mahasiswa Memenuhi Placeholder</div>
+                        <div class="target-number" th:unless="${tahapBimb == 'Pasca - UTS'}">-</div>
                         <p>Memenuhi Target Pasca - UTS</p>
-                        <span>Total Mahasiswa: 7</span>
+                        <span>Total Mahasiswa: <span th:text="${nMH}">Total Mahasiswa Placeholder</span></span>
                     </div>
                 </div>
             </section>
@@ -101,8 +104,8 @@
                     </div>
 
                     <div class="mid-content">
-                        <span class="target-number">2</span>
-                        <button class="mid-btn">Lihat Detail</button>
+                        <span class="target-number" th:text="${nPengajuan}">Banyak Pengajuan Placeholder</span>
+                        <a class="mid-btn" href="/dosen/bimbingan">Lihat Detail</a>
                     </div>
                 </div>
 
@@ -112,8 +115,8 @@
                     </div>
 
                     <div class="mid-content">
-                        <span class="target-number">4</span>
-                        <button class="mid-btn">Lihat Detail</button>
+                        <span class="target-number" th:text="${currentBimbingan}">Bimbingan Hari Ini Placeholder</span>
+                        <a href="/dosen/bimbinganTerjadwal" class="mid-btn">Lihat Detail</a>
                     </div>
                 </div>
 
@@ -123,69 +126,253 @@
             <section class="card card-full">
                 <div id="header-bottom">
                     <h2>Bimbingan Saat ini</h2>
-                    <div class="clock">12:00</div>
                 </div>
 
-                <div class="bottom-grid">
+                <!-- Tidak ada bimbingan -->
+                <div class="bottom-grid" th:unless="${adaBimbingan}">
+                    <p>Tidak ada bimbingan untuk saat ini</p>
+                </div>
+
+                <!-- Ada bimbingan -->
+                <div class="bottom-grid" th:if="${adaBimbingan}">
                     <div class="bottom-info">
                         <div class="info-row">
                             <span class="info-label">Tanggal</span>
                             <span class="info-separator">:</span>
-                            <span class="info-value">10/8/2025</span>
+                            <span class="info-value" th:text="${currentBimb.DateNow}">Tanggal Placeholder</span>
                         </div>
 
                         <div class="info-row">
                             <span class="info-label">Jam</span>
                             <span class="info-separator">:</span>
-                            <span class="info-value">10 : 00 - 11 : 00</span>
+                            <span class="info-value" th:text="${waktuMulai + ' - ' + waktuSelesai}">Waktu Placeholder</span>
                         </div>
 
                         <div class="info-row">
                             <span class="info-label">Durasi</span>
                             <span class="info-separator">:</span>
-                            <span class="info-value">1 Jam</span>
+                            <span class="info-value" th:text="${durasiJam + ' jam'}">Durasi Placeholder</span>
                         </div>
 
                         <div class="info-row">
                             <span class="info-label">Lokasi</span>
                             <span class="info-separator">:</span>
-                            <span class="info-value">Ruang Tugas Akhir</span>
+                            <span class="info-value" th:text="${currentBimb.lokasi}">Lokasi Placeholder</span>
                         </div>
 
                         <div class="info-row">
                             <span class="info-label">Dosen</span>
                             <span class="info-separator">:</span>
-                            <span class="info-value">Maria Veronica</span>
+                            <span class="info-value" th:text="${currentBimb.dosen}">Dosen Placeholder</span>
                         </div>
 
                         <div class="info-row">
                             <span class="info-label">Mahasiswa</span>
                             <span class="info-separator">:</span>
                             <div class="info-value">
-                                <div class="mahasiswa-list">
-                                    <span>Budi Santoso (123456)</span>
-                                    <span>Ani Wijaya (123457)</span>
-                                    <span>Citra Lestari (123458)</span>
-                                </div>
+                                <div class="mahasiswa-list" th:text="${currentBimb.mahasiswa}">Mahasiswa Placeholder</div>
                             </div>
                         </div>
                     </div>
 
                     <div class="bottom-right">
-                        <textarea placeholder="Catatan:"></textarea>
+                        <textarea id="catatan" placeholder="Catatan:"></textarea>
 
                         <div class="bottom-buttons">
-                            <button class="btn-grey">VALIDASI</button>
-                            <button class="btn-red">Batalkan Bimbingan</button>
+                            <button class="btn-grey"
+                                    onclick="showPopupValidasi(this)"
+                                    th:attr="data-id-bim=${currentBimb.idbim}">
+                                VALIDASI
+                            </button>
+                            <button class="btn-red"
+                                    onclick="showPopupBatal(this)"
+                                    th:attr="data-id-bim=${currentBimb.idbim}">
+                                Batalkan Bimbingan
+                            </button>
                         </div>
                     </div>
                 </div>
             </section>
 
         </div>
+
+
     </main>
 </div>
 
+<!-- Popup Validasi -->
+<div id="popupValidasi" class="popup-overlay">
+    <div class="popup-container">
+        <div class="popup-header">
+            <h1 class="popup-title">Validasi Bimbingan</h1>
+            <button class="popup-close" onclick="closePopup('popupValidasi')">&times;</button>
+        </div>
+        <div class="popup-content">
+            <textarea id="catatanValidasi" class="popup-textarea large"
+                      placeholder="Masukkan catatan (opsional)..."></textarea>
+        </div>
+        <div class="popup-footer">
+            <button class="popup-btn btn-secondary" onclick="closePopup('popupValidasi')">Batal</button>
+            <button class="popup-btn btn-primary" onclick="submitValidasi()">Validasi</button>
+        </div>
+    </div>
+</div>
+
+<!-- Popup Batalkan -->
+<div id="popupBatal" class="popup-overlay">
+    <div class="popup-container">
+        <div class="popup-header">
+            <h1 class="popup-title">Alasan Pembatalan</h1>
+            <button class="popup-close" onclick="closePopup('popupBatal')">&times;</button>
+        </div>
+        <div class="popup-content">
+            <textarea id="alasanBatal" class="popup-textarea large"
+                      placeholder="Masukkan alasan pembatalan (wajib)..."></textarea>
+        </div>
+        <div class="popup-footer">
+            <button class="popup-btn btn-secondary" onclick="closePopup('popupBatal')">Batal</button>
+            <button class="popup-btn btn-danger" onclick="submitPembatalan()">Batalkan</button>
+        </div>
+    </div>
+</div>
+
 </body>
+<script>
+    let currentIdBim = null;
+
+    // Cek status tombol saat halaman dimuat
+    window.addEventListener('DOMContentLoaded', function() {
+        const idBim = document.querySelector('[data-id-bim]')?.getAttribute('data-id-bim');
+        if (idBim) {
+            cekStatusTombol(idBim, document.querySelector('.bottom-grid'));
+        }
+    });
+
+    function cekStatusTombol(idBim, cardElement) {
+        fetch(`/dosen/bimbingan/cek-aksi?idBim=${idBim}`)
+            .then(response => response.json())
+            .then(data => {
+                const btnValidasi = cardElement.querySelector('.btn-grey');
+                const btnBatalkan = cardElement.querySelector('.btn-red');
+
+                if (btnValidasi) {
+                    if (!data.bisaValidasi) {
+                        btnValidasi.disabled = true;
+                        btnValidasi.style.backgroundColor = 'var(--btn-grey-border)';
+                        btnValidasi.style.cursor = 'not-allowed';
+                    }
+                }
+
+                if (btnBatalkan) {
+                    if (!data.bisaBatalkan) {
+                        btnBatalkan.disabled = true;
+                        btnBatalkan.style.backgroundColor = 'var(--btn-grey-border)';
+                        btnBatalkan.style.cursor = 'not-allowed';
+                    }
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    }
+
+    // Show popup functions
+    function showPopupValidasi(button) {
+        currentIdBim = button.getAttribute('data-id-bim');
+        document.getElementById('catatanValidasi').value = '';
+        document.getElementById('popupValidasi').classList.add('active');
+    }
+
+    function showPopupBatal(button) {
+        currentIdBim = button.getAttribute('data-id-bim');
+        document.getElementById('alasanBatal').value = '';
+        document.getElementById('popupBatal').classList.add('active');
+    }
+
+    function closePopup(popupId) {
+        document.getElementById(popupId).classList.remove('active');
+        currentIdBim = null;
+    }
+
+    // Submit functions
+    function submitValidasi() {
+        const catatan = document.getElementById('catatanValidasi').value;
+
+        if (!currentIdBim) {
+            alert('ID Bimbingan tidak ditemukan!');
+            return;
+        }
+
+        if (!confirm('Apakah Anda yakin ingin memvalidasi bimbingan ini?')) {
+            return;
+        }
+
+        fetch('/dosen/bimbingan/validasi', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: `idBim=${currentIdBim}&catatan=${encodeURIComponent(catatan)}`
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert(data.message);
+                    closePopup('popupValidasi');
+                    location.reload();
+                } else {
+                    alert(data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Terjadi kesalahan saat memproses permintaan.');
+            });
+    }
+
+    function submitPembatalan() {
+        const catatan = document.getElementById('alasanBatal').value;
+
+        if (!currentIdBim) {
+            alert('ID Bimbingan tidak ditemukan!');
+            return;
+        }
+
+        if (!catatan || catatan.trim() === '') {
+            alert('Alasan pembatalan wajib diisi!');
+            return;
+        }
+
+        if (!confirm('Apakah Anda yakin ingin membatalkan bimbingan ini?')) {
+            return;
+        }
+
+        fetch('/dosen/bimbingan/batalkan', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: `idBim=${currentIdBim}&catatan=${encodeURIComponent(catatan)}`
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert(data.message);
+                    closePopup('popupBatal');
+                    location.reload();
+                } else {
+                    alert(data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Terjadi kesalahan saat memproses permintaan.');
+            });
+    }
+
+    // Close popup when clicking outside
+    document.querySelectorAll('.popup-overlay').forEach(overlay => {
+        overlay.addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.classList.remove('active');
+                currentIdBim = null;
+            }
+        });
+    });
+</script>
 
 </html>

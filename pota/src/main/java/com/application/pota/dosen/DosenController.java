@@ -121,7 +121,6 @@ class DosenController {
             model.addAttribute("adaBimbingan", true);
             model.addAttribute("waktuMulai", currentBimb.getWaktuMulai());
             model.addAttribute("waktuSelesai", currentBimb.getWaktuSelesai());
-
             LocalTime mulai = currentBimb.getWaktuMulai().toLocalTime();
             LocalTime selesai = currentBimb.getWaktuSelesai().toLocalTime();
 

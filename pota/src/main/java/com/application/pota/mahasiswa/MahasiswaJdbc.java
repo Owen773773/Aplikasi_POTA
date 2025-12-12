@@ -201,6 +201,7 @@ public class MahasiswaJdbc implements MahasiswaRepository {
             WHERE ta.IdMahasiswa = ?
             AND tb.StatusBimbingan = 'Terjadwalkan'
             AND j.tanggal >= CURRENT_DATE
+            AND j.WaktuMulai >= CURRENT_TIME
             ORDER BY j.tanggal, j.WaktuMulai
             LIMIT 1
             """;

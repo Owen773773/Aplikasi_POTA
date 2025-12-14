@@ -125,7 +125,7 @@
     </main>
 </div>
 
-<!-- Popup Validasi -->
+<!-- Popup Validasi - SAMA SEPERTI DASHBOARD DOSEN -->
 <div id="popupValidasi" class="popup-overlay">
     <div class="popup-container">
         <div class="popup-header">
@@ -133,18 +133,17 @@
             <button class="popup-close" onclick="closePopup('popupValidasi')">&times;</button>
         </div>
         <div class="popup-content">
-            <div class="popup-section-title">Catatan Validasi</div>
-            <textarea id="catatanValidasi" class="popup-textarea"
-                      placeholder="Masukkan catatan validasi (opsional)..."></textarea>
+            <textarea id="catatanValidasi" class="popup-textarea large"
+                      placeholder="Masukkan catatan (opsional)..."></textarea>
         </div>
         <div class="popup-footer">
             <button class="popup-btn btn-secondary" onclick="closePopup('popupValidasi')">Batal</button>
-            <button class="popup-btn btn-success" onclick="submitValidasi()">Validasi</button>
+            <button class="popup-btn btn-primary" onclick="submitValidasi()">Validasi</button>
         </div>
     </div>
 </div>
 
-<!-- Popup Pembatalan -->
+<!-- Popup Pembatalan - SAMA SEPERTI DASHBOARD DOSEN -->
 <div id="popupBatal" class="popup-overlay">
     <div class="popup-container">
         <div class="popup-header">
@@ -152,8 +151,8 @@
             <button class="popup-close" onclick="closePopup('popupBatal')">&times;</button>
         </div>
         <div class="popup-content">
-                <textarea id="alasanBatal" class="popup-textarea large"
-                          placeholder="Masukkan alasan pembatalan (wajib)..."></textarea>
+            <textarea id="alasanBatal" class="popup-textarea large"
+                      placeholder="Masukkan alasan pembatalan (wajib)..."></textarea>
         </div>
         <div class="popup-footer">
             <button class="popup-btn btn-secondary" onclick="closePopup('popupBatal')">Batal</button>
@@ -238,6 +237,11 @@
     function submitValidasi() {
         const catatan = document.getElementById('catatanValidasi').value;
 
+        if (!currentIdBim) {
+            alert('ID Bimbingan tidak ditemukan!');
+            return;
+        }
+
         if (!confirm('Apakah Anda yakin ingin memvalidasi bimbingan ini?')) {
             return;
         }
@@ -265,6 +269,11 @@
 
     function submitPembatalan() {
         const catatan = document.getElementById('alasanBatal').value;
+
+        if (!currentIdBim) {
+            alert('ID Bimbingan tidak ditemukan!');
+            return;
+        }
 
         if (!catatan || catatan.trim() === '') {
             alert('Alasan pembatalan wajib diisi!');

@@ -8,6 +8,7 @@ import com.application.pota.pengguna.PenggunaService;
 import com.application.pota.tugasakhir.TugasAkhirService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -37,6 +38,8 @@ public class BimbinganService {
     private NotifikasiService notifikasiService;
     @Autowired
     private MahasiswaService mahasiswaService;
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
     public List<BimbinganSiapKirim> dapatkanBimbingan(String tipeAkun, String tipeStatus, String idPengguna) {
         // Mengirim tipeAkun ke repository
@@ -98,31 +101,57 @@ public class BimbinganService {
 
         int idTA = tugasAkhirService.getIdTugasAkhir(idMahasiswa);
 
+        List<PilihanPengguna> dosenPembimbingResmi = bimbinganRepository.getDosenPembimbingPilihan(idTA);
+
+        String idDosen1Resmi = dosenPembimbingResmi.get(0).getIdPengguna();
+        String idDosen2Resmi = dosenPembimbingResmi.size() > 1 ? dosenPembimbingResmi.get(1).getIdPengguna() : null;
 
         int idJadwal = jadwalService.insertJadwal(tanggal, waktuMulai, waktuSelesai);
-
         bimbinganRepository.insertJadwalBimbingan(idJadwal);
 
         int idBim = bimbinganRepository.insertBimbingan(deskripsi.isEmpty() ? "-" : deskripsi, topik, 1, null);
-
         bimbinganRepository.insertPenjadwalanBimbingan(idJadwal, idBim);
+
+        String statusDosen1;
+        String statusDosen2;
+
+        boolean pilihDosen1 = dosenList.contains(idDosen1Resmi);
+        boolean pilihDosen2 = idDosen2Resmi != null && dosenList.contains(idDosen2Resmi);
+
+        if (pilihDosen1 && pilihDosen2) {
+            statusDosen1 = "Menunggu";
+            statusDosen2 = "Menunggu";
+        } else if (pilihDosen1) {
+            // Hanya pilih dosen 1
+            statusDosen1 = "Menunggu";
+            statusDosen2 = idDosen2Resmi != null ? "Tidak Terpilih" : null;
+        } else if (pilihDosen2) {
+            // Hanya pilih dosen 2
+            statusDosen1 = "Tidak Terpilih";
+            statusDosen2 = "Menunggu";
+        } else {
+            // Default jika tidak ada yang cocok
+            statusDosen1 = "Menunggu";
+            statusDosen2 = idDosen2Resmi != null ? "Menunggu" : null;
+        }
 
         bimbinganRepository.insertTopikBimbingan(
                 idBim,
                 idTA,
-                "Menyetujui",  // StatusMhs
-                "Menunggu",    // StatusDosen1
-                dosenList.size() > 1 ? "Menunggu" : null,  // StatusDosen2
-                "Proses"       // StatusBimbingan
+                "Menyetujui",      // StatusMhs
+                statusDosen1,      // StatusDosen1
+                statusDosen2,      // StatusDosen2
+                "Proses"           // StatusBimbingan
         );
 
         int idNotif = (int) notifikasiService.insertNotifikasi("Menunggu");
-
         notifikasiService.insertMahasiswaNotifikasi(idMahasiswa, idNotif);
         notifikasiService.insertBimbinganNotifikasi(idNotif, idBim);
 
         for (String dosen : dosenList) {
-            notifikasiService.insertDosenNotifikasi(dosen, idNotif);
+            if (dosen.equals(idDosen1Resmi) || (idDosen2Resmi != null && dosen.equals(idDosen2Resmi))) {
+                notifikasiService.insertDosenNotifikasi(dosen, idNotif);
+            }
         }
     }
 
@@ -272,6 +301,28 @@ public class BimbinganService {
         return "unknown";
     }
 
+    public String getIdMahasiswaByUsername(String username) {
+        String sql = """
+        SELECT m.IdPengguna
+        FROM Mahasiswa m
+        JOIN Pengguna p ON m.IdPengguna = p.IdPengguna
+        WHERE p.username = ?
+    """;
+
+        return jdbcTemplate.queryForObject(sql, String.class, username);
+    }
+
+    public String getIdDosenByUsername(String username) {
+        String sql = """
+        SELECT d.IdPengguna
+        FROM dosen d
+        JOIN Pengguna p ON d.IdPengguna = p.IdPengguna
+        WHERE p.username = ?
+    """;
+
+        return jdbcTemplate.queryForObject(sql, String.class, username);
+    }
+
     public void batalkanBimbingan(int idBim, String peran, String catatan) {
         bimbinganRepository.updateCatatanBimbingan(idBim, catatan);
         bimbinganRepository.updateStatusBimbingan(idBim, "Gagal");
@@ -284,22 +335,22 @@ public class BimbinganService {
             case "dosen1":
                 bimbinganRepository.updateStatusDosen1(idBim, "Dibatalkan");
                 for (String mhs : listMahasiswa) {
-                    notifikasiService.insertMahasiswaNotifikasi(mhs, idNotifikasi);
+                    notifikasiService.insertMahasiswaNotifikasi(getIdMahasiswaByUsername(mhs), idNotifikasi);
                 }
                 break;
 
             case "dosen2":
                 bimbinganRepository.updateStatusDosen2(idBim, "Dibatalkan");
                 for (String mhs : listMahasiswa) {
-                    notifikasiService.insertMahasiswaNotifikasi(mhs, idNotifikasi);
+                    notifikasiService.insertMahasiswaNotifikasi(getIdMahasiswaByUsername(mhs), idNotifikasi);
                 }
                 break;
 
             case "mahasiswa":
                 bimbinganRepository.updateStatusMahasiswa(idBim, "Dibatalkan");
-                notifikasiService.insertDosenNotifikasi(dosenList.get(0), idNotifikasi);
+                notifikasiService.insertDosenNotifikasi(getIdDosenByUsername(dosenList.get(0)), idNotifikasi);
                 if (dosenList.size() > 1) {
-                    notifikasiService.insertDosenNotifikasi(dosenList.get(1), idNotifikasi);
+                    notifikasiService.insertDosenNotifikasi(getIdDosenByUsername(dosenList.get(1)), idNotifikasi);
                 }
                 break;
 
@@ -308,41 +359,52 @@ public class BimbinganService {
         }
     }
 
+    // Di BimbinganService.java, update method terimaBimbingan:
+
     public void terimaBimbingan(int idBim, String peran) {
         List<String> dosenList = bimbinganRepository.getListDosenByIdBim(idBim);
         int notifikasi = notifikasiService.insertNotifikasi("Menerima");
         List<String> listMahasiswa = bimbinganRepository.getMahasiswaBimbingan(idBim);
+
         switch (peran.toLowerCase()) {
             case "dosen1":
                 bimbinganRepository.updateStatusDosen1(idBim, "Menyetujui");
                 for (String mhs : listMahasiswa) {
-                    notifikasiService.insertMahasiswaNotifikasi(mhs, notifikasi);
+                    notifikasiService.insertMahasiswaNotifikasi(getIdMahasiswaByUsername(mhs), notifikasi);
                 }
                 break;
 
             case "dosen2":
                 bimbinganRepository.updateStatusDosen2(idBim, "Menyetujui");
                 for (String mhs : listMahasiswa) {
-                    notifikasiService.insertMahasiswaNotifikasi(mhs, notifikasi);
+                    notifikasiService.insertMahasiswaNotifikasi(getIdMahasiswaByUsername(mhs), notifikasi);
                 }
                 break;
 
             case "mahasiswa":
                 bimbinganRepository.updateStatusMahasiswa(idBim, "Menyetujui");
-                notifikasiService.insertDosenNotifikasi(dosenList.get(0), notifikasi);
+                notifikasiService.insertDosenNotifikasi(getIdDosenByUsername(dosenList.get(0)), notifikasi);
                 if (dosenList.size() > 1) {
-                    notifikasiService.insertDosenNotifikasi(dosenList.get(1), notifikasi);
+                    notifikasiService.insertDosenNotifikasi(getIdDosenByUsername(dosenList.get(1)), notifikasi);
                 }
                 break;
 
             default:
                 throw new IllegalArgumentException("Peran tidak valid: " + peran);
         }
+
         BimbinganDetailStatus temp = bimbinganRepository.getDetailStatusBimbingan(idBim);
 
-        if (temp.getStatusMhs().equals("Menyetujui") && temp.getStatusDosen1().equals("Menyetujui") || temp.getStatusDosen1().equals("Menyetujui")) {
+        boolean dosen1Setuju = "Menyetujui".equals(temp.getStatusDosen1());
+        boolean dosen2SetujuAtauTidakTerpilih =
+                temp.getStatusDosen2() == null ||
+                        "Menyetujui".equals(temp.getStatusDosen2()) ||
+                        "Tidak Terpilih".equals(temp.getStatusDosen2());
+
+        if (dosen1Setuju && dosen2SetujuAtauTidakTerpilih) {
             bimbinganRepository.updateStatusBimbingan(idBim, "Terjadwalkan");
         }
+
     }
 
     public void tolakBimbingan(int idBim, String peran, String catatan) {
@@ -356,24 +418,29 @@ public class BimbinganService {
             case "dosen1":
                 bimbinganRepository.updateStatusDosen1(idBim, "Menolak");
                 for (String mhs : listMahasiswa) {
-                    notifikasiService.insertMahasiswaNotifikasi(mhs, idNotifikasi);
+                    notifikasiService.insertMahasiswaNotifikasi(getIdMahasiswaByUsername(mhs), idNotifikasi);
                 }
-                notifikasiService.insertDosenNotifikasi(dosenList.get(0), idNotifikasi);
-                break;
+                if (dosenList.size() > 1) {
+                    notifikasiService.insertDosenNotifikasi(getIdDosenByUsername(dosenList.get(1)), idNotifikasi);
+
+                }
+
+                 break;
 
             case "dosen2":
                 bimbinganRepository.updateStatusDosen2(idBim, "Menolak");
                 for (String mhs : listMahasiswa) {
-                    notifikasiService.insertMahasiswaNotifikasi(mhs, idNotifikasi);
+                    notifikasiService.insertMahasiswaNotifikasi(getIdMahasiswaByUsername(mhs), idNotifikasi);
                 }
+                notifikasiService.insertDosenNotifikasi(getIdDosenByUsername(dosenList.get(0)), idNotifikasi);
 
                 break;
 
             case "mahasiswa":
                 bimbinganRepository.updateStatusMahasiswa(idBim, "Menolak");
-                notifikasiService.insertDosenNotifikasi(dosenList.get(0), idNotifikasi);
+                notifikasiService.insertDosenNotifikasi(getIdDosenByUsername(dosenList.get(0)), idNotifikasi);
                 if (dosenList.size() > 1) {
-                    notifikasiService.insertDosenNotifikasi(dosenList.get(1), idNotifikasi);
+                    notifikasiService.insertDosenNotifikasi(getIdDosenByUsername(dosenList.get(1)), idNotifikasi);
                 }
                 break;
 
@@ -410,11 +477,16 @@ public class BimbinganService {
 
         switch (peran) {
             case "mahasiswa":
-                return "Menunggu".equals(status.getStatusMhs());
+                return "Menunggu".equals(status.getStatusMhs())
+                        && !"Terjadwalkan".equals(status.getStatusBimbingan());
             case "dosen1":
-                return "Menunggu".equals(status.getStatusDosen1());
+                // Cek apakah status bukan "Tidak Terpilih"
+                return "Menunggu".equals(status.getStatusDosen1()) &&
+                        !"Tidak Terpilih".equals(status.getStatusDosen1());
             case "dosen2":
-                return status.getStatusDosen2() != null && "Menunggu".equals(status.getStatusDosen2());
+                return status.getStatusDosen2() != null &&
+                        "Menunggu".equals(status.getStatusDosen2()) &&
+                        !"Tidak Terpilih".equals(status.getStatusDosen2());
             default:
                 return false;
         }
@@ -425,34 +497,44 @@ public class BimbinganService {
         String peran = status.getPeranPengguna();
 
         if ("mahasiswa".equals(peran)) {
-            // Mahasiswa bisa validasi jika minimal salah satu dosen sudah validasi
             boolean dosen1Valid = "Tervalidasi".equals(status.getStatusDosen1());
-            boolean dosen2Valid = status.getStatusDosen2() == null || "Tervalidasi".equals(status.getStatusDosen2());
+            boolean dosen2Valid = status.getStatusDosen2() == null ||
+                    "Tervalidasi".equals(status.getStatusDosen2()) ||
+                    "Tidak Terpilih".equals(status.getStatusDosen2()); // Dosen2 tidak terpilih dianggap OK
             return (dosen1Valid || dosen2Valid) && "Menyetujui".equals(status.getStatusMhs());
         } else if ("dosen1".equals(peran)) {
-            return "Menyetujui".equals(status.getStatusDosen1());
+            return "Menyetujui".equals(status.getStatusDosen1()) &&
+                    !"Tidak Terpilih".equals(status.getStatusDosen1());
         } else if ("dosen2".equals(peran)) {
-            return status.getStatusDosen2() != null && "Menyetujui".equals(status.getStatusDosen2());
+            return status.getStatusDosen2() != null &&
+                    "Menyetujui".equals(status.getStatusDosen2()) &&
+                    !"Tidak Terpilih".equals(status.getStatusDosen2());
         }
 
         return false;
     }
 
     public boolean bisaTolak(int idBim, String idPengguna) {
-        return bisaTerima(idBim, idPengguna); // Sama dengan terima
+        return bisaTerima(idBim, idPengguna);
     }
 
     public boolean bisaBatalkan(int idBim, String idPengguna) {
         BimbinganDetailStatus status = getDetailStatusBimbingan(idBim, idPengguna);
         String peran = status.getPeranPengguna();
+
         switch (peran) {
             case "mahasiswa":
-                return "Menyetujui".equals(status.getStatusMhs()) || "Terjadwalkan".equals(status.getStatusBimbingan());
+                return "Menyetujui".equals(status.getStatusMhs()) ||
+                        "Terjadwalkan".equals(status.getStatusBimbingan());
             case "dosen1":
-                return "Menyetujui".equals(status.getStatusDosen1()) || "Terjadwalkan".equals(status.getStatusBimbingan());
+                return ("Menyetujui".equals(status.getStatusDosen1()) ||
+                        "Terjadwalkan".equals(status.getStatusBimbingan())) &&
+                        !"Tidak Terpilih".equals(status.getStatusDosen1());
             case "dosen2":
                 return status.getStatusDosen2() != null &&
-                        ("Menyetujui".equals(status.getStatusDosen2()) || "Terjadwalkan".equals(status.getStatusBimbingan()));
+                        ("Menyetujui".equals(status.getStatusDosen2()) ||
+                                "Terjadwalkan".equals(status.getStatusBimbingan())) &&
+                        !"Tidak Terpilih".equals(status.getStatusDosen2());
             default:
                 return false;
         }

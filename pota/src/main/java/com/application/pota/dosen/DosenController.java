@@ -177,6 +177,7 @@ class DosenController {
 
         List<PilihanPengguna> pilihanMahasiwa = bimbinganService.getMahasiswaPilihan(idPengguna);
         model.addAttribute("listMahasiswa", pilihanMahasiwa);
+        model.addAttribute("today", LocalDate.now());
 
         // Tambahkan list ruangan untuk form pengajuan
         List<Ruangan> listRuangan = ruanganService.getAllRuang();

@@ -55,35 +55,31 @@
       </main>
     </div>
 
-  </body>
-<script>
-    // Submit week change to backend
-    function submitWeekChange() {
-        const weekInput = document.getElementById('week-input');
-        const roomSelector = document.getElementById('room-selector');
+    <script>
+
+        function submitWeekChange() {
+            const weekInput = document.getElementById('week-input');
+            const roomSelector = document.getElementById('room-selector');
 
         const currentUrl = new URL(window.location.href);
         currentUrl.searchParams.set('week', weekInput.value);
 
-        // Keep room selection
-        if (roomSelector && roomSelector.value) {
-            currentUrl.searchParams.set('ruanganId', roomSelector.value);
-        }
+            if (roomSelector && roomSelector.value) {
+                currentUrl.searchParams.set('ruanganId', roomSelector.value);
+            }
 
         window.location.href = currentUrl.toString();
     }
 
-    // Handle room change
-    function handleRoomChange(ruanganId) {
-        const weekInput = document.getElementById('week-input');
+        function handleRoomChange(ruanganId) {
+            const weekInput = document.getElementById('week-input');
 
         const currentUrl = new URL(window.location.href);
         currentUrl.searchParams.set('ruanganId', ruanganId);
 
-        // Keep week selection
-        if (weekInput && weekInput.value) {
-            currentUrl.searchParams.set('week', weekInput.value);
-        }
+            if (weekInput && weekInput.value) {
+                currentUrl.searchParams.set('week', weekInput.value);
+            }
 
         window.location.href = currentUrl.toString();
     }

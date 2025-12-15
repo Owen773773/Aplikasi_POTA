@@ -164,7 +164,7 @@
 <script>
     let currentIdBim = null;
 
-    // Toggle card
+
     document.querySelectorAll(".dropdown-btn").forEach(btn => {
         btn.addEventListener("click", () => {
             let card = btn.closest(".card");
@@ -172,7 +172,6 @@
         });
     });
 
-    // Active nav item
     document.querySelectorAll(".nav-item").forEach(item => {
         if (item.textContent.trim() === document.title.replace("POTA - ", "")) {
             item.classList.add("active");
@@ -215,7 +214,7 @@
             .catch(error => console.error('Error:', error));
     }
 
-    // Show popup functions
+
     function showPopupValidasi(button) {
         currentIdBim = button.getAttribute('data-id-bim');
         document.getElementById('catatanValidasi').value = '';
@@ -233,7 +232,7 @@
         currentIdBim = null;
     }
 
-    // Submit functions
+
     function submitValidasi() {
         const catatan = document.getElementById('catatanValidasi').value;
 
@@ -305,7 +304,7 @@
             });
     }
 
-    // Close popup when clicking outside
+
     document.querySelectorAll('.popup-overlay').forEach(overlay => {
         overlay.addEventListener('click', function(e) {
             if (e.target === this) {

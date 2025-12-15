@@ -196,7 +196,6 @@
             .catch(error => console.error('Error:', error));
     }
 
-    // VALIDASI - HANYA ALERT/KONFIRMASI (TANPA POPUP)
     function validasiBimbingan(button) {
         const idBim = button.getAttribute('data-id-bim');
 
@@ -224,7 +223,6 @@
             });
     }
 
-    // BATALKAN - MENGGUNAKAN POPUP SAMA SEPERTI DASHBOARD DOSEN
     function showPopupBatal(button) {
         currentIdBim = button.getAttribute('data-id-bim');
         document.getElementById('alasanBatal').value = '';
@@ -274,7 +272,6 @@
             });
     }
 
-    // Close popup when clicking outside
     document.querySelectorAll('.popup-overlay').forEach(overlay => {
         overlay.addEventListener('click', function(e) {
             if (e.target === this) {

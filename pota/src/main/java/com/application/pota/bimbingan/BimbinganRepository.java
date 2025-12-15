@@ -37,8 +37,6 @@ public interface BimbinganRepository {
     void updateCatatanBimbingan(int idBim, String status);
     void updateStatusBimbingan(int idBim, String status) ;
 
-    // Tambahkan di BimbinganRepository
-
      BimbinganDetailStatus getDetailStatusBimbingan(int idBim) ;
 
      List<Integer> getIdTaByIdBim(int idBim) ;

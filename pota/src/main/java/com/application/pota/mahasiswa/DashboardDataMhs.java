@@ -22,4 +22,5 @@ public class DashboardDataMhs {
     
     // Bimbingan Mendatang
     private BimbinganSiapKirim bimbinganMendatang;
+
 }

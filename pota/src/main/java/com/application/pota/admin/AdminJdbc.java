@@ -4,12 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.List;
-
 @Repository
-@RequiredArgsConstructor  // Lombok untuk constructor injection
+@RequiredArgsConstructor
 public class AdminJdbc implements AdminRepository {
 
     private final JdbcTemplate jdbcTemplate;

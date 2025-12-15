@@ -137,7 +137,7 @@ public class BimbinganJdbc implements BimbinganRepository {
         String dosen1 = dosenList.size() > 0 ? dosenList.get(0) : null;
         String dosen2 = dosenList.size() > 1 ? dosenList.get(1) : null;
 
-        // Handle jika dosen yang sama (edge case)
+        // Handle jika dosen yang sama
         if (dosen1 != null && dosen1.equals(dosen2)) {
             dosen2 = null;
         }

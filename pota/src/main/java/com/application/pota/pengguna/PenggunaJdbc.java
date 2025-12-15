@@ -10,12 +10,11 @@ import java.sql.SQLException;
 import java.util.List;
 
 @Repository
-@RequiredArgsConstructor  // Lombok untuk constructor injection
+@RequiredArgsConstructor
 public class PenggunaJdbc implements PenggunaRepository {
 
     private final JdbcTemplate jdbcTemplate;
 
-    // RowMapper untuk mapping ResultSet ke Pengguna
     private Pengguna mapRowToPengguna(ResultSet rs, int rowNum) throws SQLException {
         Pengguna pengguna = new Pengguna();
         pengguna.setIdPengguna(rs.getString("IdPengguna"));

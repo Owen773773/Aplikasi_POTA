@@ -114,7 +114,7 @@ class DosenController {
         //bawah
         BimbinganDosenDashboard currentBimb = dosenService.getBimbinganSaatIni(idPengguna);
 
-        // Cek null terlebih dahulu sebelum mengakses method apapun
+        // Cek null dulu sebelum mengakses method apapun
         if (currentBimb == null) {
             model.addAttribute("adaBimbingan", false);
         } else {
@@ -167,7 +167,7 @@ class DosenController {
 
         model.addAttribute("tanggalMulaiMinggu", tanggalMulaiFormatted);
 
-        // Ambil data jadwal dengan tipe (PEMBLOKIRAN atau BIMBINGAN)
+        // Ambil data jadwal dengan tipe pemblokiran atau bimbingan
         JadwalService.DataJadwalMingguan temp = jadwalService.dapatkanJadwalMingguan(week, idPengguna, false);
         Map<DayOfWeek, String> HariTanggal = temp.getTanggalHeader();
         List<List<SlotWaktu>> timetableGrid = temp.getGridJadwal();
@@ -203,34 +203,9 @@ class DosenController {
                 .distinct()
                 .collect(Collectors.toList());
 
-        // Panggil service (gabungkan semua mahasiswa)
+        // Panggil service (gabungin semua mahasiswa)
         return jadwalService.cariSlotGabungan(mhsFiltered, idPengguna, tanggal);
     }
-
-
-//    @PostMapping("/ajukan-bimbingan")
-//    @ResponseBody
-//    public Map<String, Object> ajukanBimbingan(
-//            @RequestBody DTOBimbinganDosen request,
-//            HttpSession session) {
-//
-//
-//        String idPengguna = (String) session.getAttribute("idPengguna");
-//
-//
-//        // Parse input
-//        LocalDate tanggal = LocalDate.parse(request.getTanggal());
-//        LocalTime mulai = LocalTime.parse(request.getWaktuMulai());
-//        LocalTime selesai = LocalTime.parse(request.getWaktuSelesai());
-//
-//        bimbinganService.ajukanBimbinganDosen(idPengguna, request.getMahasiswaIds(), request.getTopik(), request.getDeskripsi(), tanggal, mulai, selesai, idRuangan);
-//
-//        Map<String, Object> response = new HashMap<>();
-//        response.put("success", true);
-//        response.put("message", "Pengajuan bimbingan berhasil!");
-//
-//        return response;
-//    }
 
     private LocalDate hitungTanggalMulaiMinggu(int tahun, int minggu) {
         return LocalDate.of(tahun, 1, 1)
@@ -462,7 +437,7 @@ class DosenController {
         LocalTime mulai = LocalTime.parse(jamMulai.replace(".", ":"));
         LocalTime selesai = LocalTime.parse(jamSelesai.replace(".", ":"));
 
-        // Dapatkan ruangan yang tersedia untuk waktu tersebut
+        // ambil ruangan yang tersedia untuk waktu tersebut
         return jadwalService.cariRuanganTersedia(tanggal, mulai, selesai);
     }
 }

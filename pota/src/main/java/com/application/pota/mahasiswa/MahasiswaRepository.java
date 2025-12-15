@@ -1,11 +1,10 @@
 package com.application.pota.mahasiswa;
 
-import java.time.LocalDate;
-import java.util.List;
-
+import com.application.pota.bimbingan.BimbinganSiapKirim;
 import org.springframework.stereotype.Repository;
 
-import com.application.pota.bimbingan.BimbinganSiapKirim;
+import java.time.LocalDate;
+import java.util.List;
 
 @Repository
 public interface MahasiswaRepository {

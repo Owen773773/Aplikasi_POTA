@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 
 import java.sql.Time;
 import java.text.SimpleDateFormat;
-import java.time.Duration;
 import java.util.Date;
 import java.util.List;
 
@@ -32,29 +31,18 @@ public class BimbinganSiapKirim {
     private String statusBimbingan;
     private String Catatan;
 
-    // Helper methods untuk Thymeleaf
-
-    /**
-     * Format tanggal untuk display (dd/MM/yyyy)
-     */
     public String getTanggal() {
         if (TanggalBimbingan == null) return "-";
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
         return sdf.format(TanggalBimbingan);
     }
 
-    /**
-     * Format jam untuk display (HH:mm - HH:mm)
-     */
     public String getJam() {
         if (waktuMulai == null || waktuSelesai == null) return "-";
         SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
         return sdf.format(waktuMulai) + " - " + sdf.format(waktuSelesai);
     }
 
-    /**
-     * Hitung durasi dalam format yang readable (misal: "1 Jam", "2 Jam 30 Menit")
-     */
     public String getDurasi() {
         if (waktuMulai == null || waktuSelesai == null) return "-";
 
@@ -73,16 +61,10 @@ public class BimbinganSiapKirim {
         }
     }
 
-    /**
-     * Nama lokasi untuk display
-     */
     public String getNamaLokasi() {
         return namaRuangan != null ? namaRuangan : "Belum ditentukan";
     }
 
-    /**
-     * Format dosen untuk display (bisa 1 atau 2 dosen)
-     */
     public String getDosen() {
         if (DosenBimbingan1 == null && DosenBimbingan2 == null) {
             return "-";
@@ -95,23 +77,15 @@ public class BimbinganSiapKirim {
     public Integer getIdBimbingan() {
         return idBimbingan;
     }
-    /**
-     * List mahasiswa untuk display
-     */
+
     public List<String> getMahasiswa() {
         return listNamaMahasiswa != null ? listNamaMahasiswa : List.of("-");
     }
 
-    /**
-     * Topik untuk display
-     */
     public String getTopik() {
         return topikBimbingan != null ? topikBimbingan : "-";
     }
 
-    /**
-     * Deskripsi untuk display
-     */
     public String getDeskripsi() {
         return deskripsiBimbingan != null ? deskripsiBimbingan : "-";
     }

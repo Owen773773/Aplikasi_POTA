@@ -1,18 +1,15 @@
 package com.application.pota.notifikasi;
 
 import lombok.RequiredArgsConstructor;
-
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.time.LocalDateTime;
-import java.util.List;
-
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.List;
+
 @Repository
-@RequiredArgsConstructor  // Lombok untuk constructor injection
+@RequiredArgsConstructor
 public class NotifikasiJdbc implements NotifikasiRepository {
 
     private final JdbcTemplate jdbcTemplate;
@@ -98,25 +95,6 @@ public class NotifikasiJdbc implements NotifikasiRepository {
         return notif;
     }
 
-//    @Override
-//    public void buatNotifikasiBaru(Notifikasi notif, String username) {
-//        String sqlNotifikasi = "INSERT INTO Notifikasi (tipeNotif, waktuAcara) VALUES (?, ?) RETURNING idNotifikasi";//returning untuk mengambil index berdasarkan yg baru di insert ataupun delete
-//        int newId = jdbcTemplate.queryForObject(sqlNotifikasi, Integer.class, notif.getTipeNotif(), notif.getWaktuAcara());
-//
-//        String sqlCekRole = "SELECT tipeAkun FROM Pengguna WHERE username = ?";
-//        String role = jdbcTemplate.queryForObject(sqlCekRole, String.class, username);
-//
-//        String sqlAmbilIdPengguna = "SELECT IdPengguna FROM Pengguna WHERE username = ?";
-//        String idPengguna = jdbcTemplate.queryForObject(sqlAmbilIdPengguna, String.class, username);
-//
-//        if ("Mahasiswa".equalsIgnoreCase(role)) {
-//            String sqlRelasi = "INSERT INTO MahasiswaNotifikasi (IdPengguna, IdNotifikasi) VALUES (?, ?)";
-//            jdbcTemplate.update(sqlRelasi, idPengguna, newId);
-//        } else if ("Dosen".equalsIgnoreCase(role)) {
-//            String sqlRelasi = "INSERT INTO DosenNotifikasi (IdPengguna, IdNotifikasi) VALUES (?, ?)";
-//            jdbcTemplate.update(sqlRelasi, idPengguna, newId);
-//        }
-//    }
     @Override
     public Integer insertNotifikasi(String tipe) {
         String sql = """

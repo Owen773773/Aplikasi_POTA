@@ -1,7 +1,5 @@
 package com.application.pota.export;
 
-import com.application.pota.export.ExportRepository;
-import com.application.pota.export.KelayakanSidangDTO;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -27,7 +25,7 @@ public class ExportService {
 
         int rowNum = 0;
 
-        // HEADER
+        // header
         Row header = sheet.createRow(rowNum++);
         header.createCell(0).setCellValue("Nama Mahasiswa");
         header.createCell(1).setCellValue("Topik");
@@ -35,7 +33,7 @@ public class ExportService {
         header.createCell(3).setCellValue("Jumlah Bimbingan Pasca UTS");
         header.createCell(4).setCellValue("Kelayakan");
 
-        // ISI DATA
+        // isi data
         for (KelayakanSidangDTO item : data) {
             Row row = sheet.createRow(rowNum++);
             row.createCell(0).setCellValue(item.getNama());
@@ -45,7 +43,7 @@ public class ExportService {
             row.createCell(4).setCellValue(item.getKelayakan());
         }
 
-        // AUTO SIZE COLUMN
+        // auto size column
         for (int i = 0; i < 5; i++) {
             sheet.autoSizeColumn(i);
         }

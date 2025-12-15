@@ -1,9 +1,7 @@
 package com.application.pota.bimbingan;
 
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import java.util.List;
 

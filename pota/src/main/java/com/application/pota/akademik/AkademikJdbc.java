@@ -1,17 +1,11 @@
 package com.application.pota.akademik;
 
 import lombok.RequiredArgsConstructor;
-
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-import com.application.pota.notifikasi.Notifikasi;
-
 @Repository
-@RequiredArgsConstructor  // Lombok untuk constructor injection
+@RequiredArgsConstructor
 public class AkademikJdbc implements AkademikRepository {
 
     private final JdbcTemplate jdbcTemplate;

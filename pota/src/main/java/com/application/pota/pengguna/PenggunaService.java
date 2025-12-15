@@ -8,8 +8,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class PenggunaService {
-
-    private final PenggunaRepository PenggunaRepository;  // Interface, bukan Jdbc!
+    private final PenggunaRepository PenggunaRepository;
 
     public Pengguna getProfilePengguna(String idPengguna) {
         return PenggunaRepository.getById(idPengguna);

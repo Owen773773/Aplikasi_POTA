@@ -16,7 +16,6 @@ public class BimbinganDetailStatus {
     private String peranPengguna;
     private String idPengguna;
 
-    // Helper methods untuk UI
     public boolean isSudahTerima() {
         switch (peranPengguna) {
             case "mahasiswa":

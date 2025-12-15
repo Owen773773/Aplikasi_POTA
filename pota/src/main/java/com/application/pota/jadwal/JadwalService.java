@@ -18,11 +18,9 @@ import java.util.*;
 @Service
 @RequiredArgsConstructor
 public class JadwalService {
-
     private final PembuatGridJadwal pembuatGridJadwal = new PembuatGridJadwal();
     private final JadwalRepository jadwalRepository;
     private final RuanganService ruanganService;
-
 
     @Data
     @AllArgsConstructor
@@ -41,7 +39,7 @@ public class JadwalService {
     }
 
     public DataJadwalMingguan dapatkanJadwalMingguan(String minggu, String idTarget, boolean apakahRuangan) {
-        // Konversi minggu ke tanggal Senin dan Jumat
+        // konversi minggu ke tanggal Senin dan Jumat
         LocalDate hariSenin = konversiMingguKeHariSenin(minggu);
         LocalDate hariJumat = hariSenin.plusDays(4);
 
@@ -49,8 +47,8 @@ public class JadwalService {
         List<List<SlotWaktu>> gridJadwal;
 
         if (apakahRuangan) {
-            // KHUSUS RUANGAN: Ambil HANYA jadwal bimbingan di ruangan yang dipilih
-            // idTarget adalah ID ruangan yang dipilih admin untuk monitoring
+            // ambil cuma jadwal bimbingan di ruangan yang dipilih
+            // idTarget adalah id ruangan yang dipilih admin untuk monitoring
             int idRuangan = Integer.parseInt(idTarget);
 
             List<JadwalJdbc.JadwalWithStatus> jadwalBimbingan =
@@ -58,7 +56,7 @@ public class JadwalService {
                             hariSenin, hariJumat, idRuangan
                     );
 
-            // Konversi ke JadwalDenganTipe
+            // convert ke JadwalDenganTipe
             List<JadwalDenganTipe> semuaJadwal = new ArrayList<>();
             for (JadwalJdbc.JadwalWithStatus jws : jadwalBimbingan) {
                 semuaJadwal.add(new JadwalDenganTipe(jws.getJadwal(), "BIMBINGAN", jws.getStatus()));
@@ -79,7 +77,7 @@ public class JadwalService {
             // Gabungkan semua jadwal pengguna
             List<JadwalDenganTipe> semuaJadwal = new ArrayList<>();
 
-            // Tambahkan jadwal pribadi (kelas/acara pribadi)
+            // Tambahkan jadwal pribadi (kelas / acara pribadi)
             for (Jadwal j : jadwalPribadi) {
                 semuaJadwal.add(new JadwalDenganTipe(j, "PRIBADI", null));
             }
@@ -98,9 +96,6 @@ public class JadwalService {
         return new DataJadwalMingguan(headerTanggal, gridJadwal, hariSenin, hariJumat);
     }
 
-    /**
-     * Konversi string minggu (format: "2024-W01") ke tanggal hari Senin
-     */
     public static LocalDate konversiMingguKeHariSenin(String minggu) {
         int tahun = Integer.parseInt(minggu.substring(0, 4));
         int nomorMinggu = Integer.parseInt(minggu.substring(6));
@@ -110,7 +105,6 @@ public class JadwalService {
                 .with(IsoFields.WEEK_OF_WEEK_BASED_YEAR, nomorMinggu)
                 .with(DayOfWeek.MONDAY);
     }
-
 
     private Map<DayOfWeek, List<JadwalDenganTipe>> kelompokkanJadwalPerHari(List<JadwalDenganTipe> daftarJadwal) {
         Map<DayOfWeek, List<JadwalDenganTipe>> mapJadwal = new LinkedHashMap<>();
@@ -136,10 +130,6 @@ public class JadwalService {
         return mapJadwal;
     }
 
-    /**
-     * Mencari slot waktu yang tersedia untuk semua individu yang terlibat
-     * Digunakan saat membuat jadwal bimbingan baru
-     */
     public List<String> cariSlotGabungan(
             List<String> listIdIndividu,   // Pengguna lain yang ikut dicek (dosen pembimbing)
             String idIndividuUtama,        // Pengguna yang sedang login (mahasiswa)
@@ -149,14 +139,14 @@ public class JadwalService {
         int jamMulaiKerja = 7;
         int jamSelesaiKerja = 18;
 
-        // 1. Ambil jadwal individu utama (misalnya mahasiswa)
+        // Ambil jadwal individu utama
         List<Jadwal> utamaPribadi =
                 jadwalRepository.findByWeekRangePengguna(tanggal, tanggal, idIndividuUtama);
 
         List<JadwalJdbc.JadwalWithStatus> utamaBimbingan =
                 jadwalRepository.findBimbinganByWeekRangePengguna(tanggal, tanggal, idIndividuUtama);
 
-        // 2. Ambil jadwal semua individu di list
+        // Ambil jadwal semua individu di list
         List<List<Jadwal>> listPribadi = new ArrayList<>();
         List<List<JadwalJdbc.JadwalWithStatus>> listBimbingan = new ArrayList<>();
 
@@ -169,15 +159,15 @@ public class JadwalService {
             );
         }
 
-        // 3. Loop 07.00 – 17.00 (1 jam interval)
+        // Loop 07.00 – 17.00 per jam
         for (int jam = jamMulaiKerja; jam < jamSelesaiKerja; jam++) {
 
-            // Cek apakah individu utama sibuk?
+            // Cek sibuk
             if (isSibuk(jam, utamaPribadi, utamaBimbingan)) {
                 continue;
             }
 
-            // Cek apakah SEMUA individu lain tidak sibuk
+            // Cek semua tidak sibuk
             boolean semuaBisa = true;
 
             for (int i = 0; i < listIdIndividu.size(); i++) {
@@ -200,7 +190,7 @@ public class JadwalService {
     }
 
     private boolean isSibuk(int jamCek, List<Jadwal> jadwalPribadi, List<JadwalJdbc.JadwalWithStatus> jadwalBimbingan) {
-        // Cek Jadwal Pribadi
+        // Cek jadwal pribadi
         for (Jadwal j : jadwalPribadi) {
             int jamMulai = j.getWaktuMulai().toLocalTime().getHour();
             int jamSelesai = j.getWaktuSelesai().toLocalTime().getHour();
@@ -210,10 +200,10 @@ public class JadwalService {
             }
         }
 
-        // Cek Jadwal Bimbingan
+        // Cek jadwal bimbingan
         for (JadwalJdbc.JadwalWithStatus js : jadwalBimbingan) {
             String status = js.getStatus();
-            // Abaikan jadwal yang batal/gagal
+            // biarin jadwal yang batal/gagal
             if (status != null && (status.equalsIgnoreCase("DIBATALKAN") || status.equalsIgnoreCase("GAGAL"))) {
                 continue;
             }
@@ -229,14 +219,11 @@ public class JadwalService {
         return false;
     }
 
-    /**
-     * Membuat header tanggal untuk grid (Senin-Jumat)
-     */
     private Map<DayOfWeek, String> buatHeaderTanggal(LocalDate hariSenin) {
         Map<DayOfWeek, String> headerMap = new LinkedHashMap<>();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy");
 
-        // Senin sampai Jumat (5 hari kerja)
+        // Senin sampai Jumat
         for (int i = 0; i < 5; i++) {
             LocalDate tanggal = hariSenin.plusDays(i);
             DayOfWeek hari = tanggal.getDayOfWeek();

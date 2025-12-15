@@ -120,7 +120,6 @@ public class TugasAkhirJdbc implements TugasAkhirRepository {
         ta.setSemesterAktif("Ganjil 2025/2026"); //ini hardcode, ntar ganti 
         return ta;
     }
-// Tambahkan di TugasAkhirJdbc.java (implementasi)
 
     @Override
     public LocalDate getTanggalUtsByIdMahasiswa(String idMahasiswa) {
@@ -148,22 +147,4 @@ public class TugasAkhirJdbc implements TugasAkhirRepository {
 
         return jdbcTemplate.queryForObject(sql, LocalDate.class, idMahasiswa);
     }
-    // private TugasAkhir mapRowToTugasAkhir(ResultSet rs, int rowNum) throws SQLException {
-    //     TugasAkhir  ta = new TugasAkhir();
-    //     ta.setIdTa(rs.getInt("Idta"));
-    //     ta.setTopikTA(rs.getString("tanggal"));
-    //     ta.setTanggalUTS(rs.getDate("WaktuMulai"));
-    //     ta.setTanggalUas(rs.getDate("WaktuSelesai"));
-    //     return ta;
-    // }
-
-
-//    @Override
-//    public TugasAkhir getTugasAkhir(String idPengguna) {
-//        String sql = "SELECT j.* FROM tugasakhir t " +
-//                "JOIN Pengguna pr ON j.IdJadwal = pr.IdJadwal " +
-//                "WHERE pr.IdRuangan = ? AND j.tanggal = ?";
-//        return jdbcTemplate.query(sql, this::mapRowToJadwal, idRuangan, date);
-//        return null;
-//    }
 }

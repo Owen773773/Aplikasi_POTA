@@ -115,7 +115,7 @@ public class MahasiswaController {
     @ResponseBody
     public Map<String, Object> terimaBimbingan(
             @RequestParam int idBim,
-            @RequestParam(required = false) Integer idRuangan, // Tambahkan parameter idRuangan
+            @RequestParam(required = false) Integer idRuangan,
             HttpSession session) {
 
         Map<String, Object> response = new HashMap<>();

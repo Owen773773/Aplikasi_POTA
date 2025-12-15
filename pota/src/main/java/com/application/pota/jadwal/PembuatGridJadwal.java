@@ -18,11 +18,11 @@ public class PembuatGridJadwal {
                 DayOfWeek.THURSDAY, DayOfWeek.FRIDAY
         );
 
-        // Loop untuk setiap jam kerja (07:00 - 17:00) = 11 baris
+        // Loop setiap jam kerja (07:00 - 17:00) = 11 baris
         for (int jam = 7; jam <= 17; jam++) {
             List<SlotWaktu> barisPerjam = new ArrayList<>();
 
-            // Loop untuk setiap hari kerja = 5 kolom
+            // Loop setiap hari kerja = 5 kolom
             for (DayOfWeek hari : hariKerja) {
                 List<JadwalService.JadwalDenganTipe> daftarJadwal = jadwalPerHari.get(hari);
                 SlotWaktu slot = cariSlotPadaJam(daftarJadwal, jam, hari);
@@ -41,7 +41,7 @@ public class PembuatGridJadwal {
         slot.setHari(hari);
         slot.setIndeksHari(hari.getValue() - 1); // 0-4 untuk Senin-Jumat
 
-        // Jika tidak ada jadwal pada hari ini, langsung return available
+        // Jika tidak ada jadwal pada hari ini, return available
         if (daftarJadwal == null || daftarJadwal.isEmpty()) {
             slot.setStatus("available");
             return slot;
@@ -85,7 +85,7 @@ public class PembuatGridJadwal {
             return "blocked";
 
         } else if ("BIMBINGAN".equalsIgnoreCase(tipe)) {
-            // Untuk bimbingan, cek status dari database
+            // cek status dari database
             String statusBimbingan = jadwalDenganTipe.getStatus();
 
             if (statusBimbingan == null) {
@@ -100,24 +100,24 @@ public class PembuatGridJadwal {
                 return "available"; // Slot tersedia karena bimbingan dibatalkan/gagal
             }
 
-            // Cek apakah sudah selesai
+            // Cek sudah selesai
             if ("SELESAI".equals(statusBimbingan)) {
                 return "done"; // Bimbingan sudah selesai
             }
 
-            // Cek apakah sudah terkonfirmasi/terjadwalkan
+            // Cek sudah terkonfirmasi/terjadwalkan
             if ("TERJADWALKAN".equals(statusBimbingan) ||
                     "TERKONFIRMASI".equals(statusBimbingan) ||
                     "CONFIRMED".equals(statusBimbingan)) {
                 return "scheduled";
 
             } else {
-                // Status PENDING, MENUNGGU, PROSES, dll → pending
+                // Status pending, menunggu, proses, dll → pending
                 return "pending";
             }
 
         } else {
-            // Tipe lainnya (fallback)
+            // Tipe lainnya
             return "occupied";
         }
     }

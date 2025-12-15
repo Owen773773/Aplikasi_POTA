@@ -1,7 +1,6 @@
 package com.application.pota.mahasiswa;
 
 import com.application.pota.bimbingan.BimbinganSiapKirim;
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

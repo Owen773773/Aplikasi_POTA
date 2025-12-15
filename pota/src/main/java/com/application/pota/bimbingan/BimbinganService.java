@@ -42,7 +42,6 @@ public class BimbinganService {
     private JdbcTemplate jdbcTemplate;
 
     public List<BimbinganSiapKirim> dapatkanBimbingan(String tipeAkun, String tipeStatus, String idPengguna) {
-        // Mengirim tipeAkun ke repository
         return bimbinganRepository.getBimbinganUserBertipe(tipeAkun, tipeStatus, idPengguna);
     }
 
@@ -138,10 +137,10 @@ public class BimbinganService {
         bimbinganRepository.insertTopikBimbingan(
                 idBim,
                 idTA,
-                "Menyetujui",      // StatusMhs
-                statusDosen1,      // StatusDosen1
-                statusDosen2,      // StatusDosen2
-                "Proses"           // StatusBimbingan
+                "Menyetujui",
+                statusDosen1,
+                statusDosen2,
+                "Proses"
         );
 
         int idNotif = (int) notifikasiService.insertNotifikasi("Menunggu");
@@ -164,7 +163,7 @@ public class BimbinganService {
             LocalTime waktuMulai,
             LocalTime waktuSelesai,
             Integer idRuangan,
-            Integer tiapBerapaMinggu   // interval antar bimbingan (0 = hanya 1x)
+            Integer tiapBerapaMinggu
     ) {
 
         if (tiapBerapaMinggu == null || tiapBerapaMinggu < 0) {
@@ -188,15 +187,15 @@ public class BimbinganService {
 
         List<LocalDate> daftarTanggal = new ArrayList<>();
 
-        // CASE 1: Jika interval = 0 → hanya 1x
+        // Jika interval = 0 -> hanya 1x
         if (tiapBerapaMinggu == 0) {
             daftarTanggal.add(tanggalMulai);
         }
-        // CASE 2: Jika interval > 0 → generate sampai batas UAS
+        // Jika interval > 0 -> generate sampai batas UAS
         else {
             LocalDate current = tanggalMulai;
 
-            // batas maksimal iterasi: sampai salah satu mahasiswa melewati UAS
+            // batas maksimal iterasi sampai salah satu mahasiswa melewati UAS
             while (true) {
 
                 boolean validUntukSemua = true;
@@ -225,7 +224,7 @@ public class BimbinganService {
             }
         }
 
-        // Eksekusi INSERT untuk setiap tanggal valid
+        // Insert untuk setiap tanggal valid
         for (LocalDate tglBim : daftarTanggal) {
 
             int idJadwal = jadwalService.insertJadwal(tglBim, waktuMulai, waktuSelesai);
@@ -277,14 +276,18 @@ public class BimbinganService {
             case "mahasiswa":
                 // Mahasiswa memvalidasi
                 bimbinganRepository.updateStatusMahasiswa(idBim, "Tervalidasi");
-                bimbinganRepository.updateCatatanBimbingan(idBim, catatan);
+
                 break;
 
             default:
                 throw new IllegalArgumentException("Peran tidak valid: " + peran);
         }
 
-        // CEK apakah semua sudah validasi
+        if (!catatan.equals("-")) {
+            bimbinganRepository.updateCatatanBimbingan(idBim, catatan);
+        }
+
+        // cek apakah semua sudah validasi
         if (isSemuaValidasi(idBim)) {
             // Update status bimbingan ke Selesai
             bimbinganRepository.updateStatusBimbingan(idBim, "Selesai");
@@ -427,7 +430,7 @@ public class BimbinganService {
                         "Menyetujui".equals(temp.getStatusDosen2()) ||
                         "Tidak Terpilih".equals(temp.getStatusDosen2());
 
-        // Cek juga status mahasiswa - SEMUA mahasiswa harus setuju
+        // Cek juga status mahasiswa (semua mahasiswa harus setuju)
         boolean semuaMahasiswaSetuju = cekSemuaMahasiswaSetuju(idBim);
 
         System.out.println("=== DEBUG STATUS ===");
@@ -440,7 +443,7 @@ public class BimbinganService {
         System.out.println("Semua Mhs Setuju: " + semuaMahasiswaSetuju);
         System.out.println("==================");
 
-        // Update ke Terjadwalkan jika SEMUA kondisi terpenuhi
+        // Update ke terjadwalkan jika semua kondisi terpenuhi
         if (dosen1Setuju && dosen2SetujuAtauTidakTerpilih && semuaMahasiswaSetuju) {
             bimbinganRepository.updateStatusBimbingan(idBim, "Terjadwalkan");
             System.out.println("✅ Status diupdate ke Terjadwalkan");
@@ -522,7 +525,7 @@ public class BimbinganService {
                 return "Menunggu".equals(status.getStatusMhs())
                         && !"Terjadwalkan".equals(status.getStatusBimbingan());
             case "dosen1":
-                // Cek apakah status bukan "Tidak Terpilih"
+                // Cek apakah status bukan "tidak terpilih"
                 return "Menunggu".equals(status.getStatusDosen1()) &&
                         !"Tidak Terpilih".equals(status.getStatusDosen1());
             case "dosen2":

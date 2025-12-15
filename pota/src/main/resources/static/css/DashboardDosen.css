@@ -1,4 +1,4 @@
-/* ======= DASHBOARD GRID ======= */
+/* dashboard */
 .card {
     background: var(--bg-white);
     padding: 20px;
@@ -12,7 +12,7 @@
     width: 100%;
 }
 
-/* Ringkasan Grid */
+/* ringkasan grid */
 .ringkasan-grid {
     display: grid;
     grid-template-columns: 1fr 200px 200px;
@@ -24,7 +24,7 @@
     margin-bottom: 6px;
 }
 
-/* Target Boxes */
+/* target Boxes */
 .target-box {
     text-align: center;
     border: 2px solid black;
@@ -39,7 +39,7 @@
     color: var(--primary);
 }
 
-/* Middle section */
+/* tengah */
 .mid-grid {
     display: grid;
     grid-template-columns: repeat(2, 250px);
@@ -82,7 +82,7 @@
     size: 50%;
 }
 
-/* Bottom section */
+/* bawah */
 .bottom-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -124,7 +124,6 @@
 #header-bottom{
     display: flex;
     justify-content: space-between;
-    /* background-color: red; */
 }
 
 .btn-grey {

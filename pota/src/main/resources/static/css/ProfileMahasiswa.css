@@ -1,8 +1,3 @@
-/* Add this to ensure padding doesn't break width
-* {
-    box-sizing: border-box;
-} */
-
 .content-body{
     box-sizing: border-box;
 }
@@ -12,10 +7,9 @@
     padding: 10px;
     border-radius: 20px;
     width: 100%;
-    box-shadow: 0px 4px 20px rgba(0,0,0,0.05); /* Softer shadow */
+    box-shadow: 0px 4px 20px rgba(0,0,0,0.05);
 }
 
-/* Moved from inline style="margin-top: 40px;" */
 .profil-card h2 {
     color: var(--primary);
     font-size: 24px;
@@ -23,42 +17,37 @@
     font-weight: 500;
 }
 
-/* New class for the 'Data Tugas Akhir' title margin */
 .section-title-ta {
     margin-top: 40px; 
 }
 
 
-/* GRID SYSTEM */
 .profil-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr; /* 2 Equal Columns */
+    grid-template-columns: 1fr 1fr;
     gap: 30px;
     margin-top: 15px;
 }
 
-/* CARD STYLING (Looks like Input Field) */
 .profil-item {
     background: var(--bg-white);
-    border: 2px solid #e0e0e0; /* Light grey border */
+    border: 2px solid #e0e0e0;
     border-radius: 12px;
     padding: 15px 20px;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.02); /* Very subtle shadow */
+    box-shadow: 0 4px 6px rgba(0,0,0,0.02);
     min-height: 100px;
 }
 
-/* Typography for labels (e.g. "Nama", "NPM") */
 .profil-item h3 {
     font-size: 14px;
-    color: #666; /* Grey text for labels */
+    color: #666;
     margin: 0 0 8px 0;
     font-weight: 600;
 }
 
-/* Typography for values (e.g. "Kenneth", "618...") */
 .profil-item p {
     font-size: 18px;
     color: #000;
@@ -66,42 +55,37 @@
     font-weight: bold;
 }
 
-/* Moved inline style="color: green;" to a class */
 .syarat-status {
     color: #28a745 !important;
 }
 
 
-/* SPLIT COLUMN LOGIC (For the Bimbingan boxes) */
 .split-column {
     display: flex;
     gap: 20px;
 }
 
 .split-column .profil-item {
-    flex: 1; /* Each box takes 50% width */
+    flex: 1;
     text-align: center;
     align-items: center;
     padding: 15px 10px;
 }
 
-/* Specific styling for the small stats boxes */
 .small-box h3 {
     margin-bottom: 5px;
     font-size: 14px;
-    /* Ensure label is centered */
     text-align: center;
     width: 100%;
 }
 
 .small-box p {
     font-size: 20px;
-    color: var(--primary); /* Primary Blue for the numbers */
+    color: var(--primary);
     margin: 5px 0 0 0;
 }
 
 
-/* BUTTON */
 .profil-footer {
     margin-top: 40px;
     display: flex;
@@ -109,7 +93,7 @@
 }
 
 .btn-password {
-    background: #0056b3; /* Darker blue */
+    background: #0056b3;
     color: white;
     padding: 12px 30px;
     border-radius: 8px;

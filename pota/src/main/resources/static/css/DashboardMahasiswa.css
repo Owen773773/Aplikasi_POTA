@@ -1,4 +1,4 @@
-/* === MAIN CONTENT === */
+/* main */
 .main-content {
   flex-grow: 1;
   padding: 0;
@@ -26,7 +26,7 @@
     gap: 150px;
 }
 
-/* === TOOLBAR === */
+/* toolbar */
 .toolbar {
   display: flex;
   gap: 15px;
@@ -95,7 +95,7 @@
   filter: brightness(0) invert(1);
 }
 
-/* === TABLE === */
+/* tabel */
 .table-container {
   background: var(--bg-white);
   border: 2px solid var(--border);
@@ -131,7 +131,7 @@
   border-bottom: none;
 }
 
-/* Table Actions */
+/* tabel aksi */
 .table-actions {
   display: flex;
   justify-content: flex-end;
@@ -176,7 +176,7 @@
   background-color: var(--btn-grey-bg);
 }
 
-/* Empty state */
+/* state kosong */
 .empty-state {
   padding: 40px 20px;
   text-align: center;
@@ -192,7 +192,7 @@
     -moz-box-shadow: 1px 2px 5px 0px rgba(0, 0, 0, 0.75);
 }
 
-/* Ringkasan Grid */
+/* ringkasan grid */
 .ringkasan-grid {
     display: grid;
     grid-template-columns: 1fr 200px 200px;
@@ -204,7 +204,7 @@
     margin-bottom: 6px;
 }
 
-/* Target Boxes */
+/* box target */
 .target-box {
     text-align: center;
     border: 2px solid black;
@@ -260,7 +260,6 @@
 #header-bottom{
     display: flex;
     justify-content: space-between;
-    /* background-color: red; */
 }
 
 .btn-grey {

@@ -1,7 +1,6 @@
 @import url("https://fonts.googleapis.com/css?family=Quicksand&display=swap");
 
 :root {
-    /* Colors */
     --primary: #054a91;
     --bg-body: #f2f0ef;
     --bg-white: #ffffff;
@@ -10,7 +9,6 @@
     --border: #dddddd;
     --border-light: #eeeeee;
 
-    /* Button Colors */
     --btn-add: #66d666;
     --btn-filter: #7885ff;
     --btn-green-bg: #eaffea;
@@ -22,12 +20,10 @@
     --btn-grey-bg: #eeeeee;
     --btn-grey-border: #aaaaaa;
 
-    /* Status Colors */
     --status-unavailable: #ED3F27;
     --status-scheduled: #054A91;
     --status-pending: #FEB21A;
 
-    /* Font */
     --font-base: "Quicksand", sans-serif;
 }
 
@@ -43,7 +39,6 @@ body {
     color: var(--text-primary);
 }
 
-/* === UTILITY CLASSES === */
 .hidden {
     display: none !important;
 }
@@ -60,14 +55,12 @@ body {
     color: var(--primary);
 }
 
-/* === LAYOUT === */
 .main {
     display: flex;
     height: 100vh;
     width: 100%;
 }
 
-/* === SIDEBAR === */
 .sidebar {
     width: 250px;
     background-color: var(--bg-white);
@@ -97,7 +90,6 @@ body {
     color: var(--primary);
 }
 
-/* Navigation */
 .nav-menu {
     display: flex;
     flex-direction: column;
@@ -150,7 +142,6 @@ body {
     color: var(--primary);
 }
 
-/* Logout */
 .logout-section {
     padding: 20px 30px 20px;
     border-top: 1px solid var(--border-light);
@@ -186,7 +177,6 @@ body {
     height: 20px;
 }
 
-/* === MAIN CONTENT === */
 .main-content {
     flex-grow: 1;
     background-color: var(--bg-body);
@@ -214,7 +204,6 @@ body {
     overflow-y: auto;
 }
 
-/* === TOOLBAR === */
 .toolbar {
     display: flex;
     gap: 15px;
@@ -283,7 +272,6 @@ body {
     filter: brightness(0) invert(1);
 }
 
-/* === TABLE === */
 .table-container {
     background: var(--bg-white);
     border: 2px solid var(--border);
@@ -319,7 +307,6 @@ body {
     border-bottom: none;
 }
 
-/* Table Actions */
 .table-actions {
     display: flex;
     justify-content: flex-end;
@@ -369,14 +356,12 @@ body {
     background-color: var(--btn-grey-bg);
 }
 
-/* Empty state */
 .empty-state {
     padding: 40px 20px;
     text-align: center;
     color: var(--text-muted);
 }
 
-/* === POPUP/MODAL === */
 .popup-overlay {
     position: fixed;
     top: 0;
@@ -450,14 +435,12 @@ body {
     display: block;
 }
 
-/* Popup Body */
 .popup-body {
     padding: 20px;
     overflow-y: auto;
     flex-grow: 1;
 }
 
-/* === FORM STYLES === */
 .popup-form {
     display: flex;
     flex-direction: column;
@@ -491,7 +474,6 @@ body {
     border-color: var(--primary);
 }
 
-/* Grid Form Layout (for aligned labels and inputs) */
 .form-grid {
     display: grid;
     grid-template-columns: 150px 1fr;
@@ -517,7 +499,6 @@ body {
     line-height: 1.5;
 }
 
-/* === BUTTONS === */
 .btn-submit {
     padding: 12px 20px;
     margin-top: 10px;
@@ -559,7 +540,6 @@ body {
     opacity: 0.9;
 }
 
-/* === TA SECTION (untuk Mahasiswa) === */
 .ta-section {
     padding-top: 20px;
     border-top: 1px solid var(--border);
@@ -599,11 +579,6 @@ body {
     padding-top: 10px;
 }
 
-/* ========================================= */
-/* === SCHEDULING & GRID STYLES === */
-/* ========================================= */
-
-/* Header Kontrol Jadwal */
 .schedule-header {
     display: flex;
     justify-content: space-between;
@@ -635,7 +610,6 @@ body {
     border-color: var(--primary);
 }
 
-/* === DATE PICKER IMPROVEMENTS === */
 .date-display-group {
     display: flex;
     align-items: center;
@@ -673,7 +647,6 @@ body {
     opacity: 1;
 }
 
-/* Hidden but functional week input */
 .hidden-functional-input {
     position: absolute;
     opacity: 0;
@@ -682,7 +655,6 @@ body {
     pointer-events: none;
 }
 
-/* Schedule Grid */
 .schedule-container {
     background-color: var(--bg-white);
     border: 1px solid var(--border);
@@ -739,7 +711,6 @@ body {
     opacity: 0.95;
 }
 
-/* Time Slot Cells */
 .time-slot {
     height: 50px;
     background-color: var(--bg-white);
@@ -754,21 +725,21 @@ body {
 }
 
 .time-slot.blocked {
-    background-color: var(--status-unavailable); /* Merah #ED3F27 */
+    background-color: var(--status-unavailable);
 }
 
 .time-slot.scheduled {
-    background-color: var(--status-scheduled); /* Biru #054A91 */
+    background-color: var(--status-scheduled);
 }
 
 .time-slot.pending {
-    background-color: var(--status-pending); /* Kuning #FEB21A */
+    background-color: var(--status-pending);
 }
 .time-slot.done {
-    background-color: var(--btn-green-border); /* done #FEB21A */
+    background-color: var(--btn-green-border);
 }
 .time-slot.available {
-    background-color: var(--bg-white); /* Putih - Tersedia */
+    background-color: var(--bg-white);
 }
 
 .schedule-legend {
@@ -807,7 +778,6 @@ body {
     background-color: var(--status-pending);
 }
 
-/* === BLOCKING FORM STYLES === */
 
 .form-title {
     font-size: 20px;
@@ -853,7 +823,6 @@ body {
     resize: vertical;
 }
 
-/* Date Picker Group */
 .date-picker-group .input-with-icon {
     position: relative;
     display: flex;
@@ -872,7 +841,6 @@ body {
     pointer-events: none;
 }
 
-/* Waktu Input Group */
 .time-range-group .time-inputs {
     display: flex;
     align-items: center;
@@ -890,7 +858,6 @@ body {
     font-size: 18px;
 }
 
-/* Tombol Konfirmasi */
 .btn-konfirmasi {
     grid-column: 2 / 3;
     justify-self: end;
@@ -912,7 +879,6 @@ body {
     opacity: 0.9;
 }
 
-/* === RESPONSIVE === */
 @media (max-width: 768px) {
     .main {
         flex-direction: column;

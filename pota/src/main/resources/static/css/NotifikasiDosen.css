@@ -49,7 +49,6 @@ body {
   border-bottom: 1px solid var(--border-light);
 }
 
-/* CONTAINER BESAR - KOTAK PUTIH MELENGKUNG*/
 .notif-container {
   margin: 30px auto;
   width: 85%;
@@ -61,7 +60,6 @@ body {
 
 }
 
-/* KARTU NOTIF */
 .notif-card {
   position: relative;
   margin-bottom: 25px;

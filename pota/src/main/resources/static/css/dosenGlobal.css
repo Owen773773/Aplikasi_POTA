@@ -1,6 +1,5 @@
 @import url("https://fonts.googleapis.com/css?family=Quicksand");
 
-/* === GLOBAL VARIABLES === */
 :root {
   --primary: #054a91;
   --bg-body: #f2f0ef;
@@ -22,7 +21,6 @@
   --font-base: "Quicksand", sans-serif;
 }
 
-/* === BASE STYLES === */
 body {
   font-family: var(--font-base);
   margin: 0;
@@ -34,7 +32,6 @@ body {
   height: 100vh;
 }
 
-/* === SIDEBAR === */
 .sidebar {
   width: 180px;
   background: var(--bg-white);
@@ -56,7 +53,6 @@ body {
   color: var(--primary);
 }
 
-/* Navigation */
 .nav-menu {
   display: flex;
   flex-direction: column;
@@ -98,7 +94,6 @@ a {
   text-decoration: none;
 }
 
-/* Logout */
 .logout-section {
     padding: 20px 30px 20px;
     border-top: 1px solid var(--border-light);
@@ -132,7 +127,6 @@ a {
     height: 20px;
 }
 
-/* === MAIN CONTENT === */
 .main-content {
     flex-grow: 1;
     background-color: var(--bg-body);
@@ -158,7 +152,6 @@ a {
     overflow: hidden;
 }
 
-/* Cards */
 .card {
     background: var(--bg-white);
     padding: 20px;

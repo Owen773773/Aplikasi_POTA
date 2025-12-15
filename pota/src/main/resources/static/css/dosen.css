@@ -33,7 +33,8 @@ body {
   display: flex;
   height: 100vh;
 }
-/* Logout */
+
+/* logout */
 .logout-section {
     padding: 20px 30px 20px;
     border-top: 1px solid var(--border-light);
@@ -68,7 +69,7 @@ body {
     height: 20px;
 }
 
-/* === MAIN CONTENT === */
+/* main */
 .main-content {
     flex-grow: 1;
     background-color: var(--bg-body);
@@ -94,7 +95,7 @@ body {
     overflow-y: auto;
 }
 
-/* === CARD COMPONENTS === */
+/* card */
 .card {
     background: var(--bg-white);
     padding: 24px;
@@ -106,7 +107,7 @@ body {
     width: 100%;
 }
 
-/* === RINGKASAN BIMBINGAN === */
+/* ringkasan bimbingan */
 .ringkasan-grid {
     display: grid;
     grid-template-columns: 1.2fr 1fr 1fr;
@@ -120,7 +121,7 @@ body {
     line-height: 1.6;
 }
 
-/* Target Boxes */
+/* box target */
 .target-box {
     text-align: center;
     border: 2px solid var(--primary);
@@ -157,7 +158,7 @@ body {
     font-weight: bold;
 }
 
-/* === MIDDLE GRID === */
+/* tengah */
 .mid-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -213,7 +214,7 @@ body {
     gap: 20px;
 }
 
-/* === BIMBINGAN SAAT INI === */
+/* bimb terdekat */
 #header-bottom {
     display: flex;
     justify-content: space-between;
@@ -244,7 +245,7 @@ body {
     filter: brightness(0) invert(1);
 }
 
-/* Bottom Grid */
+/* bawah */
 .bottom-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -322,7 +323,7 @@ body {
     background: #cc0000;
 }
 
-/* === BOTTOM INFO FIX === */
+/* info yang di bawah */
 .bottom-info {
     display: flex;
     flex-direction: column;
@@ -357,7 +358,7 @@ body {
     gap: 4px;
 }
 
-/* === PROFIL SECTION === */
+/* profil */
 .profil-card {
     background: var(--bg-white);
     padding: 30px 40px;

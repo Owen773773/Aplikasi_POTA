@@ -1,4 +1,3 @@
-/* === PROFIL CARD === */
 .profil-card {
     background: var(--bg-white);
     padding: 30px 40px;
@@ -13,7 +12,6 @@
     margin-bottom: 10px;
 }
 
-/* === ICON === */
 .profil-icon {
     display: flex;
     justify-content: center;
@@ -25,7 +23,6 @@
     opacity: 0.85;
 }
 
-/* === GRID === */
 .profil-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -51,7 +48,6 @@
     font-size: 15px;
 }
 
-/* === BUTTON === */
 .profil-footer {
     display: flex;
     justify-content: flex-end;

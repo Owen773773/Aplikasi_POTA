@@ -142,7 +142,6 @@
 </div>
 
 <script>
-    // Generic Popup Controls
     function showPopup(popupId) {
         const popup = document.getElementById(popupId);
         if (popup) {
@@ -157,30 +156,24 @@
         }
     }
 
-    // Show Detail Popup with User Type Detection
     function showDetailPopup(userId, tipeAkun) {
         console.log('Opening detail popup for user:', userId, 'Type:', tipeAkun);
 
-        // Fetch user data via AJAX
         fetch('/admin/getUser?idPengguna=' + userId)
             .then(response => response.json())
             .then(data => {
-                // Populate basic user data
                 document.getElementById('user-idPengguna').value = data.idPengguna;
                 document.getElementById('user-nama').value = data.nama;
                 document.getElementById('user-tipeAkun').value = data.tipeAkun;
                 document.getElementById('user-username').value = data.username;
                 document.getElementById('user-password').value = '';
 
-                // Show appropriate section based on user type
                 toggleSectionByTipeAkun(data.tipeAkun);
 
-                // If Mahasiswa, load TA data
                 if (data.tipeAkun === 'Mahasiswa') {
                     loadTAData(userId);
                 }
 
-                // If Dosen, load topik bimbingan
                 if (data.tipeAkun === 'Dosen') {
                     loadTopikBimbingan(userId);
                 }
@@ -193,16 +186,13 @@
         showPopup('popup-detail-akun');
     }
 
-    // Toggle section visibility based on user type
     function toggleSectionByTipeAkun(tipeAkun) {
         const sectionMahasiswa = document.getElementById('section-mahasiswa');
         const sectionDosen = document.getElementById('section-dosen');
 
-        // Hide all sections first
         sectionMahasiswa.style.display = 'none';
         sectionDosen.style.display = 'none';
 
-        // Show appropriate section
         if (tipeAkun === 'Mahasiswa') {
             sectionMahasiswa.style.display = 'block';
         } else if (tipeAkun === 'Dosen') {
@@ -210,20 +200,17 @@
         }
     }
 
-    // Load TA data for Mahasiswa
     function loadTAData(userId) {
         fetch('/admin/getTAData?idPengguna=' + userId)
             .then(response => response.json())
             .then(data => {
                 document.getElementById('ta-idPengguna').value = userId;
 
-                // TA1 data
                 document.getElementById('topikTa1').value = data.topikTa1 || '';
                 document.getElementById('jumlahBimbinganTa1').value = data.jumlahBimbinganTa1 || 0;
                 document.getElementById('pembimbing1Ta1').value = data.pembimbing1Ta1 || '';
                 document.getElementById('pembimbing2Ta1').value = data.pembimbing2Ta1 || '';
 
-                // TA2 data
                 document.getElementById('topikTa2').value = data.topikTa2 || '';
                 document.getElementById('jumlahBimbinganTa2').value = data.jumlahBimbinganTa2 || 0;
                 document.getElementById('pembimbing1Ta2').value = data.pembimbing1Ta2 || '';
@@ -234,7 +221,6 @@
             });
     }
 
-    // Load topik bimbingan for Dosen
     function loadTopikBimbingan(userId) {
         fetch('/admin/getTopikBimbingan?idPengguna=' + userId)
             .then(response => response.json())
@@ -242,12 +228,10 @@
                 document.getElementById('dosen-idPengguna').value = userId;
 
                 const selectElement = document.getElementById('topikBimbingan');
-                // Clear previous selections
                 Array.from(selectElement.options).forEach(option => {
                     option.selected = false;
                 });
 
-                // Select topics from data
                 if (data.topikBimbingan && Array.isArray(data.topikBimbingan)) {
                     data.topikBimbingan.forEach(topik => {
                         Array.from(selectElement.options).forEach(option => {
@@ -263,22 +247,18 @@
             });
     }
 
-    // Switch TA Tab
     function switchTaTab(tabId, buttonElement) {
-        // Hide all tab panes
         document.querySelectorAll('.ta-section .tab-pane').forEach(pane => {
             pane.classList.add('hidden');
             pane.classList.remove('active');
         });
 
-        // Show selected tab
         const selectedTab = document.getElementById(tabId);
         if (selectedTab) {
             selectedTab.classList.remove('hidden');
             selectedTab.classList.add('active');
         }
 
-        // Update button active state
         document.querySelectorAll('.ta-section .tab-btn').forEach(btn => {
             btn.classList.remove('active');
         });
@@ -287,7 +267,6 @@
         }
     }
 
-    // Close popup when clicking outside
     document.addEventListener('DOMContentLoaded', function() {
         document.querySelectorAll('.popup-overlay').forEach(popup => {
             popup.addEventListener('click', function(e) {
@@ -297,7 +276,6 @@
             });
         });
 
-        // Close popup on ESC key
         document.addEventListener('keydown', function(e) {
             if (e.key === 'Escape') {
                 document.querySelectorAll('.popup-overlay:not(.hidden)').forEach(popup => {

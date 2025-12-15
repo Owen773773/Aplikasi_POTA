@@ -1,9 +1,3 @@
-/* ===========================================
-   CONSOLIDATED POPUP STYLES
-   Menggabungkan: popUpDosen, PopUpMahasiswaRincian,
-   popupSmall, AlasanBatal, AlasanPenolakan
-   =========================================== */
-
 @import url("https://fonts.googleapis.com/css?family=Quicksand");
 
 :root {
@@ -27,7 +21,6 @@
     --font-base: "Quicksand", sans-serif;
 }
 
-/* === OVERLAY === */
 .popup-overlay {
     position: fixed;
     top: 0;
@@ -45,7 +38,6 @@
     display: flex;
 }
 
-/* === POPUP CONTAINER === */
 .popup-container {
     width: 420px;
     max-width: 90%;
@@ -58,16 +50,12 @@
     background-color: var(--bg-white);
     border-radius: 10px;
     width: 90%;
-/* max-width: 500px; */
-/* max-height: 90vh; */
-/* box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); */
     overflow: hidden;
     display: flex;
     flex-direction: column;
     justify-self: center;
     padding-top: 10px;
 }
-/* Large popup variant */
 .popup-container.popup-large {
     width: 800px;
     max-width: 90%;
@@ -84,7 +72,6 @@
     }
 }
 
-/* === POPUP HEADER === */
 .popup-header {
     display: flex;
     justify-content: space-between;
@@ -117,7 +104,6 @@
     opacity: 0.8;
 }
 
-/* === TWO COLUMN LAYOUT === */
 .popup-grid {
     display: grid;
     grid-template-columns: 140px 1fr;
@@ -136,7 +122,6 @@
     color: black;
 }
 
-/* === FORM ELEMENTS === */
 .popup-textarea {
     width: 100%;
     min-height: 120px;
@@ -166,7 +151,6 @@
     border-color: var(--primary);
 }
 
-/* === RADIO BUTTON GROUP === */
 .popup-radio-group {
     display: flex;
     flex-direction: column;
@@ -203,7 +187,6 @@
     font-size: 15px;
 }
 
-/* === POPUP FOOTER / ACTIONS === */
 .popup-footer {
     display: flex;
     justify-content: flex-end;
@@ -264,7 +247,6 @@
     background-color: #999999;
 }
 
-/* === SECTION TITLE === */
 .popup-section-title {
     font-weight: bold;
     font-size: 16px;

@@ -34,7 +34,6 @@ body {
   height: 100vh;
 }
 
-/* SIDEBAR */
 .sidebar {
   width: 180px;
   background: var(--bg-white);
@@ -56,7 +55,6 @@ body {
   color: var(--primary);
 }
 
-/* Navigation */
 .nav-menu {
   display: flex;
   flex-direction: column;
@@ -98,7 +96,6 @@ a {
   text-decoration: none;
 }
 
-/* Logout */
 .btn-logout {
   display: flex;
   align-items: center;
@@ -127,7 +124,6 @@ a {
   height: 20px;
 }
 
-/* MAIN CONTENT */
 .main-content {
   flex-grow: 1;
   padding: 0;

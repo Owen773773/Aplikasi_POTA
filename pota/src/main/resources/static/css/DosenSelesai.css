@@ -34,7 +34,6 @@ body {
     height: 100vh;
 }
 
-/* SIDEBAR */
 .sidebar {
     width: 180px;
     background: var(--bg-white);
@@ -57,7 +56,6 @@ body {
 }
 
 
-/* Navigation */
 .nav-menu {
     display: flex;
     flex-direction: column;
@@ -99,7 +97,6 @@ a {
     text-decoration: none;
 }
 
-/* Logout */
 .logout-section {
     padding: 20px 30px 20px;
     border-top: 1px solid var(--border-light);
@@ -134,7 +131,6 @@ a {
     height: 20px;
 }
 
-/* MAIN CONTENT */
 .main-content {
   flex-grow: 1;
   padding: 0;
@@ -177,7 +173,6 @@ a {
   gap: 15px;
 }
 
-/* CARD */
 .card {
   background: var(--bg-white);
   border-radius: 10px;
@@ -196,7 +191,6 @@ a {
 
 .dropdown-btn {
   border: none;
-  /* background: none; */
   width: 1.5em;
   height: 1.5em;
   cursor: pointer;
@@ -254,7 +248,6 @@ textarea#catatan {
     border: 2px solid #000000;
 }
 
-/* BUTTONS */
 .card-actions {
   margin-top: 16px;
   display: flex;

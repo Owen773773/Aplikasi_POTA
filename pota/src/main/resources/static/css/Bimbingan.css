@@ -1,17 +1,13 @@
-/* ===========================================
-   CONSOLIDATED BIMBINGAN CSS
-   Untuk halaman: Gagal, Proses, Selesai, Terjadwalkan
-   Note: Import style.css terlebih dahulu sebelum file ini
-   =========================================== */
 
-/* === MAIN CONTENT OVERRIDES === */
+
+/* main content */
 .main-content {
     overflow-y: hidden;
     display: flex;
     flex-direction: column;
 }
 
-/* === TAB MENU === */
+/* tab menu */
 .tab-menu {
     display: flex;
     gap: 25px;
@@ -50,7 +46,7 @@
     overflow-x: hidden;
 }
 
-/* === CARD STYLES === */
+/* card */
 .card {
     background: var(--bg-white);
     border-radius: 10px;
@@ -89,7 +85,7 @@
     display: block;
 }
 
-/* === CARD CONTENT LAYOUT === */
+/* card content */
 .containerutama {
     margin: 0;
     display: flex;
@@ -123,7 +119,7 @@
     font-weight: bold;
 }
 
-/* === TEXTAREA === */
+/* text area */
 textarea#catatan {
     resize: none;
     border: 2px solid #000000;
@@ -131,7 +127,7 @@ textarea#catatan {
     grid-area: note;
 }
 
-/* === CARD ACTIONS === */
+/* card act */
 .card-actions {
     margin-top: 16px;
     display: flex;

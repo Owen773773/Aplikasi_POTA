@@ -1,6 +1,5 @@
 package com.application.pota.mahasiswa;
 
-
 import com.application.pota.bimbingan.*;
 import com.application.pota.jadwal.JadwalService;
 import com.application.pota.jadwal.SlotWaktu;
@@ -30,32 +29,20 @@ public class MahasiswaController {
     private JadwalService jadwalService;
     @Autowired
     private BimbinganService bimbinganService;
-
     @Autowired
     private MahasiswaService mahasiswaService;
-
     @Autowired
     private NotifikasiService notifikasiService;
     @Autowired
     private TugasAkhirService tugasAkhirService;
 
-    @GetMapping({"/", ""})
-    public String berandaDefault() {
-        return "redirect:/mahasiswa/beranda";
-    }
-
-    // @GetMapping("/beranda")
-    // public String beranda() {
-    //     return "mahasiswa/DashboardMahasiswa";
-    // }
     @GetMapping("/beranda")
-    public String beranda(HttpSession session, Model model) {        
+    public String beranda(HttpSession session, Model model) {
         String idPengguna = (String) session.getAttribute("idPengguna");
         if (idPengguna == null) {
-            return "redirect:/login"; 
+            return "redirect:/login";
         }
-        // Bimbingan bimbinganTerdekat = bimbinganService.getJadwalTerdekat(idPengguna);
-        // model.addAttribute("bimbinganTerdekat", bimbinganTerdekat);
+
         DashboardDataMhs dashboardData = mahasiswaService.getDashboardData(idPengguna);
         model.addAttribute("DashboardDataMhs", dashboardData);
 
@@ -64,9 +51,14 @@ public class MahasiswaController {
         return "mahasiswa/DashboardMahasiswa";
     }
 
+    @GetMapping({"", "/"})
+    public String redirectToBeranda() {
+        return "redirect:/mahasiswa/beranda";
+    }
 
-    @GetMapping({"/bimbingan", "/bimbinganProses"})
-    public String bimbinganDefault(HttpSession session, Model model) {
+
+    @GetMapping("/bimbinganProses")
+    public String bimbinganProses(HttpSession session, Model model) {
         String idPengguna = (String) session.getAttribute("idPengguna");
         String tipeAkun = (String) session.getAttribute("tipeAkun");
 
@@ -75,6 +67,11 @@ public class MahasiswaController {
 
         model.addAttribute("listBimbingan", listBimbingan);
         return "mahasiswa/bimbingan/MahasiswaBimbinganProses";
+    }
+
+    @GetMapping("/bimbingan")
+    public String redirectToBimbinganProses() {
+        return "redirect:/mahasiswa/bimbinganProses";
     }
 
     @GetMapping("/bimbinganTerjadwal")
@@ -113,128 +110,12 @@ public class MahasiswaController {
         return "mahasiswa/bimbingan/MahasiswaBimbinganGagal";
     }
 
-    @GetMapping("/jadwal")
-    public String mahasiswajadwal(@RequestParam(required = false) String week, HttpSession session,
-                                  Model model) {
-        String idPengguna = (String) session.getAttribute("idPengguna");
-        if (week == null || week.isEmpty()) {
-            LocalDate hariIni = LocalDate.now();
-            int weekNum = hariIni.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR);
-            int year = hariIni.get(IsoFields.WEEK_BASED_YEAR);
-            String weekNumFormatted = String.format("%02d", weekNum);
-            week = year + "-W" + weekNumFormatted;
-        }
-
-        model.addAttribute("weekParam", week);
-
-        String tahun = week.substring(0, 4);
-        String minggu = week.substring(6);
-
-        LocalDate tanggalMulai = hitungTanggalMulaiMinggu(Integer.parseInt(tahun), Integer.parseInt(minggu));
-        String tanggalMulaiFormatted = tanggalMulai.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-
-        model.addAttribute("tanggalMulaiMinggu", tanggalMulaiFormatted);
-
-        // Ambil data jadwal dengan tipe (PEMBLOKIRAN atau BIMBINGAN)
-        JadwalService.DataJadwalMingguan temp = jadwalService.dapatkanJadwalMingguan(week, idPengguna, false);
-        Map<DayOfWeek, String> HariTanggal = temp.getTanggalHeader();
-        List<List<SlotWaktu>> timetableGrid = temp.getGridJadwal();
-
-        model.addAttribute("listHari", HariTanggal);
-        model.addAttribute("timetable", timetableGrid);
-
-        int idTA = tugasAkhirService.getIdTugasAkhir(idPengguna);
-        List<PilihanPengguna> pilihanDosen = bimbinganService.getDosenPembimbingPilihan(idTA);
-        model.addAttribute("dosenSatu", pilihanDosen.get(0));
-        model.addAttribute("dosenDua", pilihanDosen.size() > 1 ? pilihanDosen.get(1) : null);
-
-        return "mahasiswa/MahasiswaJadwal";
-    }
-
-    @GetMapping("/cek-slot-tersedia")
-    @ResponseBody
-    public List<String> getAvailableSlots(
-            @RequestParam("ids") List<String> listIdDosen, // List String
-            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate tanggal,
-            HttpSession session) {
-
-        String idPengguna = (String) session.getAttribute("idPengguna");
-
-        if (idPengguna == null) {
-            return java.util.Collections.emptyList();
-        }
-
-        // Filter
-        List<String> dosenFixed = listIdDosen.stream()
-                .filter(java.util.Objects::nonNull)
-                .distinct()
-                .collect(java.util.stream.Collectors.toList());
-
-        return jadwalService.cariSlotGabungan(dosenFixed, idPengguna, tanggal);
-    }
-
-    @PostMapping("/ajukan-bimbingan")
-    @ResponseBody
-    public Map<String, Object> ajukanBimbingan(
-            @RequestBody DTOBimbinganMahasiswa request,
-            HttpSession session) {
-
-
-        String idPengguna = (String) session.getAttribute("idPengguna");
-
-
-        // Parse input
-        LocalDate tanggal = LocalDate.parse(request.getTanggal());
-        LocalTime mulai = LocalTime.parse(request.getWaktuMulai());
-        LocalTime selesai = LocalTime.parse(request.getWaktuSelesai());
-
-        bimbinganService.ajukanBimbinganMahasiswa(idPengguna, request.getDosenIds(), request.getTopik(), request.getDeskripsi(), tanggal, mulai, selesai);
-
-        Map<String, Object> response = new HashMap<>();
-        response.put("success", true);
-        response.put("message", "Pengajuan bimbingan berhasil!");
-
-        return response;
-    }
-
-    private LocalDate hitungTanggalMulaiMinggu(int tahun, int minggu) {
-        return LocalDate.of(tahun, 1, 1)
-                .with(IsoFields.WEEK_OF_WEEK_BASED_YEAR, minggu)
-                .with(DayOfWeek.MONDAY);
-    }
-
-    @GetMapping("/profil")
-    public String profil(Model model, HttpSession session) {
-        String id = (String) session.getAttribute("idPengguna");
-        ProfilMahasiswa profilMahasiswa = mahasiswaService.makeProfile(id);
-
-        model.addAttribute("nama", profilMahasiswa.getNama());
-        model.addAttribute("npm", profilMahasiswa.getNpm());
-        model.addAttribute("peran", profilMahasiswa.getPeran());
-        model.addAttribute("dospem1", profilMahasiswa.getDosen1());
-        model.addAttribute("dospem2 ", profilMahasiswa.getDosen2() == null ? "-" : profilMahasiswa.getDosen2());
-        model.addAttribute("pra", profilMahasiswa.getTotBimPra());
-        model.addAttribute("pasca", profilMahasiswa.getTotBimPas());
-        model.addAttribute("syarat", profilMahasiswa.getSyaratKelayakan());
-
-        return "mahasiswa/ProfileMahasiswa";
-    }
-
-    @GetMapping("/notifikasi")
-    public String notifkasi(Model model, HttpSession session) {
-        String id = (String) session.getAttribute("idPengguna");
-        String idPengguna = (String) session.getAttribute("idPengguna");
-        List<Notifikasi> listNotif = notifikasiService.getNotifikasiInAppByIdUser(idPengguna);
-        model.addAttribute("daftarNotifikasi", listNotif);
-        return "mahasiswa/NotifikasiMahasiswa";
-    }
-
-    // Tambahkan di DosenController.java (buat juga untuk MahasiswaController)
 
     @PostMapping("/bimbingan/terima")
     @ResponseBody
     public Map<String, Object> terimaBimbingan(
             @RequestParam int idBim,
+            @RequestParam(required = false) Integer idRuangan, // Tambahkan parameter idRuangan
             HttpSession session) {
 
         Map<String, Object> response = new HashMap<>();
@@ -249,7 +130,9 @@ public class MahasiswaController {
             }
 
             BimbinganDetailStatus status = bimbinganService.getDetailStatusBimbingan(idBim, idPengguna);
-            bimbinganService.terimaBimbingan(idBim, status.getPeranPengguna());
+
+            // Pass idRuangan ke service method
+            bimbinganService.terimaBimbingan(idBim, status.getPeranPengguna(), idRuangan);
 
             response.put("success", true);
             response.put("message", "Bimbingan berhasil diterima!");
@@ -377,5 +260,118 @@ public class MahasiswaController {
         response.put("peran", status.getPeranPengguna());
 
         return response;
+    }
+
+
+    @GetMapping("/jadwal")
+    public String mahasiswajadwal(@RequestParam(required = false) String week, HttpSession session,
+                                  Model model) {
+        String idPengguna = (String) session.getAttribute("idPengguna");
+        if (week == null || week.isEmpty()) {
+            LocalDate hariIni = LocalDate.now();
+            int weekNum = hariIni.get(IsoFields.WEEK_OF_WEEK_BASED_YEAR);
+            int year = hariIni.get(IsoFields.WEEK_BASED_YEAR);
+            String weekNumFormatted = String.format("%02d", weekNum);
+            week = year + "-W" + weekNumFormatted;
+        }
+
+        model.addAttribute("weekParam", week);
+
+        String tahun = week.substring(0, 4);
+        String minggu = week.substring(6);
+        model.addAttribute("today", LocalDate.now());
+        LocalDate tanggalMulai = hitungTanggalMulaiMinggu(Integer.parseInt(tahun), Integer.parseInt(minggu));
+        String tanggalMulaiFormatted = tanggalMulai.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+
+        model.addAttribute("tanggalMulaiMinggu", tanggalMulaiFormatted);
+
+        JadwalService.DataJadwalMingguan temp = jadwalService.dapatkanJadwalMingguan(week, idPengguna, false);
+        Map<DayOfWeek, String> HariTanggal = temp.getTanggalHeader();
+        List<List<SlotWaktu>> timetableGrid = temp.getGridJadwal();
+
+        model.addAttribute("listHari", HariTanggal);
+        model.addAttribute("timetable", timetableGrid);
+
+        int idTA = tugasAkhirService.getIdTugasAkhir(idPengguna);
+        List<PilihanPengguna> pilihanDosen = bimbinganService.getDosenPembimbingPilihan(idTA);
+        model.addAttribute("dosenSatu", pilihanDosen.get(0));
+        model.addAttribute("dosenDua", pilihanDosen.size() > 1 ? pilihanDosen.get(1) : null);
+
+        return "mahasiswa/MahasiswaJadwal";
+    }
+
+    @GetMapping("/cek-slot-tersedia")
+    @ResponseBody
+    public List<String> getAvailableSlots(
+            @RequestParam("ids") List<String> listIdDosen,
+            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate tanggal,
+            HttpSession session) {
+
+        String idPengguna = (String) session.getAttribute("idPengguna");
+
+        if (idPengguna == null) {
+            return java.util.Collections.emptyList();
+        }
+
+        List<String> dosenFixed = listIdDosen.stream()
+                .filter(java.util.Objects::nonNull)
+                .distinct()
+                .collect(java.util.stream.Collectors.toList());
+
+        return jadwalService.cariSlotGabungan(dosenFixed, idPengguna, tanggal);
+    }
+
+    @PostMapping("/ajukan-bimbingan")
+    @ResponseBody
+    public Map<String, Object> ajukanBimbingan(
+            @RequestBody DTOBimbinganMahasiswa request,
+            HttpSession session) {
+
+        String idPengguna = (String) session.getAttribute("idPengguna");
+
+        LocalDate tanggal = LocalDate.parse(request.getTanggal());
+        LocalTime mulai = LocalTime.parse(request.getWaktuMulai());
+        LocalTime selesai = LocalTime.parse(request.getWaktuSelesai());
+
+        bimbinganService.ajukanBimbinganMahasiswa(idPengguna, request.getDosenIds(), request.getTopik(), request.getDeskripsi(), tanggal, mulai, selesai);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("success", true);
+        response.put("message", "Pengajuan bimbingan berhasil!");
+
+        return response;
+    }
+
+
+    @GetMapping("/profil")
+    public String profil(Model model, HttpSession session) {
+        String id = (String) session.getAttribute("idPengguna");
+        ProfilMahasiswa profilMahasiswa = mahasiswaService.makeProfile(id);
+
+        model.addAttribute("nama", profilMahasiswa.getNama());
+        model.addAttribute("npm", profilMahasiswa.getNpm());
+        model.addAttribute("peran", profilMahasiswa.getPeran());
+        model.addAttribute("dospem1", profilMahasiswa.getDosen1());
+        model.addAttribute("dospem2", profilMahasiswa.getDosen2() == null ? "-" : profilMahasiswa.getDosen2());
+        model.addAttribute("pra", profilMahasiswa.getTotBimPra());
+        model.addAttribute("pasca", profilMahasiswa.getTotBimPas());
+        model.addAttribute("syarat", profilMahasiswa.getSyaratKelayakan());
+
+        return "mahasiswa/ProfileMahasiswa";
+    }
+
+    @GetMapping("/notifikasi")
+    public String notifikasi(Model model, HttpSession session) {
+        String idPengguna = (String) session.getAttribute("idPengguna");
+        List<Notifikasi> listNotif = notifikasiService.getNotifikasiInAppByIdUser(idPengguna);
+        model.addAttribute("daftarNotifikasi", listNotif);
+        return "mahasiswa/NotifikasiMahasiswa";
+    }
+
+
+    private LocalDate hitungTanggalMulaiMinggu(int tahun, int minggu) {
+        return LocalDate.of(tahun, 1, 1)
+                .with(IsoFields.WEEK_OF_WEEK_BASED_YEAR, minggu)
+                .with(DayOfWeek.MONDAY);
     }
 }

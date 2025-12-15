@@ -12,249 +12,279 @@
 
 <body>
 
-    <div class="main">
+<div class="main">
 
-        <aside class="sidebar">
-            <div class="logo-container">
-                <img src="/assets/icons/logo.svg">
-                <span class="text-navbar">POTA</span>
-            </div>
+    <aside class="sidebar">
+        <div class="logo-container">
+            <img src="/assets/icons/logo.svg">
+            <span class="text-navbar">POTA</span>
+        </div>
 
-            <nav class="nav-menu">
-                <a th:href="@{/mahasiswa/beranda}" class="nav-item">
-                    <img th:src="@{/assets/icons/ManajemenAkun.svg}" alt="" class="nav-icon" />
-                    <span>Beranda</span>
-                </a>
+        <nav class="nav-menu">
+            <a th:href="@{/mahasiswa/beranda}" class="nav-item">
+                <img th:src="@{/assets/icons/ManajemenAkun.svg}" alt="" class="nav-icon" />
+                <span>Beranda</span>
+            </a>
 
-                <a th:href="@{/mahasiswa/jadwal}" class="nav-item">
-                    <img th:src="@{/assets/icons/Jadwal.svg}" alt="" class="nav-icon" />
-                    <span>Jadwal</span>
-                </a>
+            <a th:href="@{/mahasiswa/jadwal}" class="nav-item">
+                <img th:src="@{/assets/icons/Jadwal.svg}" alt="" class="nav-icon" />
+                <span>Jadwal</span>
+            </a>
 
-                <a th:href="@{/templates/mahasiswa/bimbingan}" class="nav-item active">
-                    <img th:src="@{/assets/icons/Bimbingan.svg}" alt="" class="nav-icon" />
-                    <span>Bimbingan</span>
-                </a>
+            <a th:href="@{/mahasiswa/bimbingan}" class="nav-item active">
+                <img th:src="@{/assets/icons/Bimbingan.svg}" alt="" class="nav-icon" />
+                <span>Bimbingan</span>
+            </a>
 
-                <a th:href="@{/mahasiswa/notifikasi}" class="nav-item">
-                    <img th:src="@{/assets/icons/Notifikasi.svg}" alt="" class="nav-icon" />
-                    <span>Notifikasi</span>
-                </a>
+            <a th:href="@{/mahasiswa/notifikasi}" class="nav-item">
+                <img th:src="@{/assets/icons/Notifikasi.svg}" alt="" class="nav-icon" />
+                <span>Notifikasi</span>
+            </a>
 
-                <a th:href="@{/mahasiswa/profil}" class="nav-item">
-                    <img th:src="@{/assets/icons/Profil.svg}" alt="" class="nav-icon" />
-                    <span>Profil</span>
-                </a>
+            <a th:href="@{/mahasiswa/profil}" class="nav-item">
+                <img th:src="@{/assets/icons/Profil.svg}" alt="" class="nav-icon" />
+                <span>Profil</span>
+            </a>
 
-            </nav>
+        </nav>
 
-            <div class="logout-section">
-                <form th:action="@{/logout}" method="post" style="margin: 0;">
-                    <button type="submit" class="btn-logout">
-                        <img th:src="@{/assets/icons/LogOut.svg}" alt="" />
-                        Log Out
-                    </button>
-                </form>
-            </div>
-        </aside>
+        <div class="logout-section">
+            <form th:action="@{/logout}" method="post" style="margin: 0;">
+                <button type="submit" class="btn-logout">
+                    <img th:src="@{/assets/icons/LogOut.svg}" alt="" />
+                    Log Out
+                </button>
+            </form>
+        </div>
+    </aside>
 
-        <main class="main-content">
-            <h1 class="page-title">Bimbingan</h1>
+    <main class="main-content">
+        <h1 class="page-title">Bimbingan</h1>
 
-            <div class="tab-menu">
-                <a class="tab" th:href="@{/mahasiswa/bimbinganProses}">Proses</a>
-                <a class="tab active" th:href="@{/mahasiswa/bimbinganTerjadwal}">Terjadwalkan</a>
-                <a class="tab" th:href="@{/mahasiswa/bimbinganSelesai}">Selesai</a>
-                <a class="tab" th:href="@{/mahasiswa/bimbinganGagal}">Gagal</a>
-            </div>
+        <div class="tab-menu">
+            <a class="tab" th:href="@{/mahasiswa/bimbinganProses}">Proses</a>
+            <a class="tab active" th:href="@{/mahasiswa/bimbinganTerjadwal}">Terjadwalkan</a>
+            <a class="tab" th:href="@{/mahasiswa/bimbinganSelesai}">Selesai</a>
+            <a class="tab" th:href="@{/mahasiswa/bimbinganGagal}">Gagal</a>
+        </div>
 
-            <div class="bimbingan-list">
+        <div class="bimbingan-list">
 
-                <!-- Tempat buat nampilin Data -->
-                <div class="card" th:each="bimbingan : ${listBimbingan}" >
-                    <div class="card-header">
-                        <span th:text="${bimbingan.tanggal}">10/10/2025 </span>
-                        <span th:text="${bimbingan.jam}">10.00 - 11.00</span>
-                        <span th:text="${bimbingan.namaLokasi}">Ruang Tugas Akhir</span>
-                        <img src="/assets/icons/Arrow.svg" class="dropdown-btn">
-                    </div>
+            <!-- Tempat buat nampilin Data -->
+            <div class="card" th:each="bimbingan : ${listBimbingan}" >
+                <div class="card-header">
+                    <span th:text="${bimbingan.tanggal}">10/10/2025 </span>
+                    <span th:text="${bimbingan.jam}">10.00 - 11.00</span>
+                    <span th:text="${bimbingan.namaLokasi}">Ruang Tugas Akhir</span>
+                    <img src="/assets/icons/Arrow.svg" class="dropdown-btn">
+                </div>
 
-                    <div class="card-body">
-                        <div class="containerutama">
-                            <p class="item">Rincian Bimbingan</p>
-                            <div class="containerItem">
-                                <div class="containerGrid">
-                                    <p class="itemkiri">Tanggal</p>
-                                    <p class="itemkanan" th:text="${bimbingan.tanggal}">10/10/2025</p>
-                                    <p class="itemkiri">Jam</p>
-                                    <p class="itemkanan" th:text="${bimbingan.jam}">: 10.00 - 11.00</p>
-                                    <p class="itemkiri">Durasi</p>
-                                    <p class="itemkanan" th:text="${bimbingan.durasi}">: 1 Jam</p>
-                                    <p class="itemkiri">Lokasi</p>
-                                    <p class="itemkanan" th:text="${bimbingan.namaLokasi}">: Ruang Tugas Akhir</p>
-                                    <p class="itemkiri">Dosen</p>
-                                    <p class="itemkanan" th:text="${bimbingan.dosen}">: Maria Veronica</p>
-                                    <p class="itemkiri">Mahasiswa</p>
-                                    <p class="itemkanan" th:each="mahasiswa : ${bimbingan.mahasiswa}">
-                                        : <span th:text="${mahasiswa}">-</span>
-                                    </p>
-                                </div>
-
-                                <div class="containerGrid2">
-                                    <p class="itemkiri">Topik</p>
-                                    <p class="itemkanan" th:text="${bimbingan.topik}">: Bimbingan Mingguan</p>
-                                    <p class="itemkiri">Deskripsi Topik</p>
-                                    <p class="itemkanan" th:text="${bimbingan.deskripsi}">: -</p>
-                                </div>
+                <div class="card-body">
+                    <div class="containerutama">
+                        <p class="item">Rincian Bimbingan</p>
+                        <div class="containerItem">
+                            <div class="containerGrid">
+                                <p class="itemkiri">Tanggal</p>
+                                <p class="itemkanan" th:text="${bimbingan.tanggal}">10/10/2025</p>
+                                <p class="itemkiri">Jam</p>
+                                <p class="itemkanan" th:text="${bimbingan.jam}">: 10.00 - 11.00</p>
+                                <p class="itemkiri">Durasi</p>
+                                <p class="itemkanan" th:text="${bimbingan.durasi}">: 1 Jam</p>
+                                <p class="itemkiri">Lokasi</p>
+                                <p class="itemkanan" th:text="${bimbingan.namaLokasi}">: Ruang Tugas Akhir</p>
+                                <p class="itemkiri">Dosen</p>
+                                <p class="itemkanan" th:text="${bimbingan.dosen}">: Maria Veronica</p>
+                                <p class="itemkiri">Mahasiswa</p>
+                                <p class="itemkanan" th:each="mahasiswa : ${bimbingan.mahasiswa}">
+                                    : <span th:text="${mahasiswa}">-</span>
+                                </p>
                             </div>
-                            <div class="card-actions">
-                                <button class="btn accept btn-validasi"
-                                        th:attr="data-id-bim=${bimbingan.idBimbingan}"
-                                        onclick="validasiBimbingan(this)">
-                                    <div class="img"></div>Validasi
-                                </button>
-                                <button class="btn reject btn-batalkan"
-                                        th:attr="data-id-bim=${bimbingan.idBimbingan}"
-                                        onclick="batalkanBimbingan(this)">
-                                    Batalkan Bimbingan
-                                </button>
+
+                            <div class="containerGrid2">
+                                <p class="itemkiri">Topik</p>
+                                <p class="itemkanan" th:text="${bimbingan.topik}">: Bimbingan Mingguan</p>
+                                <p class="itemkiri">Deskripsi Topik</p>
+                                <p class="itemkanan" th:text="${bimbingan.deskripsi}">: -</p>
                             </div>
+                        </div>
+                        <div class="card-actions">
+                            <button class="btn accept btn-validasi"
+                                    th:attr="data-id-bim=${bimbingan.idBimbingan}"
+                                    onclick="validasiBimbingan(this)">
+                                <div class="img"></div>Validasi
+                            </button>
+                            <button class="btn reject btn-batalkan"
+                                    th:attr="data-id-bim=${bimbingan.idBimbingan}"
+                                    onclick="showPopupBatal(this)">
+                                Batalkan Bimbingan
+                            </button>
                         </div>
                     </div>
                 </div>
-
             </div>
-        </main>
+
+        </div>
+    </main>
+</div>
+
+<div id="popupBatal" class="popup-overlay">
+    <div class="popup-container">
+        <div class="popup-header">
+            <h1 class="popup-title">Alasan Pembatalan</h1>
+            <button class="popup-close" onclick="closePopup('popupBatal')">&times;</button>
+        </div>
+        <div class="popup-content">
+                <textarea id="alasanBatal" class="popup-textarea large"
+                          placeholder="Masukkan alasan pembatalan (wajib)..."></textarea>
+        </div>
+        <div class="popup-footer">
+            <button class="popup-btn btn-secondary" onclick="closePopup('popupBatal')">Batal</button>
+            <button class="popup-btn btn-danger" onclick="submitPembatalan()">Batalkan</button>
+        </div>
     </div>
+</div>
 
-    <script>
-        document.querySelectorAll(".dropdown-btn").forEach(btn => {
-            btn.addEventListener("click", () => {
-                let card = btn.closest(".card");
-                card.classList.toggle("open");
-            });
+<script>
+    let currentIdBim = null;
+
+    document.querySelectorAll(".dropdown-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+            let card = btn.closest(".card");
+            card.classList.toggle("open");
         });
+    });
 
 
-        document.querySelectorAll(".nav-item").forEach(item => {
-            if (item.textContent.trim() === document.title.replace("POTA - ", "")) {
-                item.classList.add("active");
+    document.querySelectorAll(".nav-item").forEach(item => {
+        if (item.textContent.trim() === document.title.replace("POTA - ", "")) {
+            item.classList.add("active");
+        }
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.card').forEach(card => {
+            const idBim = card.querySelector('[data-id-bim]')?.getAttribute('data-id-bim');
+            if (idBim) {
+                cekStatusTombol(idBim, card);
             }
         });
+    });
 
-        document.addEventListener('DOMContentLoaded', function() {
-            document.querySelectorAll('.card').forEach(card => {
-                const idBim = card.querySelector('[data-id-bim]')?.getAttribute('data-id-bim');
-                if (idBim) {
-                    cekStatusTombol(idBim, card);
+    function cekStatusTombol(idBim, cardElement) {
+        fetch(`/mahasiswa/bimbingan/cek-aksi?idBim=${idBim}`)
+            .then(response => response.json())
+            .then(data => {
+                const btnValidasi = cardElement.querySelector('.btn-validasi');
+                const btnBatalkan = cardElement.querySelector('.btn-batalkan');
+
+                if (btnValidasi) {
+                    if (!data.bisaValidasi) {
+                        btnValidasi.disabled = true;
+                        btnValidasi.style.backgroundColor = 'var(--btn-grey-border)';
+                        btnValidasi.style.cursor = 'not-allowed';
+                    }
                 }
+
+                if (btnBatalkan) {
+                    if (!data.bisaBatalkan) {
+                        btnBatalkan.disabled = true;
+                        btnBatalkan.style.backgroundColor = 'var(--btn-grey-border)';
+                        btnBatalkan.style.cursor = 'not-allowed';
+                    }
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    }
+
+    // VALIDASI - HANYA ALERT/KONFIRMASI (TANPA POPUP)
+    function validasiBimbingan(button) {
+        const idBim = button.getAttribute('data-id-bim');
+
+        if (!confirm('Apakah Anda yakin ingin memvalidasi bimbingan ini?')) {
+            return;
+        }
+
+        fetch('/mahasiswa/bimbingan/validasi', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: `idBim=${idBim}`
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert(data.message);
+                    location.reload();
+                } else {
+                    alert(data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Terjadi kesalahan saat memproses permintaan.');
             });
+    }
+
+    // BATALKAN - MENGGUNAKAN POPUP SAMA SEPERTI DASHBOARD DOSEN
+    function showPopupBatal(button) {
+        currentIdBim = button.getAttribute('data-id-bim');
+        document.getElementById('alasanBatal').value = '';
+        document.getElementById('popupBatal').classList.add('active');
+    }
+
+    function closePopup(popupId) {
+        document.getElementById(popupId).classList.remove('active');
+        currentIdBim = null;
+    }
+
+    function submitPembatalan() {
+        const catatan = document.getElementById('alasanBatal').value;
+
+        if (!currentIdBim) {
+            alert('ID Bimbingan tidak ditemukan!');
+            return;
+        }
+
+        if (!catatan || catatan.trim() === '') {
+            alert('Alasan pembatalan wajib diisi!');
+            return;
+        }
+
+        if (!confirm('Apakah Anda yakin ingin membatalkan bimbingan ini?')) {
+            return;
+        }
+
+        fetch('/mahasiswa/bimbingan/batalkan', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: `idBim=${currentIdBim}&catatan=${encodeURIComponent(catatan)}`
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert(data.message);
+                    closePopup('popupBatal');
+                    location.reload();
+                } else {
+                    alert(data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Terjadi kesalahan saat memproses permintaan.');
+            });
+    }
+
+    // Close popup when clicking outside
+    document.querySelectorAll('.popup-overlay').forEach(overlay => {
+        overlay.addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.classList.remove('active');
+                currentIdBim = null;
+            }
         });
+    });
 
-        function cekStatusTombol(idBim, cardElement) {
-            fetch(`/dosen/bimbingan/cek-aksi?idBim=${idBim}`)
-                .then(response => response.json())
-                .then(data => {
-                    const btnTerima = cardElement.querySelector('.btn-terima');
-                    const btnTolak = cardElement.querySelector('.btn-tolak');
-                    const btnValidasi = cardElement.querySelector('.btn-validasi');
-                    const btnBatalkan = cardElement.querySelector('.btn-batalkan');
-
-                    // Disable/grey out tombol sesuai status
-                    if (btnTerima) {
-                        if (!data.bisaTerima || data.sudahTerima) {
-                            btnTerima.disabled = true;
-                            btnTerima.style.backgroundColor = 'var(--btn-grey-border)';
-                            btnTerima.style.cursor = 'not-allowed';
-                        }
-                    }
-
-                    if (btnTolak) {
-                        if (!data.bisaTolak) {
-                            btnTolak.disabled = true;
-                            btnTolak.style.backgroundColor = 'var(--btn-grey-border)';
-                            btnTolak.style.cursor = 'not-allowed';
-                        }
-                    }
-
-                    if (btnValidasi) {
-                        if (!data.bisaValidasi) {
-                            btnValidasi.disabled = true;
-                            btnValidasi.style.backgroundColor = 'var(--btn-grey-border)';
-                            btnValidasi.style.cursor = 'not-allowed';
-                        }
-                    }
-
-                    if (btnBatalkan) {
-                        if (!data.bisaBatalkan) {
-                            btnBatalkan.disabled = true;
-                            btnBatalkan.style.backgroundColor = 'var(--btn-grey-border)';
-                            btnBatalkan.style.cursor = 'not-allowed';
-                        }
-                    }
-                })
-                .catch(error => console.error('Error:', error));
-        }
-        function validasiBimbingan(button) {
-            const idBim = button.getAttribute('data-id-bim');
-
-            const catatan = prompt('Masukkan catatan validasi (opsional):');
-            if (catatan === null) return;
-
-            if (confirm('Apakah Anda yakin ingin memvalidasi bimbingan ini?')) {
-                fetch('/dosen/bimbingan/validasi', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                    body: `idBim=${idBim}&catatan=${encodeURIComponent(catatan)}`
-                })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            alert(data.message);
-                            location.reload();
-                        } else {
-                            alert(data.message);
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        alert('Terjadi kesalahan saat memproses permintaan.');
-                    });
-            }
-        }
-
-        function batalkanBimbingan(button) {
-            const idBim = button.getAttribute('data-id-bim');
-
-            const catatan = prompt('Masukkan alasan pembatalan:');
-            if (!catatan || catatan.trim() === '') {
-                alert('Alasan pembatalan wajib diisi!');
-                return;
-            }
-
-            if (confirm('Apakah Anda yakin ingin membatalkan bimbingan ini?')) {
-                fetch('/dosen/bimbingan/batalkan', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                    body: `idBim=${idBim}&catatan=${encodeURIComponent(catatan)}`
-                })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            alert(data.message);
-                            location.reload();
-                        } else {
-                            alert(data.message);
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        alert('Terjadi kesalahan saat memproses permintaan.');
-                    });
-            }
-        }
-
-    </script>
+</script>
 
 </body>
 

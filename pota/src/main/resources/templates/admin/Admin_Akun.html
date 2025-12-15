@@ -101,14 +101,6 @@
                                onclick="return confirm('Yakin ingin menghapus?')">
                                 <img th:src="@{/assets/icons/delete.svg}" alt="Hapus"/>
                             </a>
-                            <!-- Edit Button -->
-                            <button type="button"
-                                    class="btn-action green"
-                                    title="Edit"
-                                    th:attr="data-user-id=${user.idPengguna}, data-tipe-akun=${user.tipeAkun}"
-                                    onclick="showDetailPopup(this.getAttribute('data-user-id'), this.getAttribute('data-tipe-akun'))">
-                                <img th:src="@{/assets/icons/edit.svg}" alt="Edit" />
-                            </button>
                         </td>
                     </tr>
                     <!-- Empty State -->
@@ -150,20 +142,6 @@
             </div>
         </div>
 
-        <!-- Popup Detail/Edit Akun -->
-        <div id="popup-detail-akun" class="popup-overlay hidden">
-            <div class="popup-content popup-wide">
-                <div class="popup-header">
-                    <h3 class="popup-title">Detail Akun</h3>
-                    <button type="button" class="btn-back" onclick="hidePopup('popup-detail-akun')">
-                        <img th:src="@{/assets/icons/xHitam.svg}" alt="Kembali"/>
-                    </button>
-                </div>
-                <div class="popup-body">
-
-                </div>
-            </div>
-        </div>
     </main>
 </div>
 

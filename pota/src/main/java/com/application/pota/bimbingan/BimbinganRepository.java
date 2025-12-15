@@ -11,7 +11,7 @@ public interface BimbinganRepository {
     List<BimbinganSiapKirim> getBimbinganUserBertipe(String tipeAkun, String tipeStatus, String idPengguna);
 
     List<PilihanPengguna> getDosenPembimbingPilihan(int idTa);
-
+    List<String> getIdMahasiswaBimbingan(int idBim);
     List<PilihanPengguna> getMahasiswaPilihan(String idDosen);
 
     int insertBimbingan(String topik, String deskripsi, int jumlahPeserta, Integer idRuangan);
@@ -32,6 +32,9 @@ public interface BimbinganRepository {
     void updateStatusDosen2(int idBim, String status);
 
     List<String> getListDosenByIdBim(int idBim);
+
+    void updateRuanganBimbingan(int idBim, Integer idRuangan);
+
     List<String> getMahasiswaBimbingan(Integer idBim);
     void updateStatusMahasiswa(int idBim, String status);
     void updateCatatanBimbingan(int idBim, String status);

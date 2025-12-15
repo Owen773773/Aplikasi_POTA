@@ -39,14 +39,6 @@ body {
   padding: 0;
 }
 
-.page-title {
-  padding: 18px;
-  font-size: 28px;
-  font-weight: bold;
-  background: var(--bg-white);
-  color: var(--primary);
-  margin: 0;
-}
 
 .tab-menu {
   display: flex;

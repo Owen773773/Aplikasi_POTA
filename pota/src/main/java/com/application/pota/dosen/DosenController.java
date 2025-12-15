@@ -177,6 +177,7 @@ class DosenController {
 
         List<PilihanPengguna> pilihanMahasiwa = bimbinganService.getMahasiswaPilihan(idPengguna);
         model.addAttribute("listMahasiswa", pilihanMahasiwa);
+        model.addAttribute("today", LocalDate.now());
 
         // Tambahkan list ruangan untuk form pengajuan
         List<Ruangan> listRuangan = ruanganService.getAllRuang();
@@ -261,6 +262,7 @@ class DosenController {
     @ResponseBody
     public Map<String, Object> terimaBimbingan(
             @RequestParam int idBim,
+            @RequestParam Integer idRuangan, // Tambahkan parameter idRuangan
             HttpSession session) {
 
         Map<String, Object> response = new HashMap<>();
@@ -275,7 +277,9 @@ class DosenController {
             }
 
             BimbinganDetailStatus status = bimbinganService.getDetailStatusBimbingan(idBim, idPengguna);
-            bimbinganService.terimaBimbingan(idBim, status.getPeranPengguna());
+
+            // Pass idRuangan ke service method
+            bimbinganService.terimaBimbingan(idBim, status.getPeranPengguna(), idRuangan);
 
             response.put("success", true);
             response.put("message", "Bimbingan berhasil diterima!");

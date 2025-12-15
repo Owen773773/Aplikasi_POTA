@@ -10,96 +10,137 @@ import java.sql.SQLException;
 import java.util.List;
 
 @Repository
-@RequiredArgsConstructor  // Lombok untuk constructor injection
+@RequiredArgsConstructor
 public class BimbinganJdbc implements BimbinganRepository {
     @Autowired
     private final JdbcTemplate jdbcTemplate;
 
     @Override
     public List<BimbinganSiapKirim> getBimbinganUserBertipe(String tipeAkun, String tipeStatus, String idPengguna) {
-
-        // Langsung menggunakan parameter tipeAkun
         if ("Mahasiswa".equalsIgnoreCase(tipeAkun)) {
             return getBimbinganMahasiswaByStatus(tipeStatus, idPengguna);
         } else if ("Dosen".equalsIgnoreCase(tipeAkun)) {
             return getBimbinganDosenByStatus(tipeStatus, idPengguna);
         } else {
-            // Admin atau tipe akun lain yang tidak memiliki list bimbingan
-            // Kita kembalikan list kosong
             return List.of();
         }
     }
 
     private List<BimbinganSiapKirim> getBimbinganMahasiswaByStatus(String tipeStatus, String idPengguna) {
         String sql = """
-                SELECT 
-                    b.IdBim,
-                    b.TopikBim,
-                    b.DeskripsiBim,
-                    b.Catatan,
-                    r.namaRuangan,
-                    j.tanggal,
-                    j.WaktuMulai,
-                    j.WaktuSelesai,
-                    tb.StatusBimbingan,
-                    tb.statusmhs,
-                    tb.StatusDosen1,
-                    tb.StatusDosen2,
-     
-                    ta.IdTa
-                FROM Bimbingan b
-                JOIN TopikBimbingan tb ON b.IdBim = tb.IdBim
-                JOIN TugasAkhir ta ON tb.IdTA = ta.IdTa
-                LEFT JOIN Ruangan r ON b.idRuangan = r.idRuangan
-                LEFT JOIN PenjadwalanBimbingan pb ON b.IdBim = pb.IdBim
-                LEFT JOIN Jadwal j ON pb.IdJadwal = j.IdJadwal
-                WHERE ta.IdMahasiswa ILIKE ? AND tb.StatusBimbingan ILIKE ?
-                ORDER BY j.tanggal DESC, j.WaktuMulai DESC
-                """;
-
-        return jdbcTemplate.query(sql,this::BimbinganRowMapper, idPengguna, tipeStatus);
-    }
-
-    private List<BimbinganSiapKirim> getBimbinganDosenByStatus(String tipeStatus, String idPengguna) {
-        String sql = """
-                SELECT 
-                    b.IdBim,
-                    b.TopikBim,
-                    b.DeskripsiBim,
-                    b.Catatan,
-                    r.namaRuangan,
-                    j.tanggal,
-                    j.WaktuMulai,
-                    j.WaktuSelesai,
-                    tb.StatusBimbingan,
-                    tb.statusmhs,
-                    tb.StatusDosen1,
-                    tb.StatusDosen2,
-                    b.catatan,
-                    ta.IdTa
-                FROM Bimbingan b
-                JOIN TopikBimbingan tb ON b.IdBim = tb.IdBim
-                JOIN TugasAkhir ta ON tb.IdTA = ta.IdTa
-                JOIN Dosen_Pembimbing dp ON ta.IdTa = dp.idTA
-                LEFT JOIN Ruangan r ON b.idRuangan = r.idRuangan
-                LEFT JOIN PenjadwalanBimbingan pb ON b.IdBim = pb.IdBim
-                LEFT JOIN Jadwal j ON pb.IdJadwal = j.IdJadwal
-                WHERE dp.IdDosen ILIKE ? AND tb.StatusBimbingan ILIKE ?
-                ORDER BY j.tanggal DESC, j.WaktuMulai DESC
-                """;
+        SELECT 
+            b.IdBim,
+            b.TopikBim,
+            b.DeskripsiBim,
+            b.Catatan,
+            r.namaRuangan,
+            j.tanggal,
+            j.WaktuMulai,
+            j.WaktuSelesai,
+            tb.StatusBimbingan,
+            tb.statusmhs,
+            tb.StatusDosen1,
+            tb.StatusDosen2,
+            ta.IdTa
+        FROM Bimbingan b
+        JOIN TopikBimbingan tb ON b.IdBim = tb.IdBim
+        JOIN TugasAkhir ta ON tb.IdTA = ta.IdTa
+        LEFT JOIN Ruangan r ON b.idRuangan = r.idRuangan
+        LEFT JOIN PenjadwalanBimbingan pb ON b.IdBim = pb.IdBim
+        LEFT JOIN Jadwal j ON pb.IdJadwal = j.IdJadwal
+        WHERE ta.IdMahasiswa = ?
+          AND tb.StatusBimbingan = ?
+        ORDER BY j.tanggal DESC, j.WaktuMulai DESC
+        """;
 
         return jdbcTemplate.query(sql, this::BimbinganRowMapper, idPengguna, tipeStatus);
     }
 
-    public BimbinganSiapKirim BimbinganRowMapper(ResultSet rs, int rowNum) throws SQLException {
 
+
+    private List<BimbinganSiapKirim> getBimbinganDosenByStatus(String tipeStatus, String idPengguna) {
+        String sql = """
+        WITH ranked_dosen AS (
+            SELECT 
+                dp.idTA,
+                dp.IdDosen,
+                ROW_NUMBER() OVER (PARTITION BY dp.idTA ORDER BY dp.IdDosen) AS rn
+            FROM Dosen_Pembimbing dp
+        )
+        SELECT DISTINCT ON (b.IdBim)
+            b.IdBim,
+            b.TopikBim,
+            b.DeskripsiBim,
+            b.Catatan,
+            r.namaRuangan,
+            j.tanggal,
+            j.WaktuMulai,
+            j.WaktuSelesai,
+            tb.StatusBimbingan,
+            tb.statusmhs,
+            tb.StatusDosen1,
+            tb.StatusDosen2,
+            ta.IdTa
+        FROM Bimbingan b
+        JOIN TopikBimbingan tb ON b.IdBim = tb.IdBim
+        JOIN TugasAkhir ta ON tb.IdTA = ta.IdTa
+        JOIN ranked_dosen rd ON rd.idTA = ta.IdTa
+        LEFT JOIN Ruangan r ON b.idRuangan = r.idRuangan
+        LEFT JOIN PenjadwalanBimbingan pb ON b.IdBim = pb.IdBim
+        LEFT JOIN Jadwal j ON pb.IdJadwal = j.IdJadwal
+        WHERE rd.IdDosen = ?
+          AND tb.StatusBimbingan = ?
+          AND (
+                (rd.rn = 1 AND tb.StatusDosen1 <> 'Tidak Terpilih')
+             OR (rd.rn = 2 AND tb.StatusDosen2 <> 'Tidak Terpilih')
+          )
+        ORDER BY b.IdBim, j.tanggal DESC, j.WaktuMulai DESC
+        """;
+
+        return jdbcTemplate.query(sql, this::BimbinganRowMapper, idPengguna, tipeStatus);
+    }
+
+
+
+    private List<String> getDosenPembimbingTerpilih(int idTa, int idBim) {
+        String sql = """
+        WITH ranked_dosen AS (
+            SELECT 
+                dp.idTA,
+                p.nama,
+                ROW_NUMBER() OVER (PARTITION BY dp.idTA ORDER BY dp.IdDosen) AS rn
+            FROM Dosen_Pembimbing dp
+            JOIN Pengguna p ON dp.IdDosen = p.IdPengguna
+            WHERE dp.idTA = ?
+        )
+        SELECT rd.nama
+        FROM ranked_dosen rd
+        JOIN TopikBimbingan tb ON tb.IdTA = rd.idTA AND tb.IdBim = ?
+        WHERE 
+            (rd.rn = 1 AND tb.StatusDosen1 <> 'Tidak Terpilih')
+         OR (rd.rn = 2 AND tb.StatusDosen2 <> 'Tidak Terpilih')
+        ORDER BY rd.rn
+    """;
+
+        return jdbcTemplate.queryForList(sql, String.class, idTa, idBim);
+    }
+
+
+
+    public BimbinganSiapKirim BimbinganRowMapper(ResultSet rs, int rowNum) throws SQLException {
         Integer idBim = rs.getInt("IdBim");
         Integer idTa = rs.getInt("IdTa");
 
-        List<String> dosenList = getDosenPembimbing(idTa);
+        // Pass idBim juga ke method ini
+        List<String> dosenList = getDosenPembimbingTerpilih(idTa, idBim);
 
         String dosen1 = dosenList.size() > 0 ? dosenList.get(0) : null;
         String dosen2 = dosenList.size() > 1 ? dosenList.get(1) : null;
+
+        // Handle jika dosen yang sama (edge case)
+        if (dosen1 != null && dosen1.equals(dosen2)) {
+            dosen2 = null;
+        }
 
         String statusmhs = rs.getString("statusmhs");
         String statusDosen1 = rs.getString("StatusDosen1");
@@ -126,19 +167,17 @@ public class BimbinganJdbc implements BimbinganRepository {
                 .build();
     }
 
-
     private List<String> getDosenPembimbing(int idTa) {
         String sql = """
                 SELECT p.nama
                 FROM Dosen_Pembimbing dp
                 JOIN Pengguna p ON dp.IdDosen = p.IdPengguna
                 WHERE dp.idTA = ?
-                ORDER BY p.nama ASC 
+                ORDER BY dp.IdDosen ASC 
                 """;
         return jdbcTemplate.queryForList(sql, String.class, idTa);
     }
 
-    // Get dosen pembimbing untuk satu TA tertentu
     @Override
     public List<PilihanPengguna> getDosenPembimbingPilihan(int idTa) {
         String sql = """
@@ -151,7 +190,6 @@ public class BimbinganJdbc implements BimbinganRepository {
         return jdbcTemplate.query(sql, this::mapRowToPilihanPengguna, idTa);
     }
 
-    // Get semua mahasiswa yang dibimbing oleh dosen tertentu
     @Override
     public List<PilihanPengguna> getMahasiswaPilihan(String idDosen) {
         String sql = """
@@ -172,7 +210,7 @@ public class BimbinganJdbc implements BimbinganRepository {
             SET StatusDosen1 = ?
             WHERE IdBim = ?
         """;
-        jdbcTemplate.update(sql, status,idBim);
+        jdbcTemplate.update(sql, status, idBim);
     }
 
     @Override
@@ -182,19 +220,19 @@ public class BimbinganJdbc implements BimbinganRepository {
             SET StatusDosen2 = ?
             WHERE IdBim = ?
         """;
-        jdbcTemplate.update(sql, status,idBim);
+        jdbcTemplate.update(sql, status, idBim);
     }
 
     @Override
     public BimbinganDetailStatus getDetailStatusBimbingan(int idBim) {
+        // Ambil SEMUA records untuk idBim ini
         String sql = """
         SELECT StatusMhs, StatusDosen1, StatusDosen2, StatusBimbingan
         FROM TopikBimbingan
         WHERE IdBim = ?
-        LIMIT 1
-        """;
+    """;
 
-        return jdbcTemplate.queryForObject(sql, (rs, rowNum) -> {
+        List<BimbinganDetailStatus> allRecords = jdbcTemplate.query(sql, (rs, rowNum) -> {
             BimbinganDetailStatus status = new BimbinganDetailStatus();
             status.setIdBim(idBim);
             status.setStatusMhs(rs.getString("StatusMhs"));
@@ -203,8 +241,25 @@ public class BimbinganJdbc implements BimbinganRepository {
             status.setStatusBimbingan(rs.getString("StatusBimbingan"));
             return status;
         }, idBim);
+
+        if (allRecords.isEmpty()) {
+            throw new RuntimeException("Bimbingan dengan ID " + idBim + " tidak ditemukan");
+        }
+
+        // Return record pertama (status dosen seharusnya sama untuk semua record dengan IdBim sama)
+        return allRecords.get(0);
     }
 
+    @Override
+    public List<String> getIdMahasiswaBimbingan(int idBim) {
+        String sql = """
+        SELECT DISTINCT ta.IdMahasiswa
+        FROM TopikBimbingan tb
+        JOIN TugasAkhir ta ON tb.IdTA = ta.IdTa
+        WHERE tb.IdBim = ?
+    """;
+        return jdbcTemplate.queryForList(sql, String.class, idBim);
+    }
 
     @Override
     public List<Integer> getIdTaByIdBim(int idBim) {
@@ -219,11 +274,10 @@ public class BimbinganJdbc implements BimbinganRepository {
         FROM TopikBimbingan tb
         JOIN Dosen_Pembimbing dp ON dp.idTA = tb.IdTA
         WHERE tb.IdBim = ?
+        ORDER BY dp.IdDosen
     """;
-
         return jdbcTemplate.query(sql, (rs, i) -> rs.getString("IdDosen"), idBim);
     }
-
 
     @Override
     public void updateStatusMahasiswa(int idBim, String status) {
@@ -255,15 +309,14 @@ public class BimbinganJdbc implements BimbinganRepository {
         jdbcTemplate.update(sql, catatan, idBim);
     }
 
-
     public void insertJadwalBimbingan(int idJadwal) {
         String sql = """
         INSERT INTO Jadwal_Bimbingan(IdJadwal)
         VALUES (?)
     """;
-
         jdbcTemplate.update(sql, idJadwal);
     }
+
     public void insertTopikBimbingan(
             int idBim,
             int idTA,
@@ -278,17 +331,26 @@ public class BimbinganJdbc implements BimbinganRepository {
         )
         VALUES (?, ?, ?, ?, ?, ?)
     """;
-
         jdbcTemplate.update(sql, idBim, idTA, statusMhs, statusDosen1, statusDosen2, statusBimbingan);
     }
 
-    // RowMapper untuk PilihanPengguna
     private PilihanPengguna mapRowToPilihanPengguna(ResultSet rs, int rowNum) throws SQLException {
         return new PilihanPengguna(
                 rs.getString("IdPengguna"),
                 rs.getString("nama")
         );
     }
+
+    @Override
+    public void updateRuanganBimbingan(int idBim, Integer idRuangan) {
+        String sql = """
+        UPDATE Bimbingan
+        SET idRuangan = ?
+        WHERE IdBim = ?
+    """;
+        jdbcTemplate.update(sql, idRuangan, idBim);
+    }
+
     @Override
     public List<String> getMahasiswaBimbingan(Integer idBim) {
         String sql = """
@@ -310,7 +372,7 @@ public class BimbinganJdbc implements BimbinganRepository {
                     Bimbingan b
                     JOIN PenjadwalanBimbingan pb ON b.IdBim = pb.IdBim
                     JOIN Jadwal j ON pb.IdJadwal = j.IdJadwal
-                    JOIN Ruangan r ON b.idRuangan = r.idRuangan
+                    LEFT JOIN Ruangan r ON b.idRuangan = r.idRuangan
                     JOIN TopikBimbingan tb ON b.IdBim = tb.IdBim
                     JOIN TugasAkhir ta ON tb.IdTA = ta.IdTA
                     JOIN Dosen_Pembimbing dp ON ta.IdTa = dp.idTA
@@ -337,18 +399,16 @@ public class BimbinganJdbc implements BimbinganRepository {
         bimbingan.setNamaDosen(rs.getString("namaDosen"));
         bimbingan.setTanggal(rs.getString("tanggal"));
 
-        // Logika Waktu & Durasi
-        String mulai = rs.getString("WaktuMulai").substring(0, 5); // Ambil 10:00
-        String selesai = rs.getString("WaktuSelesai").substring(0, 5); // Ambil 12:00
+        String mulai = rs.getString("WaktuMulai").substring(0, 5);
+        String selesai = rs.getString("WaktuSelesai").substring(0, 5);
         bimbingan.setJam(mulai + " - " + selesai);
 
-        // Hitung durasi
         try {
             int angkamulai = Integer.parseInt(mulai.substring(0, 2));
             int angkaselesai = Integer.parseInt(selesai.substring(0, 2));
             bimbingan.setDurasi((angkaselesai - angkamulai) + " Jam");
         } catch (NumberFormatException e) {
-            bimbingan.setDurasi("-"); // Jaga-jaga kalau error parsing
+            bimbingan.setDurasi("-");
         }
 
         return bimbingan;
@@ -360,9 +420,7 @@ public class BimbinganJdbc implements BimbinganRepository {
                     VALUES (?, ?, ?, ?)
                     RETURNING IdBim
                 """;
-
-        return jdbcTemplate.queryForObject(sql, Integer.class,
-                deskripsi, topik, jumlahPeserta, idRuangan);
+        return jdbcTemplate.queryForObject(sql, Integer.class, deskripsi, topik, jumlahPeserta, idRuangan);
     }
 
     public void insertPenjadwalanBimbingan(int idJadwal, int idBim) {
@@ -370,8 +428,6 @@ public class BimbinganJdbc implements BimbinganRepository {
                     INSERT INTO PenjadwalanBimbingan(IdJadwal, IdBim)
                     VALUES (?, ?)
                 """;
-
         jdbcTemplate.update(sql, idJadwal, idBim);
     }
-
 }

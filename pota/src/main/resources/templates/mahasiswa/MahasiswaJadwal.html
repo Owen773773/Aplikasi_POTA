@@ -253,7 +253,6 @@
         document.body.style.overflow = '';
         hideNotification();
 
-        // Reset form dengan benar
         const form = document.getElementById('bimbingan-form');
         if (form) {
             form.reset();
@@ -262,14 +261,12 @@
         document.getElementById('waktuSelesai').disabled = true;
     }
 
-    // Close popup when clicking outside
     document.getElementById('popup-form').addEventListener('click', function (e) {
         if (e.target === this) {
             closePopup();
         }
     });
 
-    // Close popup with ESC key
     document.addEventListener('keydown', function (e) {
         if (e.key === 'Escape') {
             closePopup();
@@ -496,7 +493,6 @@
             waktuMulaiInput.addEventListener('change', updateWaktuSelesai);
         }
 
-        // Hide notification on input
         const formInputs = ['dosenSatu', 'dosenDua', 'tanggal', 'waktuMulai', 'waktuSelesai', 'topik', 'deskripsi'];
         formInputs.forEach(inputId => {
             const input = document.getElementById(inputId);

@@ -240,7 +240,7 @@
 <script>
     let currentIdBim = null;
 
-    // Cek status tombol saat halaman dimuat
+
     window.addEventListener('DOMContentLoaded', function() {
         const idBim = document.querySelector('[data-id-bim]')?.getAttribute('data-id-bim');
         if (idBim) {
@@ -274,7 +274,7 @@
             .catch(error => console.error('Error:', error));
     }
 
-    // Show popup functions
+
     function showPopupValidasi(button) {
         currentIdBim = button.getAttribute('data-id-bim');
         document.getElementById('catatanValidasi').value = '';
@@ -292,7 +292,7 @@
         currentIdBim = null;
     }
 
-    // Submit functions
+
     function submitValidasi() {
         const catatan = document.getElementById('catatanValidasi').value;
 
@@ -364,7 +364,6 @@
             });
     }
 
-    // Close popup when clicking outside
     document.querySelectorAll('.popup-overlay').forEach(overlay => {
         overlay.addEventListener('click', function(e) {
             if (e.target === this) {

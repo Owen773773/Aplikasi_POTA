@@ -146,7 +146,6 @@
 <script>
     let currentIdBim = null;
 
-    // Toggle card
     document.querySelectorAll(".dropdown-btn").forEach(btn => {
         btn.addEventListener("click", () => {
             let card = btn.closest(".card");
@@ -154,7 +153,6 @@
         });
     });
 
-    // Active nav item
     document.querySelectorAll(".nav-item").forEach(item => {
         if (item.textContent.trim() === document.title.replace("POTA - ", "")) {
             item.classList.add("active");
@@ -197,7 +195,6 @@
             .catch(error => console.error('Error:', error));
     }
 
-    // Show popup functions
     function showPopupTolak(button) {
         currentIdBim = button.getAttribute('data-id-bim');
         document.getElementById('alasanPenolakan').value = '';
@@ -236,8 +233,6 @@
                 alert('Terjadi kesalahan saat memproses permintaan.');
             });
     }
-
-    // Submit functions
     function submitPenolakan() {
         const catatan = document.getElementById('alasanPenolakan').value;
 

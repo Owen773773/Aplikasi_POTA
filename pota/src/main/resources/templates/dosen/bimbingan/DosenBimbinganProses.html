@@ -171,7 +171,6 @@
     let currentTanggal = null;
     let currentJam = null;
 
-    // Toggle card
     document.querySelectorAll(".dropdown-btn").forEach(btn => {
         btn.addEventListener("click", () => {
             let card = btn.closest(".card");
@@ -179,14 +178,13 @@
         });
     });
 
-    // Active nav item
+
     document.querySelectorAll(".nav-item").forEach(item => {
         if (item.textContent.trim() === document.title.replace("POTA - ", "")) {
             item.classList.add("active");
         }
     });
 
-    // Check status tombol saat load
     document.addEventListener('DOMContentLoaded', function() {
         document.querySelectorAll('.card').forEach(card => {
             const idBim = card.querySelector('[data-id-bim]')?.getAttribute('data-id-bim');
@@ -222,7 +220,6 @@
             .catch(error => console.error('Error:', error));
     }
 
-    // Show popup functions
     function showPopupTolak(button) {
         currentIdBim = button.getAttribute('data-id-bim');
         document.getElementById('alasanPenolakan').value = '';
@@ -234,25 +231,19 @@
         currentTanggal = button.getAttribute('data-tanggal');
         currentJam = button.getAttribute('data-jam');
 
-        // Reset dan tampilkan loading
         document.getElementById('lokasiLoading').style.display = 'block';
         document.getElementById('lokasiList').style.display = 'none';
         document.getElementById('lokasiList').innerHTML = '';
 
         document.getElementById('popupLokasi').classList.add('active');
 
-        // Load ruangan tersedia
         loadRuanganTersedia();
     }
 
     function loadRuanganTersedia() {
-        // Parse tanggal dan jam untuk API call
-        // Format tanggal: dd/MM/yyyy -> yyyy-MM-dd
         const [day, month, year] = currentTanggal.split('/');
         const tanggalISO = `${year}-${month}-${day}`;
 
-        // Parse jam untuk mendapatkan jam mulai dan selesai
-        // Format jam: "HH.mm - HH.mm"
         const [jamMulai, jamSelesai] = currentJam.split(' - ');
 
         fetch(`/dosen/cek-ruangan-tersedia?idBim=${currentIdBim}&tanggal=${tanggalISO}&jamMulai=${jamMulai}&jamSelesai=${jamSelesai}`)
@@ -300,7 +291,6 @@
         currentJam = null;
     }
 
-    // Submit functions
     function submitPenolakan() {
         const catatan = document.getElementById('alasanPenolakan').value;
 

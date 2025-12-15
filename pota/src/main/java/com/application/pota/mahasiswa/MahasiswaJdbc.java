@@ -163,6 +163,32 @@ public class MahasiswaJdbc implements MahasiswaRepository {
         }
     }
 
+    
+    public String getNamaSemester(String idMhs){
+        String sql = """
+            SELECT ta.idakademik
+            FROM Pengguna p 
+            JOIN TugasAkhir t on p.IdPengguna = t.idMahasiswa
+            JOIN TAtermasukAkademik ta on t.idTa = ta.idTa 
+            WHERE p.IdPengguna = ?
+            LIMIT 1						
+                """;
+        int tahap =  jdbcTemplate.queryForObject(sql, Integer.class, idMhs);
+        int thn = tahap/10;
+        int smster = tahap%10;
+        String hasil = "";
+        if(smster == 1){
+            hasil += "Ganjil "; 
+        } else if(smster == 2){
+            hasil += "Genap ";
+        } else{
+            hasil += "Pendek ";
+        }
+        int thn2 = thn+1;
+        hasil += thn + "/" + thn2;
+        return hasil;
+    }
+
     public DashboardDataMhs getDashboardDataMhs(String idMhs){
         DashboardDataMhs dashboardDataMhs = new DashboardDataMhs();
         ProfilMahasiswa profil = makeProfileByIdPengguna(idMhs);
@@ -173,7 +199,7 @@ public class MahasiswaJdbc implements MahasiswaRepository {
         List<Integer> batas = getBatasKelayakanPraPasca(idMhs);
         dashboardDataMhs.setTargetPraUTS(batas.get(0));
         dashboardDataMhs.setTargetPascaUTS(batas.get(1));
-        dashboardDataMhs.setSemesterAktif("Ganjil 2025/2026");
+        dashboardDataMhs.setSemesterAktif(getNamaSemester(idMhs));
         dashboardDataMhs.setTahapSkripsi(getTahapSkripsi(idMhs));
         dashboardDataMhs.setJudulSkripsi(getJudulSkripsi(idMhs));
         

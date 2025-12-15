@@ -265,7 +265,6 @@ public class BimbinganService {
 
 
     public void validasiBimbingan(int idBim, String peran, String catatan) {
-
         switch (peran.toLowerCase()) {
             case "dosen1":
                 bimbinganRepository.updateStatusDosen1(idBim, "Tervalidasi");
@@ -276,7 +275,7 @@ public class BimbinganService {
                 break;
 
             case "mahasiswa":
-                // Mahasiswa memvalidasi → bimbingan dianggap selesai
+                // Mahasiswa memvalidasi
                 bimbinganRepository.updateStatusMahasiswa(idBim, "Tervalidasi");
                 bimbinganRepository.updateCatatanBimbingan(idBim, catatan);
                 break;
@@ -284,7 +283,15 @@ public class BimbinganService {
             default:
                 throw new IllegalArgumentException("Peran tidak valid: " + peran);
         }
+
+        // CEK apakah semua sudah validasi
+        if (isSemuaValidasi(idBim)) {
+            // Update status bimbingan ke Selesai
+            bimbinganRepository.updateStatusBimbingan(idBim, "Selesai");
+            System.out.println("✅ Semua sudah validasi! Status diupdate ke Selesai");
+        }
     }
+
 
     public String getPeranDalamTA(String idPengguna, int idTa) {
 
@@ -303,22 +310,22 @@ public class BimbinganService {
 
     public String getIdMahasiswaByUsername(String username) {
         String sql = """
-        SELECT m.IdPengguna
-        FROM Mahasiswa m
-        JOIN Pengguna p ON m.IdPengguna = p.IdPengguna
-        WHERE p.username = ?
-    """;
+                    SELECT m.IdPengguna
+                    FROM Mahasiswa m
+                    JOIN Pengguna p ON m.IdPengguna = p.IdPengguna
+                    WHERE p.username = ?
+                """;
 
         return jdbcTemplate.queryForObject(sql, String.class, username);
     }
 
     public String getIdDosenByUsername(String username) {
         String sql = """
-        SELECT d.IdPengguna
-        FROM dosen d
-        JOIN Pengguna p ON d.IdPengguna = p.IdPengguna
-        WHERE p.username = ?
-    """;
+                    SELECT d.IdPengguna
+                    FROM dosen d
+                    JOIN Pengguna p ON d.IdPengguna = p.IdPengguna
+                    WHERE p.username = ?
+                """;
 
         return jdbcTemplate.queryForObject(sql, String.class, username);
     }
@@ -329,7 +336,7 @@ public class BimbinganService {
 
         List<String> dosenList = bimbinganRepository.getListDosenByIdBim(idBim);
         int idNotifikasi = notifikasiService.insertNotifikasi("Ditolak");
-        List<String> listMahasiswa = bimbinganRepository.getMahasiswaBimbingan(idBim);
+        List<String> listMahasiswa = bimbinganRepository.getIdMahasiswaBimbingan(idBim);
 
         switch (peran.toLowerCase()) {
             case "dosen1":
@@ -359,33 +366,51 @@ public class BimbinganService {
         }
     }
 
-    // Di BimbinganService.java, update method terimaBimbingan:
+    private boolean cekSemuaMahasiswaSetuju(int idBim) {
+        String sql = """
+                    SELECT COUNT(*) as total,
+                           SUM(CASE WHEN StatusMhs = 'Menyetujui' THEN 1 ELSE 0 END) as setuju
+                    FROM TopikBimbingan
+                    WHERE IdBim = ?
+                """;
 
-    public void terimaBimbingan(int idBim, String peran) {
+        Map<String, Object> result = jdbcTemplate.queryForMap(sql, idBim);
+        int total = ((Number) result.get("total")).intValue();
+        int setuju = ((Number) result.get("setuju")).intValue();
+
+        return total > 0 && total == setuju;
+    }
+
+    public void terimaBimbingan(int idBim, String peran, Integer idRuangan) {
         List<String> dosenList = bimbinganRepository.getListDosenByIdBim(idBim);
         int notifikasi = notifikasiService.insertNotifikasi("Menerima");
-        List<String> listMahasiswa = bimbinganRepository.getMahasiswaBimbingan(idBim);
+        List<String> listIdMahasiswa = bimbinganRepository.getIdMahasiswaBimbingan(idBim);
+
+        // Update ruangan jika idRuangan tidak null
+        if (idRuangan != null) {
+            bimbinganRepository.updateRuanganBimbingan(idBim, idRuangan);
+        }
 
         switch (peran.toLowerCase()) {
             case "dosen1":
                 bimbinganRepository.updateStatusDosen1(idBim, "Menyetujui");
-                for (String mhs : listMahasiswa) {
-                    notifikasiService.insertMahasiswaNotifikasi(getIdMahasiswaByUsername(mhs), notifikasi);
+                for (String idMhs : listIdMahasiswa) {
+                    notifikasiService.insertMahasiswaNotifikasi(idMhs, notifikasi);
                 }
                 break;
 
             case "dosen2":
                 bimbinganRepository.updateStatusDosen2(idBim, "Menyetujui");
-                for (String mhs : listMahasiswa) {
-                    notifikasiService.insertMahasiswaNotifikasi(getIdMahasiswaByUsername(mhs), notifikasi);
+                for (String idMhs : listIdMahasiswa) {
+                    notifikasiService.insertMahasiswaNotifikasi(idMhs, notifikasi);
                 }
                 break;
 
             case "mahasiswa":
                 bimbinganRepository.updateStatusMahasiswa(idBim, "Menyetujui");
-                notifikasiService.insertDosenNotifikasi(getIdDosenByUsername(dosenList.get(0)), notifikasi);
+                notifikasiService.insertDosenNotifikasi(dosenList.get(0), notifikasi);
                 if (dosenList.size() > 1) {
-                    notifikasiService.insertDosenNotifikasi(getIdDosenByUsername(dosenList.get(1)), notifikasi);
+                    notifikasiService.insertDosenNotifikasi(dosenList.get(1), notifikasi);
                 }
                 break;
 
@@ -393,6 +418,7 @@ public class BimbinganService {
                 throw new IllegalArgumentException("Peran tidak valid: " + peran);
         }
 
+        // CEK ULANG status setelah update
         BimbinganDetailStatus temp = bimbinganRepository.getDetailStatusBimbingan(idBim);
 
         boolean dosen1Setuju = "Menyetujui".equals(temp.getStatusDosen1());
@@ -401,10 +427,26 @@ public class BimbinganService {
                         "Menyetujui".equals(temp.getStatusDosen2()) ||
                         "Tidak Terpilih".equals(temp.getStatusDosen2());
 
-        if (dosen1Setuju && dosen2SetujuAtauTidakTerpilih) {
-            bimbinganRepository.updateStatusBimbingan(idBim, "Terjadwalkan");
-        }
+        // Cek juga status mahasiswa - SEMUA mahasiswa harus setuju
+        boolean semuaMahasiswaSetuju = cekSemuaMahasiswaSetuju(idBim);
 
+        System.out.println("=== DEBUG STATUS ===");
+        System.out.println("IdBim: " + idBim);
+        System.out.println("StatusDosen1: " + temp.getStatusDosen1());
+        System.out.println("StatusDosen2: " + temp.getStatusDosen2());
+        System.out.println("StatusMhs: " + temp.getStatusMhs());
+        System.out.println("Dosen1 Setuju: " + dosen1Setuju);
+        System.out.println("Dosen2 OK: " + dosen2SetujuAtauTidakTerpilih);
+        System.out.println("Semua Mhs Setuju: " + semuaMahasiswaSetuju);
+        System.out.println("==================");
+
+        // Update ke Terjadwalkan jika SEMUA kondisi terpenuhi
+        if (dosen1Setuju && dosen2SetujuAtauTidakTerpilih && semuaMahasiswaSetuju) {
+            bimbinganRepository.updateStatusBimbingan(idBim, "Terjadwalkan");
+            System.out.println("✅ Status diupdate ke Terjadwalkan");
+        } else {
+            System.out.println("❌ Belum bisa update ke Terjadwalkan, ada yang belum setuju");
+        }
     }
 
     public void tolakBimbingan(int idBim, String peran, String catatan) {
@@ -412,7 +454,7 @@ public class BimbinganService {
         bimbinganRepository.updateStatusBimbingan(idBim, "Gagal");
         List<String> dosenList = bimbinganRepository.getListDosenByIdBim(idBim);
         int idNotifikasi = notifikasiService.insertNotifikasi("Ditolak");
-        List<String> listMahasiswa = bimbinganRepository.getMahasiswaBimbingan(idBim);
+        List<String> listMahasiswa = bimbinganRepository.getIdMahasiswaBimbingan(idBim);
 
         switch (peran.toLowerCase()) {
             case "dosen1":
@@ -425,7 +467,7 @@ public class BimbinganService {
 
                 }
 
-                 break;
+                break;
 
             case "dosen2":
                 bimbinganRepository.updateStatusDosen2(idBim, "Menolak");
@@ -492,27 +534,90 @@ public class BimbinganService {
         }
     }
 
+    public boolean isSemuaValidasi(int idBim) {
+        String sql = """
+        SELECT 
+            StatusMhs,
+            StatusDosen1,
+            StatusDosen2,
+            StatusBimbingan
+        FROM TopikBimbingan
+        WHERE IdBim = ?
+        LIMIT 1
+    """;
+
+        Map<String, Object> result = jdbcTemplate.queryForMap(sql, idBim);
+
+        String statusMhs = (String) result.get("StatusMhs");
+        String statusDosen1 = (String) result.get("StatusDosen1");
+        String statusDosen2 = (String) result.get("StatusDosen2");
+        String statusBimbingan = (String) result.get("StatusBimbingan");
+
+        // Cek apakah status bimbingan Terjadwalkan
+        if (!"Terjadwalkan".equals(statusBimbingan)) {
+            return false;
+        }
+
+        // Cek validasi dosen
+        boolean dosen1Valid = "Tervalidasi".equals(statusDosen1);
+        boolean dosen2Valid = statusDosen2 == null ||
+                "Tervalidasi".equals(statusDosen2) ||
+                "Tidak Terpilih".equals(statusDosen2);
+
+        // Cek validasi mahasiswa
+        boolean mhsValid = "Tervalidasi".equals(statusMhs);
+
+        // Semua harus valid
+        return dosen1Valid && dosen2Valid && mhsValid;
+    }
+
     public boolean bisaValidasi(int idBim, String idPengguna) {
         BimbinganDetailStatus status = getDetailStatusBimbingan(idBim, idPengguna);
         String peran = status.getPeranPengguna();
 
-        if ("mahasiswa".equals(peran)) {
-            boolean dosen1Valid = "Tervalidasi".equals(status.getStatusDosen1());
-            boolean dosen2Valid = status.getStatusDosen2() == null ||
-                    "Tervalidasi".equals(status.getStatusDosen2()) ||
-                    "Tidak Terpilih".equals(status.getStatusDosen2()); // Dosen2 tidak terpilih dianggap OK
-            return (dosen1Valid || dosen2Valid) && "Menyetujui".equals(status.getStatusMhs());
-        } else if ("dosen1".equals(peran)) {
-            return "Menyetujui".equals(status.getStatusDosen1()) &&
-                    !"Tidak Terpilih".equals(status.getStatusDosen1());
-        } else if ("dosen2".equals(peran)) {
-            return status.getStatusDosen2() != null &&
-                    "Menyetujui".equals(status.getStatusDosen2()) &&
-                    !"Tidak Terpilih".equals(status.getStatusDosen2());
+        // Cek apakah bimbingan sudah Terjadwalkan
+        if (!"Terjadwalkan".equals(status.getStatusBimbingan())) {
+            return false; // Hanya bisa validasi jika status Terjadwalkan
         }
 
-        return false;
+        switch (peran.toLowerCase()) {
+            case "mahasiswa":
+                // Mahasiswa bisa validasi jika:
+                // 1. Statusnya Menyetujui (sudah accept)
+                // 2. Minimal 1 dosen sudah validasi
+                boolean mahasiswaSudahSetuju = "Menyetujui".equals(status.getStatusMhs());
+                boolean dosen1Valid = "Tervalidasi".equals(status.getStatusDosen1());
+                boolean dosen2Valid = status.getStatusDosen2() == null ||
+                        "Tervalidasi".equals(status.getStatusDosen2()) ||
+                        "Tidak Terpilih".equals(status.getStatusDosen2());
+
+                // Minimal 1 dosen harus sudah validasi
+                boolean minimalSatuDosenValidasi = dosen1Valid ||
+                        (status.getStatusDosen2() != null && "Tervalidasi".equals(status.getStatusDosen2()));
+
+                return mahasiswaSudahSetuju && minimalSatuDosenValidasi;
+
+            case "dosen1":
+                // Dosen1 bisa validasi jika:
+                // 1. Statusnya Menyetujui (sudah accept)
+                // 2. Bukan "Tidak Terpilih"
+                return "Menyetujui".equals(status.getStatusDosen1()) &&
+                        !"Tidak Terpilih".equals(status.getStatusDosen1());
+
+            case "dosen2":
+                // Dosen2 bisa validasi jika:
+                // 1. Status bukan null
+                // 2. Statusnya Menyetujui (sudah accept)
+                // 3. Bukan "Tidak Terpilih"
+                return status.getStatusDosen2() != null &&
+                        "Menyetujui".equals(status.getStatusDosen2()) &&
+                        !"Tidak Terpilih".equals(status.getStatusDosen2());
+
+            default:
+                return false;
+        }
     }
+
 
     public boolean bisaTolak(int idBim, String idPengguna) {
         return bisaTerima(idBim, idPengguna);

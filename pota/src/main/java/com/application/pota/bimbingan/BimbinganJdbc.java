@@ -8,7 +8,6 @@ import org.springframework.stereotype.Repository;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Repository
 @RequiredArgsConstructor
@@ -103,7 +102,7 @@ public class BimbinganJdbc implements BimbinganRepository {
 
 
 
-    private List<String> getDosenPembimbingTerpilih(int idTa) {
+    private List<String> getDosenPembimbingTerpilih(int idTa, int idBim) {
         String sql = """
         WITH ranked_dosen AS (
             SELECT 
@@ -116,14 +115,14 @@ public class BimbinganJdbc implements BimbinganRepository {
         )
         SELECT rd.nama
         FROM ranked_dosen rd
-        JOIN TopikBimbingan tb ON tb.IdTA = rd.idTA
+        JOIN TopikBimbingan tb ON tb.IdTA = rd.idTA AND tb.IdBim = ?
         WHERE 
             (rd.rn = 1 AND tb.StatusDosen1 <> 'Tidak Terpilih')
          OR (rd.rn = 2 AND tb.StatusDosen2 <> 'Tidak Terpilih')
         ORDER BY rd.rn
-        """;
+    """;
 
-        return jdbcTemplate.queryForList(sql, String.class, idTa);
+        return jdbcTemplate.queryForList(sql, String.class, idTa, idBim);
     }
 
 
@@ -132,13 +131,15 @@ public class BimbinganJdbc implements BimbinganRepository {
         Integer idBim = rs.getInt("IdBim");
         Integer idTa = rs.getInt("IdTa");
 
-        List<String> dosenList = getDosenPembimbingTerpilih(idTa);
+        // Pass idBim juga ke method ini
+        List<String> dosenList = getDosenPembimbingTerpilih(idTa, idBim);
 
         String dosen1 = dosenList.size() > 0 ? dosenList.get(0) : null;
         String dosen2 = dosenList.size() > 1 ? dosenList.get(1) : null;
 
-        if (dosen1.equals(dosen2)) {
-            dosen2=null;
+        // Handle jika dosen yang sama (edge case)
+        if (dosen1 != null && dosen1.equals(dosen2)) {
+            dosen2 = null;
         }
 
         String statusmhs = rs.getString("statusmhs");
@@ -224,14 +225,14 @@ public class BimbinganJdbc implements BimbinganRepository {
 
     @Override
     public BimbinganDetailStatus getDetailStatusBimbingan(int idBim) {
+        // Ambil SEMUA records untuk idBim ini
         String sql = """
         SELECT StatusMhs, StatusDosen1, StatusDosen2, StatusBimbingan
         FROM TopikBimbingan
         WHERE IdBim = ?
-        LIMIT 1
-        """;
+    """;
 
-        return jdbcTemplate.queryForObject(sql, (rs, rowNum) -> {
+        List<BimbinganDetailStatus> allRecords = jdbcTemplate.query(sql, (rs, rowNum) -> {
             BimbinganDetailStatus status = new BimbinganDetailStatus();
             status.setIdBim(idBim);
             status.setStatusMhs(rs.getString("StatusMhs"));
@@ -240,6 +241,24 @@ public class BimbinganJdbc implements BimbinganRepository {
             status.setStatusBimbingan(rs.getString("StatusBimbingan"));
             return status;
         }, idBim);
+
+        if (allRecords.isEmpty()) {
+            throw new RuntimeException("Bimbingan dengan ID " + idBim + " tidak ditemukan");
+        }
+
+        // Return record pertama (status dosen seharusnya sama untuk semua record dengan IdBim sama)
+        return allRecords.get(0);
+    }
+
+    @Override
+    public List<String> getIdMahasiswaBimbingan(int idBim) {
+        String sql = """
+        SELECT DISTINCT ta.IdMahasiswa
+        FROM TopikBimbingan tb
+        JOIN TugasAkhir ta ON tb.IdTA = ta.IdTa
+        WHERE tb.IdBim = ?
+    """;
+        return jdbcTemplate.queryForList(sql, String.class, idBim);
     }
 
     @Override
@@ -320,6 +339,16 @@ public class BimbinganJdbc implements BimbinganRepository {
                 rs.getString("IdPengguna"),
                 rs.getString("nama")
         );
+    }
+
+    @Override
+    public void updateRuanganBimbingan(int idBim, Integer idRuangan) {
+        String sql = """
+        UPDATE Bimbingan
+        SET idRuangan = ?
+        WHERE IdBim = ?
+    """;
+        jdbcTemplate.update(sql, idRuangan, idBim);
     }
 
     @Override
